@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, FileSpreadsheet, Users, AlertCircle } from 'lucide-react';
+import { BarChart, FileSpreadsheet, Users, AlertCircle, Search, SlidersHorizontal, Clock, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 
 const Index = () => {
@@ -19,12 +20,91 @@ const Index = () => {
     }
   }, [navigate]);
   
+  const applications = [
+    { 
+      id: 'SOL-2025-001',
+      clientName: 'Ana García',
+      product: 'Crédito Personal',
+      amount: '$25,000',
+      status: 'pending',
+      date: '2025-04-07',
+      progress: 2
+    },
+    { 
+      id: 'SOL-2025-002',
+      clientName: 'Carlos López',
+      product: 'Hipoteca',
+      amount: '$1,200,000',
+      status: 'approved',
+      date: '2025-04-06',
+      progress: 4
+    },
+    { 
+      id: 'SOL-2025-003',
+      clientName: 'María Rodríguez',
+      product: 'Crédito Auto',
+      amount: '$350,000',
+      status: 'pending',
+      date: '2025-04-05',
+      progress: 3
+    },
+    { 
+      id: 'SOL-2025-004',
+      clientName: 'José Hernández',
+      product: 'Crédito PYME',
+      amount: '$500,000',
+      status: 'reviewing',
+      date: '2025-04-03',
+      progress: 3
+    },
+    { 
+      id: 'SOL-2025-005',
+      clientName: 'Laura Sánchez',
+      product: 'Crédito Personal',
+      amount: '$30,000',
+      status: 'rejected',
+      date: '2025-04-02',
+      progress: 4
+    },
+  ];
+
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'pending':
+        return (
+          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full">
+            Pendiente
+          </span>
+        );
+      case 'reviewing':
+        return (
+          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+            En revisión
+          </span>
+        );
+      case 'approved':
+        return (
+          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full">
+            Aprobado
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full">
+            Rechazado
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+  
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
-      <main className="flex-1 container py-4 pb-20 space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+      <main className="flex-1 px-4 py-4 pb-20">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <Card className="card-hover" onClick={() => navigate('/prospects')}>
             <CardHeader className="pb-1 p-3">
               <CardTitle className="text-base flex items-center gap-1.5">
@@ -38,7 +118,7 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="card-hover" onClick={() => navigate('/applications')}>
+          <Card className="card-hover">
             <CardHeader className="pb-1 p-3">
               <CardTitle className="text-base flex items-center gap-1.5">
                 <FileSpreadsheet className="h-4 w-4 text-primary" />
@@ -78,83 +158,65 @@ const Index = () => {
           </Card>
         </div>
         
-        <Card className="mt-3">
-          <CardHeader className="pb-1 px-4 pt-4">
-            <CardTitle className="text-lg">Solicitudes recientes</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-border">
-              {[
-                { 
-                  id: "BVM_80517963",
-                  name: "FERNANDO GOMEZ", 
-                  task: "Aceptar contrato", 
-                  progress: 36, 
-                  status: "active",
-                  date: "02/04/2024"
-                },
-                { 
-                  id: "BVM_80517845",
-                  name: "MARÍA RODRÍGUEZ", 
-                  task: "Verificar identidad", 
-                  progress: 65, 
-                  status: "pending",
-                  date: "01/04/2024"  
-                },
-                { 
-                  id: "BVM_80517722",
-                  name: "CARLOS LÓPEZ", 
-                  task: "Firmar documentos", 
-                  progress: 89, 
-                  status: "active",
-                  date: "31/03/2024"  
-                }
-              ].map((item, index) => (
-                <div 
-                  key={index} 
-                  className="px-4 py-3 flex flex-col gap-2 hover:bg-muted/30 transition-colors"
-                  onClick={() => navigate('/applications')}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">{item.id}</div>
-                      <span 
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          item.status === 'active' 
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' 
-                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200'
-                        }`}
-                      >
-                        {item.status === 'active' ? 'ACTIVO' : 'PENDIENTE'}
-                      </span>
-                    </div>
-                    <div className="text-xs text-muted-foreground">{item.date}</div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium truncate flex-1">{item.name}</span>
-                    <span className="text-primary text-sm font-medium">{item.progress}%</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <Progress value={item.progress} className="h-1.5 flex-1" />
-                    <div className="text-xs text-muted-foreground whitespace-nowrap">{item.task}</div>
-                  </div>
-                </div>
-              ))}
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar solicitudes..."
+                className="pl-10"
+              />
             </div>
-            <div className="p-3">
+            
+            <div className="flex gap-2 w-full sm:w-auto">
               <Button 
                 variant="outline" 
-                size="sm"
-                className="w-full text-xs"
-                onClick={() => navigate('/applications')}
+                size="icon"
+                className="rounded-full"
+                aria-label="Filtrar"
               >
-                Ver todas las solicitudes
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+              <Button className="flex-1 sm:flex-none">
+                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                Nueva Solicitud
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {applications.map((application) => (
+            <Card key={application.id} className="card-hover cursor-pointer">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium">{application.clientName}</h3>
+                      {getStatusBadge(application.status)}
+                    </div>
+                    <p className="text-sm">{application.product} - {application.amount}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+                      <div className="flex items-center">
+                        <Clock className="mr-1 h-3 w-3" />
+                        {application.id}
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        {application.date}
+                      </div>
+                    </div>
+                    <Progress value={application.progress * 25} className="h-1.5 mt-2" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        
+        <div className="flex justify-center py-2">
+          <Button variant="outline">Cargar más</Button>
+        </div>
       </main>
       
       <BottomNavigation />

@@ -14,6 +14,7 @@ import Applications from "./pages/Applications";
 import Settings from "./pages/Settings";
 import Alerts from "./pages/Alerts";
 import NotFound from "./pages/NotFound";
+import ProspectDetails from "./pages/ProspectDetails";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/prospects" element={<Prospects />} />
+            <Route path="/prospect/:id" element={<ProspectDetails />} />
             <Route path="/applications" element={<Applications />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/alerts" element={<Alerts />} />

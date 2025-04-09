@@ -96,6 +96,11 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/50 rounded-full;
   }
+  
+  /* Consistent container padding */
+  .container {
+    @apply px-4;
+  }
 }
 
 @layer components {
@@ -115,17 +120,22 @@
     @apply p-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors;
   }
   
-  /* Nueva clase para las tarjetas de solicitudes */
+  /* Request card styles */
   .request-card {
     @apply rounded-md border border-border/50 shadow-sm hover:shadow-md transition-all duration-200;
   }
   
-  /* Estilos para el indicador de progreso */
+  /* Progress indicator styles */
   .progress-indicator {
     @apply h-1.5 rounded-full bg-muted overflow-hidden relative;
   }
   
   .progress-bar {
     @apply h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-all duration-300;
+  }
+  
+  /* Mobile app specific styles */
+  .mobile-container {
+    @apply px-4 pb-16;
   }
 }

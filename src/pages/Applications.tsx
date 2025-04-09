@@ -2,10 +2,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -96,29 +98,12 @@ const Applications = () => {
         return null;
     }
   };
-
-  const getProgressSteps = (progress: number, total: number = 4) => {
-    return (
-      <div className="flex gap-1 mt-2">
-        {Array.from({ length: total }).map((_, i) => (
-          <div 
-            key={i}
-            className={`h-1 rounded-full flex-1 ${
-              i < progress 
-                ? 'bg-primary' 
-                : 'bg-muted'
-            }`}
-          />
-        ))}
-      </div>
-    );
-  };
   
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 container py-6 space-y-6">
+      <main className="flex-1 px-4 py-4 pb-20 space-y-4">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
           <div className="relative w-full sm:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -165,7 +150,7 @@ const Applications = () => {
                         {application.date}
                       </div>
                     </div>
-                    {getProgressSteps(application.progress)}
+                    <Progress value={application.progress * 25} className="h-1.5 mt-2" />
                   </div>
                 </div>
               </CardContent>
@@ -177,6 +162,8 @@ const Applications = () => {
           <Button variant="outline">Cargar más</Button>
         </div>
       </main>
+      
+      <BottomNavigation />
     </div>
   );
 };
