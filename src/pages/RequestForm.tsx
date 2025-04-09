@@ -1,15 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import { Card } from '@/components/ui/card';
 import { 
   ArrowLeft, ArrowRight, Save, Send, AlertCircle, 
   User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle 
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 
 // Form section components
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
@@ -154,83 +155,100 @@ const RequestForm = () => {
           <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
+        {/* Modern step progress indicator */}
         <div className="mb-5">
-          <div className="overflow-x-auto pb-2 hide-scrollbar">
-            <Tabs 
-              value={steps[activeStep].id}
-              className="w-full"
-              onValueChange={(value) => {
-                const index = steps.findIndex(step => step.id === value);
-                if (index <= activeStep) {
-                  setActiveStep(index);
-                }
-              }}
-            >
-              <TabsList className="inline-flex w-auto h-12 p-1">
-                {steps.map((step, index) => {
-                  const status = sectionStatus[step.id];
-                  return (
-                    <TabsTrigger
-                      key={step.id}
-                      value={step.id}
-                      disabled={index > activeStep}
-                      className={`
-                        px-4 py-2 min-w-[120px] flex items-center gap-2
-                        ${index === activeStep ? 'bg-primary text-primary-foreground' : ''}
-                        ${index < activeStep ? 'text-primary' : ''}
-                        ${index > activeStep ? 'opacity-50' : ''}
-                        ${status === 'complete' ? 'border-l-2 border-green-500' : ''}
-                        ${status === 'pending' ? 'border-l-2 border-orange-400' : ''}
-                      `}
-                    >
-                      <span className="flex-shrink-0">{step.icon}</span>
-                      <span className="hidden sm:inline whitespace-nowrap">{step.title}</span>
-                      <span className="inline sm:hidden">{index + 1}</span>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </Tabs>
+          {/* Progress percentage */}
+          <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
+            <span>Progreso</span>
+            <span>{Math.round(((activeStep + 1) / steps.length) * 100)}%</span>
           </div>
           
-          <div className="mt-4">
-            <div className="flex items-center gap-3 mb-1">
-              <div className="bg-muted/30 p-2 rounded-full">
-                {steps[activeStep].icon}
-              </div>
-              <div>
-                <h2 className="text-lg font-medium">
-                  {steps[activeStep].title}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Paso {activeStep + 1} de {steps.length}
-                </p>
-              </div>
-              <div className={`ml-auto px-3 py-1 text-xs rounded-full ${
-                sectionStatus[steps[activeStep].id] === 'complete' 
-                  ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                  : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
-              }`}>
-                {sectionStatus[steps[activeStep].id] === 'complete' ? 'Completado' : 'Pendiente'}
-              </div>
-            </div>
-            
-            <div className="w-full bg-muted h-1.5 mt-1 rounded-full overflow-hidden">
-              <div 
-                className="bg-primary h-1.5 transition-all duration-300 ease-in-out rounded-full"
-                style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
-              />
+          {/* Progress bar */}
+          <Progress 
+            value={((activeStep + 1) / steps.length) * 100} 
+            className="h-1.5 mb-4" 
+          />
+          
+          {/* Section navigation - sleek design */}
+          <div className="relative mb-4">
+            <div className="flex overflow-x-auto hide-scrollbar gap-1 pb-1">
+              {steps.map((step, index) => {
+                const isActive = activeStep === index;
+                const isCompleted = sectionStatus[step.id] === 'complete';
+                const isPast = index < activeStep;
+                const isClickable = index <= activeStep;
+                
+                return (
+                  <button
+                    key={step.id}
+                    onClick={() => isClickable && setActiveStep(index)}
+                    disabled={!isClickable}
+                    className={`
+                      flex items-center gap-2 py-2 px-3 min-w-fit rounded-lg transition-all duration-200
+                      ${isActive ? 'bg-primary/10 text-primary shadow-sm' : ''}
+                      ${isCompleted && !isActive ? 'text-green-600 dark:text-green-400' : ''}
+                      ${isPast && !isActive && !isCompleted ? 'text-primary/70' : ''}
+                      ${!isClickable ? 'opacity-40' : 'hover:bg-accent'}
+                    `}
+                  >
+                    <div className={`
+                      flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
+                      ${isActive ? 'bg-primary text-primary-foreground' : ''} 
+                      ${isCompleted && !isActive ? 'bg-green-600 text-white dark:bg-green-500' : ''}
+                      ${!isActive && !isCompleted ? 'bg-muted border' : ''}
+                    `}>
+                      {isCompleted ? <CheckCircle size={14} /> : index + 1}
+                    </div>
+                    <span className="whitespace-nowrap font-medium text-sm">
+                      {step.title}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
+          
+          {/* Current section header */}
+          <div className="flex items-center mb-4 gap-3">
+            <div className={`
+              p-2.5 rounded-full 
+              ${sectionStatus[steps[activeStep].id] === 'complete' 
+                ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' 
+                : 'bg-primary/10 text-primary'}
+            `}>
+              {steps[activeStep].icon}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">
+                  {steps[activeStep].title}
+                </h2>
+                <div className={`
+                  ml-2 px-2 py-0.5 text-xs rounded-full font-medium
+                  ${sectionStatus[steps[activeStep].id] === 'complete' 
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' 
+                    : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'}
+                `}>
+                  {sectionStatus[steps[activeStep].id] === 'complete' ? 'Completado' : 'Pendiente'}
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Paso {activeStep + 1} de {steps.length}
+              </p>
+            </div>
+          </div>
+          
+          <Separator className="mb-4" />
         </div>
         
         <div className="mb-24 min-h-[500px] bg-background p-5 rounded-lg shadow-sm">
           {renderStepContent()}
         </div>
         
+        {/* Sticky action buttons */}
         <div className="fixed bottom-16 sm:bottom-4 left-0 right-0 z-10">
-          <div className="bg-background/80 backdrop-blur-md border-t py-4">
-            <div className="flex justify-between gap-4 container max-w-3xl px-4 mx-auto">
+          <div className="bg-background/80 backdrop-blur-lg border-t py-3 shadow-md">
+            <div className="flex justify-between items-center gap-4 container max-w-3xl px-4 mx-auto">
               <Button
                 variant="outline"
                 size="icon"
@@ -285,7 +303,7 @@ const RequestForm = () => {
       
       <BottomNavigation />
       
-      <style jsx global>{`
+      <style>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }
