@@ -1,0 +1,184 @@
+
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '@/components/layout/Header';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar } from 'lucide-react';
+
+const Applications = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if user is authenticated
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      navigate('/login');
+    }
+  }, [navigate]);
+  
+  const applications = [
+    { 
+      id: 'SOL-2025-001',
+      clientName: 'Ana García',
+      product: 'Crédito Personal',
+      amount: '$25,000',
+      status: 'pending',
+      date: '2025-04-07',
+      progress: 2
+    },
+    { 
+      id: 'SOL-2025-002',
+      clientName: 'Carlos López',
+      product: 'Hipoteca',
+      amount: '$1,200,000',
+      status: 'approved',
+      date: '2025-04-06',
+      progress: 4
+    },
+    { 
+      id: 'SOL-2025-003',
+      clientName: 'María Rodríguez',
+      product: 'Crédito Auto',
+      amount: '$350,000',
+      status: 'pending',
+      date: '2025-04-05',
+      progress: 3
+    },
+    { 
+      id: 'SOL-2025-004',
+      clientName: 'José Hernández',
+      product: 'Crédito PYME',
+      amount: '$500,000',
+      status: 'reviewing',
+      date: '2025-04-03',
+      progress: 3
+    },
+    { 
+      id: 'SOL-2025-005',
+      clientName: 'Laura Sánchez',
+      product: 'Crédito Personal',
+      amount: '$30,000',
+      status: 'rejected',
+      date: '2025-04-02',
+      progress: 4
+    },
+  ];
+
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'pending':
+        return (
+          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full">
+            Pendiente
+          </span>
+        );
+      case 'reviewing':
+        return (
+          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+            En revisión
+          </span>
+        );
+      case 'approved':
+        return (
+          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full">
+            Aprobado
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full">
+            Rechazado
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getProgressSteps = (progress: number, total: number = 4) => {
+    return (
+      <div className="flex gap-1 mt-2">
+        {Array.from({ length: total }).map((_, i) => (
+          <div 
+            key={i}
+            className={`h-1 rounded-full flex-1 ${
+              i < progress 
+                ? 'bg-primary' 
+                : 'bg-muted'
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
+  
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      
+      <main className="flex-1 container py-6 space-y-6">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar solicitudes..."
+              className="pl-10"
+            />
+          </div>
+          
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="rounded-full"
+              aria-label="Filtrar"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+            </Button>
+            <Button className="flex-1 sm:flex-none">
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Nueva Solicitud
+            </Button>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {applications.map((application) => (
+            <Card key={application.id} className="card-hover cursor-pointer">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium">{application.clientName}</h3>
+                      {getStatusBadge(application.status)}
+                    </div>
+                    <p className="text-sm">{application.product} - {application.amount}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+                      <div className="flex items-center">
+                        <Clock className="mr-1 h-3 w-3" />
+                        {application.id}
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        {application.date}
+                      </div>
+                    </div>
+                    {getProgressSteps(application.progress)}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        
+        <div className="flex justify-center py-4">
+          <Button variant="outline">Cargar más</Button>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Applications;
