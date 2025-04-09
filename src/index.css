@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -79,8 +81,28 @@
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    @apply bg-background text-foreground transition-colors duration-300 font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-medium tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl sm:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl sm:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl sm:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg sm:text-xl;
   }
 
   /* Custom scrollbar */
@@ -137,5 +159,30 @@
   /* Mobile app specific styles */
   .mobile-container {
     @apply px-4 pb-16;
+  }
+
+  /* Typography classes */
+  .text-title {
+    @apply font-heading text-2xl sm:text-3xl font-semibold tracking-tight;
+  }
+
+  .text-subtitle {
+    @apply font-heading text-xl sm:text-2xl font-medium;
+  }
+
+  .text-section-title {
+    @apply font-medium text-lg leading-tight;
+  }
+
+  .text-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  .text-caption {
+    @apply text-xs text-muted-foreground;
+  }
+
+  .text-body {
+    @apply text-base leading-relaxed;
   }
 }

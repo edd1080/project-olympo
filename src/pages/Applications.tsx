@@ -137,25 +137,25 @@ const Applications = () => {
     switch(status) {
       case 'pending':
         return (
-          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full">
+          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full font-medium">
             Pendiente
           </span>
         );
       case 'reviewing':
         return (
-          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
             En revisión
           </span>
         );
       case 'approved':
         return (
-          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full">
+          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full font-medium">
             Aprobado
           </span>
         );
       case 'rejected':
         return (
-          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full">
+          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full font-medium">
             Rechazado
           </span>
         );
@@ -168,7 +168,12 @@ const Applications = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 py-4 pb-20 space-y-4">
+      <main className="flex-1 px-4 py-4 pb-20 space-y-6">
+        <div>
+          <h1 className="text-title mb-1">Solicitudes</h1>
+          <p className="text-muted-foreground">Gestiona y visualiza todas las solicitudes de crédito</p>
+        </div>
+        
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
           <div className="relative w-full sm:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -207,13 +212,13 @@ const Applications = () => {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
+                      <div className="space-y-1.5">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{application.clientName}</h3>
+                          <h3 className="text-section-title">{application.clientName}</h3>
                           {getStatusBadge(application.status)}
                         </div>
-                        <p className="text-sm">{application.product} - {application.amount}</p>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+                        <p className="text-body">{application.product} - <span className="font-medium">{application.amount}</span></p>
+                        <div className="flex items-center gap-3 text-caption pt-1">
                           <div className="flex items-center">
                             <Clock className="mr-1 h-3 w-3" />
                             {application.id}
