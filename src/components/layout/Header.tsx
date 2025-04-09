@@ -28,13 +28,13 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="container flex h-16 items-center justify-between">
-        <h1 className="text-xl font-bold text-primary">{getPageTitle()}</h1>
+      <div className="flex h-14 items-center justify-between px-4">
+        <h1 className="text-lg font-bold text-primary">{getPageTitle()}</h1>
         <div className="flex items-center gap-2">
           <Button 
             variant="ghost" 
             size="icon"
-            className="rounded-full w-9 h-9"
+            className="rounded-full w-8 h-8"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />

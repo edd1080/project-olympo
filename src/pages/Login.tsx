@@ -10,18 +10,18 @@ const Login = () => {
         <ThemeToggle />
       </div>
       
-      <div className="w-full max-w-md space-y-8 animate-fade-in">
+      <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-primary">CreditFlow</h1>
-          <p className="mt-2 text-muted-foreground">Portal de Agentes</p>
+          <h1 className="text-3xl font-bold text-primary">CreditFlow</h1>
+          <p className="mt-1 text-muted-foreground">Portal de Agentes</p>
         </div>
         
-        <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
-          <h2 className="text-xl font-semibold mb-6 text-card-foreground">Iniciar Sesión</h2>
+        <div className="bg-card p-5 rounded-lg border border-border shadow-sm">
+          <h2 className="text-xl font-semibold mb-5 text-card-foreground">Iniciar Sesión</h2>
           <LoginForm />
         </div>
         
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-xs text-muted-foreground">
           <p>© 2025 CreditFlow. Todos los derechos reservados.</p>
         </div>
       </div>
