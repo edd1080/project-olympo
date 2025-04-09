@@ -71,7 +71,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ formData, updateFor
           return {
             ...doc,
             file: file,
-            status: 'uploaded'
+            status: 'uploaded' as const // Fixed type issue by using const assertion
           };
         }
         return doc;
@@ -95,7 +95,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ formData, updateFor
         return {
           ...doc,
           file: null,
-          status: 'pending'
+          status: 'pending' as const // Fixed type issue by using const assertion
         };
       }
       return doc;

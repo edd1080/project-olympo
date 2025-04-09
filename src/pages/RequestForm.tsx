@@ -15,9 +15,11 @@ import IncomeExpenses from '@/components/requestForm/IncomeExpenses';
 import CreditInfo from '@/components/requestForm/CreditInfo';
 import DocumentsSection from '@/components/requestForm/DocumentsSection';
 import ConsentSection from '@/components/requestForm/ConsentSection';
+import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 
 const steps = [
   { id: 'personal', title: 'Información Personal' },
+  { id: 'character', title: 'Análisis de Carácter' },
   { id: 'work', title: 'Información Laboral' },
   { id: 'finances', title: 'Ingresos y Egresos' },
   { id: 'credit', title: 'Datos del Crédito' },
@@ -113,14 +115,16 @@ const RequestForm = () => {
       case 0:
         return <PersonalInfo formData={formData} updateFormData={updateFormData} />;
       case 1:
-        return <WorkInfo formData={formData} updateFormData={updateFormData} />;
+        return <CharacterAnalysis formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <IncomeExpenses formData={formData} updateFormData={updateFormData} />;
+        return <WorkInfo formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <CreditInfo formData={formData} updateFormData={updateFormData} />;
+        return <IncomeExpenses formData={formData} updateFormData={updateFormData} />;
       case 4:
-        return <DocumentsSection formData={formData} updateFormData={updateFormData} />;
+        return <CreditInfo formData={formData} updateFormData={updateFormData} />;
       case 5:
+        return <DocumentsSection formData={formData} updateFormData={updateFormData} />;
+      case 6:
         return <ConsentSection formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
