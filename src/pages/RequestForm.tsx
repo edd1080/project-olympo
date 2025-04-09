@@ -137,6 +137,15 @@ const RequestForm = () => {
   
   const isLastStep = activeStep === steps.length - 1;
   
+  // CSS styles for hide-scrollbar
+  const hideScrollbarStyle = {
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none',
+    '::-webkit-scrollbar': {
+      display: 'none'
+    }
+  } as React.CSSProperties;
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -156,7 +165,7 @@ const RequestForm = () => {
         
         {/* Section navigation - sleek design */}
         <div className="relative mb-6">
-          <div className="flex overflow-x-auto hide-scrollbar gap-1 pb-1">
+          <div className="flex overflow-x-auto gap-1 pb-1" style={hideScrollbarStyle}>
             {steps.map((step, index) => {
               const isActive = activeStep === index;
               const isCompleted = sectionStatus[step.id] === 'complete';
@@ -286,16 +295,6 @@ const RequestForm = () => {
       </main>
       
       <BottomNavigation />
-      
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 };

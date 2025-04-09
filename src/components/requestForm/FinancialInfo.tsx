@@ -109,10 +109,19 @@ const FinancialInfo: React.FC<FinancialInfoProps> = ({ formData, updateFormData 
     { id: 'expenses', name: 'Gastos', icon: <DollarSign className="w-4 h-4 mr-2" /> }
   ];
   
+  // CSS styles for hide-scrollbar
+  const hideScrollbarStyle = {
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none',
+    '::-webkit-scrollbar': {
+      display: 'none'
+    }
+  } as React.CSSProperties;
+
   return (
     <div className="space-y-6">
       {/* Screen Navigation */}
-      <div className="flex overflow-x-auto hide-scrollbar pb-2 -mx-1">
+      <div className="flex overflow-x-auto pb-2 -mx-1" style={hideScrollbarStyle}>
         {screens.map((screen) => (
           <button
             key={screen.id}
@@ -708,16 +717,6 @@ const FinancialInfo: React.FC<FinancialInfoProps> = ({ formData, updateFormData 
           </div>
         </div>
       )}
-      
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 };
