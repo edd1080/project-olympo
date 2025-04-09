@@ -16,6 +16,7 @@ import Alerts from "./pages/Alerts";
 import NotFound from "./pages/NotFound";
 import ProspectDetails from "./pages/ProspectDetails";
 import RequestForm from "./pages/RequestForm";
+import ApplicationDetails from "./pages/ApplicationDetails";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,8 @@ const App = () => (
             <Route path="/prospect/:id" element={<ProspectDetails />} />
             <Route path="/applications" element={<Applications />} />
             <Route path="/applications/new" element={<RequestForm />} />
+            <Route path="/applications/:id" element={<ApplicationDetails />} />
+            <Route path="/applications/:id/edit" element={<RequestForm />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="*" element={<NotFound />} />

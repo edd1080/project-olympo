@@ -1,13 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { 
   ArrowLeft, ArrowRight, Save, Send, AlertCircle, 
   User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle,
-  Calculator
+  Calculator, XCircle
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +21,7 @@ import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
 import PhotoDocumentUpload from '@/components/requestForm/PhotoDocumentUpload';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const steps = [
   { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
@@ -35,6 +35,7 @@ const steps = [
 
 const RequestForm = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -47,6 +48,7 @@ const RequestForm = () => {
     documents: 'pending',
     consent: 'pending',
   });
+  const [showExitDialog, setShowExitDialog] = useState(false);
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -56,7 +58,45 @@ const RequestForm = () => {
     }
     
     console.log(`RequestForm initialized, active step: ${steps[activeStep].id}`);
-  }, [navigate, activeStep]);
+    
+    // If we're editing an existing application, fetch its data
+    if (id) {
+      // In a real app, you would fetch the application data from an API
+      // For now, we'll use mock data
+      console.log(`Fetching data for application: ${id}`);
+      
+      // Simulate API delay
+      setTimeout(() => {
+        // This is mock data - in a real app, this would come from an API
+        const mockData = {
+          // Mock application data here
+          personalInfo: {
+            firstName: 'María',
+            lastName: 'Rodríguez',
+            // ... other personal info fields
+          },
+          // ... other sections
+          termsAccepted: false,
+          dataProcessingAccepted: false,
+          creditCheckAccepted: false
+        };
+        
+        setFormData(mockData);
+        
+        // Set sections that have data as complete
+        if (mockData.personalInfo) {
+          setSectionStatus(prev => ({ ...prev, personal: 'complete' }));
+        }
+        // Do the same for other sections...
+        
+        toast({
+          title: "Datos cargados",
+          description: `Se ha cargado la solicitud ${id} para edición`,
+          duration: 3000,
+        });
+      }, 500);
+    }
+  }, [navigate, activeStep, id, toast]);
   
   const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -79,7 +119,7 @@ const RequestForm = () => {
       
       window.scrollTo(0, 0);
     } else {
-      navigate(-1);
+      handleShowExitDialog();
     }
   };
   
@@ -91,6 +131,8 @@ const RequestForm = () => {
       description: "Tu solicitud ha sido guardada como borrador.",
       duration: 3000,
     });
+    
+    // In a real application, you would send this data to your API
   };
   
   const handleSubmit = () => {
@@ -115,6 +157,19 @@ const RequestForm = () => {
     setTimeout(() => {
       navigate('/applications');
     }, 1000);
+  };
+  
+  const handleShowExitDialog = () => {
+    setShowExitDialog(true);
+  };
+  
+  const handleExit = (save: boolean) => {
+    if (save) {
+      handleSaveDraft();
+    }
+    
+    setShowExitDialog(false);
+    navigate('/applications');
   };
   
   const renderStepContent = () => {
@@ -154,16 +209,30 @@ const RequestForm = () => {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-4 pb-20 max-w-5xl">
-        <div className="mb-4 flex items-center">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="mr-2"
-            onClick={handlePrev}
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="mr-2"
+              onClick={handlePrev}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-xl font-medium">
+              {id ? `Editar Solicitud ${id}` : 'Nueva Solicitud'}
+            </h1>
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-muted-foreground"
+            onClick={handleShowExitDialog}
           >
-            <ArrowLeft className="h-4 w-4" />
+            <XCircle className="mr-2 h-4 w-4" />
+            Guardar y salir
           </Button>
-          <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
         {/* Section navigation - sleek design */}
@@ -298,6 +367,38 @@ const RequestForm = () => {
       </main>
       
       <BottomNavigation />
+      
+      {/* Save & Exit Dialog */}
+      <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>¿Desea salir de la solicitud?</DialogTitle>
+            <DialogDescription>
+              Puede guardar su progreso actual para continuar más tarde o salir sin guardar.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleExit(false)}
+              className="w-full sm:w-auto"
+            >
+              <XCircle className="mr-2 h-4 w-4" />
+              Salir sin guardar
+            </Button>
+            <Button 
+              type="button"
+              onClick={() => handleExit(true)}
+              className="w-full sm:w-auto"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Guardar y salir
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
