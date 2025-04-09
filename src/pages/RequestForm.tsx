@@ -6,7 +6,8 @@ import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { 
   ArrowLeft, ArrowRight, Save, Send, AlertCircle, 
-  User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle 
+  User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle,
+  Calculator
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -19,13 +20,15 @@ import CreditInfo from '@/components/requestForm/CreditInfo';
 import DocumentsSection from '@/components/requestForm/DocumentsSection';
 import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
+import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
+import PhotoDocumentUpload from '@/components/requestForm/PhotoDocumentUpload';
 
 const steps = [
   { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
   { id: 'character', title: 'Análisis de Carácter', icon: <Search size={18} /> },
   { id: 'work', title: 'Información Laboral', icon: <Briefcase size={18} /> },
   { id: 'finances', title: 'Información Financiera', icon: <DollarSign size={18} /> },
-  { id: 'credit', title: 'Datos del Crédito', icon: <FileText size={18} /> },
+  { id: 'evaluation', title: 'Evaluación Crediticia', icon: <Calculator size={18} /> },
   { id: 'documents', title: 'Documentos', icon: <FileCheck size={18} /> },
   { id: 'consent', title: 'Consentimiento', icon: <CheckCircle size={18} /> },
 ];
@@ -40,7 +43,7 @@ const RequestForm = () => {
     character: 'pending',
     work: 'pending',
     finances: 'pending',
-    credit: 'pending',
+    evaluation: 'pending',
     documents: 'pending',
     consent: 'pending',
   });
@@ -125,9 +128,9 @@ const RequestForm = () => {
       case 3:
         return <FinancialInfo formData={formData} updateFormData={updateFormData} />;
       case 4:
-        return <CreditInfo formData={formData} updateFormData={updateFormData} />;
+        return <CreditEvaluation formData={formData} updateFormData={updateFormData} />;
       case 5:
-        return <DocumentsSection formData={formData} updateFormData={updateFormData} />;
+        return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
       case 6:
         return <ConsentSection formData={formData} updateFormData={updateFormData} />;
       default:
