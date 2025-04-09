@@ -7,6 +7,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, Save, Send, AlertCircle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Form section components
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
@@ -18,13 +19,13 @@ import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 
 const steps = [
-  { id: 'personal', title: 'Información Personal' },
-  { id: 'character', title: 'Análisis de Carácter' },
-  { id: 'work', title: 'Información Laboral' },
-  { id: 'finances', title: 'Información Financiera' },
-  { id: 'credit', title: 'Datos del Crédito' },
-  { id: 'documents', title: 'Documentos' },
-  { id: 'consent', title: 'Consentimiento' },
+  { id: 'personal', title: 'Información Personal', icon: '👤' },
+  { id: 'character', title: 'Análisis de Carácter', icon: '🔍' },
+  { id: 'work', title: 'Información Laboral', icon: '💼' },
+  { id: 'finances', title: 'Información Financiera', icon: '💰' },
+  { id: 'credit', title: 'Datos del Crédito', icon: '📝' },
+  { id: 'documents', title: 'Documentos', icon: '📄' },
+  { id: 'consent', title: 'Consentimiento', icon: '✓' },
 ];
 
 const RequestForm = () => {
@@ -150,62 +151,74 @@ const RequestForm = () => {
           <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
-        <Card className="overflow-hidden mb-6 shadow-md">
-          <div className="flex overflow-x-auto scrollbar-none">
-            {steps.map((step, index) => (
-              <div
-                key={step.id}
-                className={`
-                  flex-1 py-2 px-4 text-center text-sm whitespace-nowrap cursor-pointer border-b-2 transition-colors
-                  ${index === activeStep ? 'border-primary text-primary font-medium' : index < activeStep ? 'border-primary/30' : 'border-transparent'}
-                  ${index <= activeStep ? 'hover:bg-primary/5' : ''}
-                `}
-                onClick={() => {
-                  // Allow clicking on previously visited steps
-                  if (index <= activeStep) {
-                    setActiveStep(index);
-                    console.log(`Clicked step: ${steps[index].id}`);
-                  }
-                }}
-              >
-                <div className="flex flex-col items-center sm:flex-row sm:justify-center">
-                  <span className={`
-                    flex items-center justify-center rounded-full h-6 w-6 text-xs mb-1 sm:mb-0 sm:mr-2
-                    ${index === activeStep ? 'bg-primary text-primary-foreground' : 
-                      index < activeStep ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}
-                  `}>
-                    {index + 1}
-                  </span>
-                  <span className="hidden sm:block">{step.title}</span>
-                </div>
-              </div>
-            ))}
+        {/* New section selector design using Tabs */}
+        <div className="mb-6">
+          <Tabs value={steps[activeStep].id} className="w-full">
+            <TabsList className="w-full justify-between bg-card p-1 overflow-x-auto flex-wrap gap-1">
+              {steps.map((step, index) => (
+                <TabsTrigger
+                  key={step.id}
+                  value={step.id}
+                  disabled={index > activeStep}
+                  onClick={() => {
+                    if (index <= activeStep) {
+                      setActiveStep(index);
+                    }
+                  }}
+                  className={`
+                    flex items-center gap-2 whitespace-nowrap
+                    ${index === activeStep ? 'bg-primary text-primary-foreground' : ''}
+                    ${index < activeStep ? 'text-primary' : ''}
+                    ${index > activeStep ? 'opacity-50' : ''}
+                  `}
+                >
+                  <span className="text-base">{step.icon}</span>
+                  <span className="hidden sm:inline">{step.title}</span>
+                  <span className="inline sm:hidden">{index + 1}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          
+          {/* Section progress indicator */}
+          <div className="mt-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Paso {activeStep + 1} de {steps.length}: <span className="font-medium text-foreground">{steps[activeStep].title}</span>
+            </p>
+            <div className="w-full bg-muted h-1 mt-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-primary h-1 transition-all duration-300 ease-in-out rounded-full"
+                style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
+              />
+            </div>
           </div>
-        </Card>
+        </div>
         
         <div className="mb-8 min-h-[500px] bg-background p-5 rounded-lg shadow-sm">
           {renderStepContent()}
         </div>
         
         <div className="border-t pt-4">
-          <div className="flex justify-between gap-4">
+          <div className="flex justify-between gap-4 container max-w-3xl px-0">
             <Button
               variant="outline"
+              size="icon"
               onClick={handlePrev}
               className="transition-all hover:translate-x-[-2px]"
+              aria-label="Atrás"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Atrás
+              <ArrowLeft className="h-4 w-4" />
             </Button>
             
             <div className="flex gap-2">
               <Button
                 variant="secondary"
+                size="icon"
                 onClick={handleSaveDraft}
                 className="transition-all hover:bg-secondary/80"
+                aria-label="Guardar Borrador"
               >
-                <Save className="mr-2 h-4 w-4" />
-                Guardar Borrador
+                <Save className="h-4 w-4" />
               </Button>
               
               {isLastStep ? (
