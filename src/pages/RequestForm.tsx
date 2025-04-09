@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -47,14 +46,12 @@ const RequestForm = () => {
   });
   
   useEffect(() => {
-    // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
       return;
     }
     
-    // Log for tracking
     console.log(`RequestForm initialized, active step: ${steps[activeStep].id}`);
   }, [navigate, activeStep]);
   
@@ -64,12 +61,10 @@ const RequestForm = () => {
   
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
-      // Mark current section as complete when moving forward
       setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
       setActiveStep(prev => prev + 1);
       console.log(`Moving to step: ${steps[activeStep + 1].id}`);
       
-      // Scroll to top on step change
       window.scrollTo(0, 0);
     }
   };
@@ -79,16 +74,13 @@ const RequestForm = () => {
       setActiveStep(prev => prev - 1);
       console.log(`Moving to step: ${steps[activeStep - 1].id}`);
       
-      // Scroll to top on step change
       window.scrollTo(0, 0);
     } else {
-      // If on first step, go back to previous page
       navigate(-1);
     }
   };
   
   const handleSaveDraft = () => {
-    // Save draft logic would go here
     console.log('Saving draft:', formData);
     
     toast({
@@ -99,10 +91,8 @@ const RequestForm = () => {
   };
   
   const handleSubmit = () => {
-    // Form submission logic would go here
     console.log('Submitting form:', formData);
     
-    // Check for required consents
     if (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) {
       toast({
         title: "Error en el envío",
@@ -119,7 +109,6 @@ const RequestForm = () => {
       duration: 3000,
     });
     
-    // Navigate to applications page after successful submission
     setTimeout(() => {
       navigate('/applications');
     }, 1000);
@@ -165,7 +154,6 @@ const RequestForm = () => {
           <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
-        {/* Improved horizontal tabs navigation */}
         <div className="mb-5">
           <div className="overflow-x-auto pb-2 hide-scrollbar">
             <Tabs 
@@ -173,7 +161,7 @@ const RequestForm = () => {
               className="w-full"
               onValueChange={(value) => {
                 const index = steps.findIndex(step => step.id === value);
-                if (index <= activeStep) { // Only allow navigation to current or previous steps
+                if (index <= activeStep) {
                   setActiveStep(index);
                 }
               }}
@@ -205,7 +193,6 @@ const RequestForm = () => {
             </Tabs>
           </div>
           
-          {/* Section header with icon and progress indicator */}
           <div className="mt-4">
             <div className="flex items-center gap-3 mb-1">
               <div className="bg-muted/30 p-2 rounded-full">
@@ -241,7 +228,6 @@ const RequestForm = () => {
           {renderStepContent()}
         </div>
         
-        {/* Sticky bottom navigation */}
         <div className="fixed bottom-16 sm:bottom-4 left-0 right-0 z-10">
           <div className="bg-background/80 backdrop-blur-md border-t py-4">
             <div className="flex justify-between gap-4 container max-w-3xl px-4 mx-auto">
