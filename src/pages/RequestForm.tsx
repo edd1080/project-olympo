@@ -21,7 +21,7 @@ const steps = [
   { id: 'personal', title: 'Información Personal' },
   { id: 'character', title: 'Análisis de Carácter' },
   { id: 'work', title: 'Información Laboral' },
-  { id: 'finances', title: 'Ingresos y Egresos' },
+  { id: 'finances', title: 'Información Financiera' },
   { id: 'credit', title: 'Datos del Crédito' },
   { id: 'documents', title: 'Documentos' },
   { id: 'consent', title: 'Consentimiento' },
@@ -137,7 +137,7 @@ const RequestForm = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 py-4 pb-20 mx-auto w-full max-w-3xl">
+      <main className="flex-1 container mx-auto px-4 py-4 pb-20 max-w-3xl">
         <div className="mb-4 flex items-center">
           <Button 
             variant="ghost" 
@@ -150,14 +150,15 @@ const RequestForm = () => {
           <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
-        <Card className="overflow-hidden mb-6">
+        <Card className="overflow-hidden mb-6 shadow-md">
           <div className="flex overflow-x-auto scrollbar-none">
             {steps.map((step, index) => (
               <div
                 key={step.id}
                 className={`
                   flex-1 py-2 px-4 text-center text-sm whitespace-nowrap cursor-pointer border-b-2 transition-colors
-                  ${index === activeStep ? 'border-primary text-primary font-medium' : 'border-transparent'}
+                  ${index === activeStep ? 'border-primary text-primary font-medium' : index < activeStep ? 'border-primary/30' : 'border-transparent'}
+                  ${index <= activeStep ? 'hover:bg-primary/5' : ''}
                 `}
                 onClick={() => {
                   // Allow clicking on previously visited steps
@@ -182,7 +183,7 @@ const RequestForm = () => {
           </div>
         </Card>
         
-        <div className="mb-8 min-h-[500px]">
+        <div className="mb-8 min-h-[500px] bg-background p-5 rounded-lg shadow-sm">
           {renderStepContent()}
         </div>
         
@@ -191,6 +192,7 @@ const RequestForm = () => {
             <Button
               variant="outline"
               onClick={handlePrev}
+              className="transition-all hover:translate-x-[-2px]"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Atrás
@@ -200,6 +202,7 @@ const RequestForm = () => {
               <Button
                 variant="secondary"
                 onClick={handleSaveDraft}
+                className="transition-all hover:bg-secondary/80"
               >
                 <Save className="mr-2 h-4 w-4" />
                 Guardar Borrador
@@ -209,6 +212,7 @@ const RequestForm = () => {
                 <Button
                   onClick={handleSubmit}
                   disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
+                  className="transition-all hover:bg-primary/90"
                 >
                   <Send className="mr-2 h-4 w-4" />
                   Enviar Solicitud
@@ -216,6 +220,7 @@ const RequestForm = () => {
               ) : (
                 <Button
                   onClick={handleNext}
+                  className="transition-all hover:translate-x-[2px]"
                 >
                   Siguiente
                   <ArrowRight className="ml-2 h-4 w-4" />

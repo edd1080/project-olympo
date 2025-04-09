@@ -177,7 +177,10 @@ const Index = () => {
               >
                 <SlidersHorizontal className="h-4 w-4" />
               </Button>
-              <Button className="flex-1 sm:flex-none">
+              <Button 
+                className="flex-1 sm:flex-none"
+                onClick={() => navigate('/applications/new')}
+              >
                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                 Nueva Solicitud
               </Button>
