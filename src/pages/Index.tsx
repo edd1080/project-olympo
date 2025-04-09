@@ -6,6 +6,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, FileSpreadsheet, Users, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const Index = () => {
         </div>
         
         <Card className="mt-3">
-          <CardHeader className="pb-2 p-4">
+          <CardHeader className="pb-1 px-4 pt-4">
             <CardTitle className="text-lg">Solicitudes recientes</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -111,58 +112,42 @@ const Index = () => {
               ].map((item, index) => (
                 <div 
                   key={index} 
-                  className="p-4 flex flex-col"
+                  className="px-4 py-3 flex flex-col gap-2 hover:bg-muted/30 transition-colors"
                   onClick={() => navigate('/applications')}
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <div className="bg-primary/10 p-3 rounded-full">
-                        <div className="h-4 w-4 text-primary">💡</div>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold">{item.id}</p>
-                          <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                        </div>
-                        <p className="text-primary font-medium">{item.task}</p>
-                      </div>
-                    </div>
-                    <div>
+                      <div className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">{item.id}</div>
                       <span 
-                        className={`text-xs px-3 py-1.5 rounded-md ${
+                        className={`text-xs px-2 py-0.5 rounded-full ${
                           item.status === 'active' 
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' 
-                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' 
+                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200'
                         }`}
                       >
                         {item.status === 'active' ? 'ACTIVO' : 'PENDIENTE'}
                       </span>
                     </div>
+                    <div className="text-xs text-muted-foreground">{item.date}</div>
                   </div>
                   
-                  <div className="mt-3">
-                    <div className="flex justify-between mb-1">
-                      <span className="text-lg font-semibold">{item.progress}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2.5">
-                      <div 
-                        className="bg-green-500 h-2.5 rounded-full" 
-                        style={{ width: `${item.progress}%` }}
-                      ></div>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium truncate flex-1">{item.name}</span>
+                    <span className="text-primary text-sm font-medium">{item.progress}%</span>
                   </div>
                   
-                  <div className="flex justify-between mt-3">
-                    <span className="text-base font-bold">{item.name}</span>
-                    <span className="text-sm text-muted-foreground">Creado {item.date}</span>
+                  <div className="flex items-center gap-3">
+                    <Progress value={item.progress} className="h-1.5 flex-1" />
+                    <div className="text-xs text-muted-foreground whitespace-nowrap">{item.task}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="px-4 pb-4 pt-2">
+            <div className="p-3">
               <Button 
                 variant="outline" 
-                className="w-full"
+                size="sm"
+                className="w-full text-xs"
                 onClick={() => navigate('/applications')}
               >
                 Ver todas las solicitudes
