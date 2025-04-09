@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -226,12 +227,12 @@ const RequestForm = () => {
           
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             className="text-muted-foreground"
             onClick={handleShowExitDialog}
+            title="Guardar y salir"
           >
-            <XCircle className="mr-2 h-4 w-4" />
-            Guardar y salir
+            <XCircle className="h-4 w-4" />
           </Button>
         </div>
         
