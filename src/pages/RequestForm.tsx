@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, Save, Send, AlertCircle } from 'lucide-react';
+import { 
+  ArrowLeft, ArrowRight, Save, Send, AlertCircle, 
+  User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle 
+} from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // Form section components
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
@@ -19,13 +22,13 @@ import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 
 const steps = [
-  { id: 'personal', title: 'Información Personal', icon: '👤' },
-  { id: 'character', title: 'Análisis de Carácter', icon: '🔍' },
-  { id: 'work', title: 'Información Laboral', icon: '💼' },
-  { id: 'finances', title: 'Información Financiera', icon: '💰' },
-  { id: 'credit', title: 'Datos del Crédito', icon: '📝' },
-  { id: 'documents', title: 'Documentos', icon: '📄' },
-  { id: 'consent', title: 'Consentimiento', icon: '✓' },
+  { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
+  { id: 'character', title: 'Análisis de Carácter', icon: <Search size={18} /> },
+  { id: 'work', title: 'Información Laboral', icon: <Briefcase size={18} /> },
+  { id: 'finances', title: 'Información Financiera', icon: <DollarSign size={18} /> },
+  { id: 'credit', title: 'Datos del Crédito', icon: <FileText size={18} /> },
+  { id: 'documents', title: 'Documentos', icon: <FileCheck size={18} /> },
+  { id: 'consent', title: 'Consentimiento', icon: <CheckCircle size={18} /> },
 ];
 
 const RequestForm = () => {
@@ -33,6 +36,15 @@ const RequestForm = () => {
   const { toast } = useToast();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
+    personal: 'pending',
+    character: 'pending',
+    work: 'pending',
+    finances: 'pending',
+    credit: 'pending',
+    documents: 'pending',
+    consent: 'pending',
+  });
   
   useEffect(() => {
     // Check if user is authenticated
@@ -52,6 +64,8 @@ const RequestForm = () => {
   
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
+      // Mark current section as complete when moving forward
+      setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
       setActiveStep(prev => prev + 1);
       console.log(`Moving to step: ${steps[activeStep + 1].id}`);
       
@@ -151,107 +165,149 @@ const RequestForm = () => {
           <h1 className="text-xl font-medium">Nueva Solicitud</h1>
         </div>
         
-        {/* New section selector design using Tabs */}
-        <div className="mb-6">
-          <Tabs value={steps[activeStep].id} className="w-full">
-            <TabsList className="w-full justify-between bg-card p-1 overflow-x-auto flex-wrap gap-1">
-              {steps.map((step, index) => (
-                <TabsTrigger
-                  key={step.id}
-                  value={step.id}
-                  disabled={index > activeStep}
-                  onClick={() => {
-                    if (index <= activeStep) {
-                      setActiveStep(index);
-                    }
-                  }}
-                  className={`
-                    flex items-center gap-2 whitespace-nowrap
-                    ${index === activeStep ? 'bg-primary text-primary-foreground' : ''}
-                    ${index < activeStep ? 'text-primary' : ''}
-                    ${index > activeStep ? 'opacity-50' : ''}
-                  `}
-                >
-                  <span className="text-base">{step.icon}</span>
-                  <span className="hidden sm:inline">{step.title}</span>
-                  <span className="inline sm:hidden">{index + 1}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+        {/* Improved horizontal tabs navigation */}
+        <div className="mb-5">
+          <div className="overflow-x-auto pb-2 hide-scrollbar">
+            <Tabs 
+              value={steps[activeStep].id}
+              className="w-full"
+              onValueChange={(value) => {
+                const index = steps.findIndex(step => step.id === value);
+                if (index <= activeStep) { // Only allow navigation to current or previous steps
+                  setActiveStep(index);
+                }
+              }}
+            >
+              <TabsList className="inline-flex w-auto h-12 p-1">
+                {steps.map((step, index) => {
+                  const status = sectionStatus[step.id];
+                  return (
+                    <TabsTrigger
+                      key={step.id}
+                      value={step.id}
+                      disabled={index > activeStep}
+                      className={`
+                        px-4 py-2 min-w-[120px] flex items-center gap-2
+                        ${index === activeStep ? 'bg-primary text-primary-foreground' : ''}
+                        ${index < activeStep ? 'text-primary' : ''}
+                        ${index > activeStep ? 'opacity-50' : ''}
+                        ${status === 'complete' ? 'border-l-2 border-green-500' : ''}
+                        ${status === 'pending' ? 'border-l-2 border-orange-400' : ''}
+                      `}
+                    >
+                      <span className="flex-shrink-0">{step.icon}</span>
+                      <span className="hidden sm:inline whitespace-nowrap">{step.title}</span>
+                      <span className="inline sm:hidden">{index + 1}</span>
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+            </Tabs>
+          </div>
           
-          {/* Section progress indicator */}
-          <div className="mt-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Paso {activeStep + 1} de {steps.length}: <span className="font-medium text-foreground">{steps[activeStep].title}</span>
-            </p>
-            <div className="w-full bg-muted h-1 mt-2 rounded-full overflow-hidden">
+          {/* Section header with icon and progress indicator */}
+          <div className="mt-4">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="bg-muted/30 p-2 rounded-full">
+                {steps[activeStep].icon}
+              </div>
+              <div>
+                <h2 className="text-lg font-medium">
+                  {steps[activeStep].title}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Paso {activeStep + 1} de {steps.length}
+                </p>
+              </div>
+              <div className={`ml-auto px-3 py-1 text-xs rounded-full ${
+                sectionStatus[steps[activeStep].id] === 'complete' 
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+                  : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+              }`}>
+                {sectionStatus[steps[activeStep].id] === 'complete' ? 'Completado' : 'Pendiente'}
+              </div>
+            </div>
+            
+            <div className="w-full bg-muted h-1.5 mt-1 rounded-full overflow-hidden">
               <div 
-                className="bg-primary h-1 transition-all duration-300 ease-in-out rounded-full"
+                className="bg-primary h-1.5 transition-all duration-300 ease-in-out rounded-full"
                 style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
               />
             </div>
           </div>
         </div>
         
-        <div className="mb-8 min-h-[500px] bg-background p-5 rounded-lg shadow-sm">
+        <div className="mb-24 min-h-[500px] bg-background p-5 rounded-lg shadow-sm">
           {renderStepContent()}
         </div>
         
-        <div className="border-t pt-4">
-          <div className="flex justify-between gap-4 container max-w-3xl px-0">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handlePrev}
-              className="transition-all hover:translate-x-[-2px]"
-              aria-label="Atrás"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            
-            <div className="flex gap-2">
+        {/* Sticky bottom navigation */}
+        <div className="fixed bottom-16 sm:bottom-4 left-0 right-0 z-10">
+          <div className="bg-background/80 backdrop-blur-md border-t py-4">
+            <div className="flex justify-between gap-4 container max-w-3xl px-4 mx-auto">
               <Button
-                variant="secondary"
+                variant="outline"
                 size="icon"
-                onClick={handleSaveDraft}
-                className="transition-all hover:bg-secondary/80"
-                aria-label="Guardar Borrador"
+                onClick={handlePrev}
+                className="transition-all hover:translate-x-[-2px]"
+                aria-label="Atrás"
               >
-                <Save className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
               </Button>
               
-              {isLastStep ? (
+              <div className="flex gap-2">
                 <Button
-                  onClick={handleSubmit}
-                  disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
-                  className="transition-all hover:bg-primary/90"
+                  variant="secondary"
+                  size="icon"
+                  onClick={handleSaveDraft}
+                  className="transition-all hover:bg-secondary/80"
+                  aria-label="Guardar Borrador"
                 >
-                  <Send className="mr-2 h-4 w-4" />
-                  Enviar Solicitud
+                  <Save className="h-4 w-4" />
                 </Button>
-              ) : (
-                <Button
-                  onClick={handleNext}
-                  className="transition-all hover:translate-x-[2px]"
-                >
-                  Siguiente
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              )}
+                
+                {isLastStep ? (
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
+                    className="transition-all hover:bg-primary/90"
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    Enviar Solicitud
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleNext}
+                    className="transition-all hover:translate-x-[2px]"
+                  >
+                    Siguiente
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
+            
+            {isLastStep && (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) && (
+              <div className="flex items-center gap-2 mt-4 p-2 rounded-md bg-destructive/10 text-destructive text-sm container max-w-3xl mx-auto px-4">
+                <AlertCircle className="h-4 w-4" />
+                <p>Debes aceptar los términos obligatorios para continuar</p>
+              </div>
+            )}
           </div>
-          
-          {isLastStep && (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) && (
-            <div className="flex items-center gap-2 mt-4 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
-              <AlertCircle className="h-4 w-4" />
-              <p>Debes aceptar los términos obligatorios para continuar</p>
-            </div>
-          )}
         </div>
       </main>
       
       <BottomNavigation />
+      
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 };
