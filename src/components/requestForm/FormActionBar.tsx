@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, Save, Send, ArrowRight, AlertCircle } from 'lucide-react';
+import { Menu, Save, Send, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
