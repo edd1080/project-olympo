@@ -1,33 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import SectionHeader from '@/components/requestForm/SectionHeader';
 import { 
-  ArrowRight, Save, Send, AlertCircle, 
-  User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle,
-  Calculator, XCircle, Menu
+  User, Search, Briefcase, DollarSign, Calculator, CheckCircle, FileCheck 
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from '@/components/ui/dialog';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 // Form section components
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
@@ -39,6 +20,11 @@ import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
 import PhotoDocumentUpload from '@/components/requestForm/PhotoDocumentUpload';
+
+// New refactored components
+import ExitDialog from '@/components/requestForm/ExitDialog';
+import StepNavigation from '@/components/requestForm/StepNavigation';
+import FormActionBar from '@/components/requestForm/FormActionBar';
 
 const steps = [
   { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
@@ -67,7 +53,6 @@ const RequestForm = () => {
     consent: 'pending',
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const [showSectionMenu, setShowSectionMenu] = useState(false);
   const [toastShown, setToastShown] = useState(false);
   
   useEffect(() => {
@@ -82,20 +67,16 @@ const RequestForm = () => {
     // If we're editing an existing application, fetch its data
     if (id) {
       // In a real app, you would fetch the application data from an API
-      // For now, we'll use mock data
       console.log(`Fetching data for application: ${id}`);
       
       // Simulate API delay
       setTimeout(() => {
         // This is mock data - in a real app, this would come from an API
         const mockData = {
-          // Mock application data here
           personalInfo: {
             firstName: 'María',
             lastName: 'Rodríguez',
-            // ... other personal info fields
           },
-          // ... other sections
           termsAccepted: false,
           dataProcessingAccepted: false,
           creditCheckAccepted: false
@@ -108,7 +89,6 @@ const RequestForm = () => {
         if (mockData.personalInfo) {
           setSectionStatus(prev => ({ ...prev, personal: 'complete' }));
         }
-        // Do the same for other sections...
         
         // Only show toast once
         if (!toastShown) {
@@ -137,17 +117,6 @@ const RequestForm = () => {
     }
   };
   
-  const handlePrev = () => {
-    if (activeStep > 0) {
-      setActiveStep(prev => prev - 1);
-      console.log(`Moving to step: ${steps[activeStep - 1].id}`);
-      
-      window.scrollTo(0, 0);
-    } else {
-      handleShowExitDialog();
-    }
-  };
-  
   const handleChangeSection = (index: number) => {
     setActiveStep(index);
     console.log(`Jumping to step: ${steps[index].id}`);
@@ -162,8 +131,6 @@ const RequestForm = () => {
       description: "Tu solicitud ha sido guardada como borrador.",
       duration: 3000,
     });
-    
-    // In a real application, you would send this data to your API
   };
   
   const handleSubmit = () => {
@@ -226,15 +193,6 @@ const RequestForm = () => {
   
   const isLastStep = activeStep === steps.length - 1;
   
-  // CSS styles for hide-scrollbar
-  const hideScrollbarStyle = {
-    msOverflowStyle: 'none',
-    scrollbarWidth: 'none',
-    '::-webkit-scrollbar': {
-      display: 'none'
-    }
-  } as React.CSSProperties;
-  
   return (
     <div className="min-h-screen flex flex-col">
       <Header personName={personName?.split(' ')[0] || ''} />
@@ -243,43 +201,12 @@ const RequestForm = () => {
         <BreadcrumbNavigation />
         
         <div className="mb-4">
-          <div className="relative">
-            <div className="flex overflow-x-auto gap-1 pb-1" style={hideScrollbarStyle}>
-              {steps.map((step, index) => {
-                const isActive = activeStep === index;
-                const isCompleted = sectionStatus[step.id] === 'complete';
-                const isPast = index < activeStep;
-                const isClickable = true; // Make all sections clickable for non-linear access
-                
-                return (
-                  <button
-                    key={step.id}
-                    onClick={() => isClickable && handleChangeSection(index)}
-                    disabled={!isClickable}
-                    className={`
-                      flex items-center gap-2 py-2 px-3 min-w-fit rounded-lg transition-all duration-200
-                      ${isActive ? 'bg-primary/10 text-primary shadow-sm' : ''}
-                      ${isCompleted && !isActive ? 'text-green-600 dark:text-green-400' : ''}
-                      ${isPast && !isActive && !isCompleted ? 'text-primary/70' : ''}
-                      ${!isClickable ? 'opacity-40' : 'hover:bg-accent'}
-                    `}
-                  >
-                    <div className={`
-                      flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-                      ${isActive ? 'bg-primary text-primary-foreground' : ''} 
-                      ${isCompleted && !isActive ? 'bg-green-600 text-white dark:bg-green-500' : ''}
-                      ${!isActive && !isCompleted ? 'bg-muted border' : ''}
-                    `}>
-                      {isCompleted ? <CheckCircle size={14} /> : index + 1}
-                    </div>
-                    <span className="whitespace-nowrap font-medium text-sm">
-                      {step.title}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <StepNavigation 
+            steps={steps} 
+            activeStep={activeStep} 
+            sectionStatus={sectionStatus}
+            onChangeStep={handleChangeSection}
+          />
         </div>
         
         {/* Section Header */}
@@ -294,117 +221,28 @@ const RequestForm = () => {
           {renderStepContent()}
         </div>
         
-        {/* Sticky action buttons */}
-        <div className="fixed bottom-16 sm:bottom-4 left-0 right-0 z-10">
-          <div className="bg-background/80 backdrop-blur-lg border-t py-3 shadow-md">
-            <div className="flex justify-between items-center gap-4 container max-w-5xl px-4 mx-auto">
-              {/* Section selector dropdown replaces back button */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-1 font-medium text-sm"
-                    aria-label="Cambiar sección"
-                  >
-                    <Menu className="h-4 w-4" />
-                    Secciones
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56 bg-background">
-                  {steps.map((step, index) => (
-                    <DropdownMenuItem 
-                      key={step.id}
-                      onClick={() => handleChangeSection(index)} 
-                      className={`gap-2 ${activeStep === index ? 'bg-accent text-accent-foreground' : ''}`}
-                    >
-                      <div className={`
-                        flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-                        ${sectionStatus[step.id] === 'complete' ? 'bg-green-600 text-white dark:bg-green-500' : 'bg-muted border'}
-                      `}>
-                        {sectionStatus[step.id] === 'complete' ? <CheckCircle size={14} /> : index + 1}
-                      </div>
-                      <span>{step.title}</span>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  onClick={handleSaveDraft}
-                  className="transition-all hover:bg-secondary/80"
-                  aria-label="Guardar Borrador"
-                >
-                  <Save className="h-4 w-4" />
-                </Button>
-                
-                {isLastStep ? (
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
-                    className="transition-all hover:bg-primary/90"
-                  >
-                    <Send className="mr-2 h-4 w-4" />
-                    Enviar Solicitud
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={handleNext}
-                    className="transition-all hover:translate-x-[2px]"
-                  >
-                    Siguiente
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-            
-            {isLastStep && (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) && (
-              <div className="flex items-center gap-2 mt-4 p-2 rounded-md bg-destructive/10 text-destructive text-sm container max-w-5xl mx-auto px-4">
-                <AlertCircle className="h-4 w-4" />
-                <p>Debes aceptar los términos obligatorios para continuar</p>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Action Bar */}
+        <FormActionBar
+          steps={steps}
+          activeStep={activeStep}
+          isLastStep={isLastStep}
+          formData={formData}
+          sectionStatus={sectionStatus}
+          onChangeSection={handleChangeSection}
+          onNext={handleNext}
+          onSaveDraft={handleSaveDraft}
+          onSubmit={handleSubmit}
+        />
       </main>
       
       <BottomNavigation />
       
-      {/* Save & Exit Dialog */}
-      <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>¿Desea salir de la solicitud?</DialogTitle>
-            <DialogDescription>
-              Puede guardar su progreso actual para continuar más tarde o salir sin guardar.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleExit(false)}
-              className="w-full sm:w-auto"
-            >
-              <XCircle className="mr-2 h-4 w-4" />
-              Salir sin guardar
-            </Button>
-            <Button 
-              type="button"
-              onClick={() => handleExit(true)}
-              className="w-full sm:w-auto"
-            >
-              <Save className="mr-2 h-4 w-4" />
-              Guardar y salir
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Exit Dialog */}
+      <ExitDialog 
+        open={showExitDialog} 
+        onOpenChange={setShowExitDialog}
+        onExit={handleExit}
+      />
     </div>
   );
 };
