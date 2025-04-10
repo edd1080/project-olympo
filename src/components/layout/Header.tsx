@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import { ArrowLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -78,7 +77,6 @@ const Header = ({ personName }: { personName?: string }) => {
               <X className="h-5 w-5" />
             </Button>
           )}
-          <ThemeToggle />
         </div>
       </div>
     </header>

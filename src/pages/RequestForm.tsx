@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import SectionHeader from '@/components/requestForm/SectionHeader';
 import { 
   ArrowRight, Save, Send, AlertCircle, 
   User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle,
@@ -271,6 +273,14 @@ const RequestForm = () => {
             </div>
           </div>
         </div>
+        
+        {/* Section Header */}
+        <SectionHeader 
+          sectionId={steps[activeStep].id} 
+          currentStep={activeStep + 1} 
+          totalSteps={steps.length}
+          status={sectionStatus[steps[activeStep].id]}
+        />
         
         <div className="mb-24">
           {renderStepContent()}
