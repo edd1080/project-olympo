@@ -40,13 +40,13 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({ formData, updateF
   const [guarantorToDelete, setGuarantorToDelete] = useState<string>('');
   
   // Initialize guarantors from formData or create default
-  const initialGuarantors = formData.guarantors || [
+  const initialGuarantors: GuarantorData[] = formData.guarantors || [
     {
       id: 'guarantor-1',
       name: '',
       identification: '',
       coveragePercentage: 33,
-      status: 'pending'
+      status: 'pending' as const
     }
   ];
   
@@ -68,14 +68,14 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({ formData, updateF
     }
     
     const newId = `guarantor-${guarantors.length + 1}`;
-    const updatedGuarantors = [
+    const updatedGuarantors: GuarantorData[] = [
       ...guarantors,
       {
         id: newId,
         name: '',
         identification: '',
         coveragePercentage: Math.floor(100 / (guarantors.length + 1)),
-        status: 'pending'
+        status: 'pending' as const
       }
     ];
     
@@ -186,7 +186,10 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({ formData, updateF
   const handleCompleteGuarantor = (id: string) => {
     const updatedGuarantors = guarantors.map(guarantor => {
       if (guarantor.id === id) {
-        return { ...guarantor, status: guarantor.status === 'pending' ? 'complete' : 'pending' };
+        return { 
+          ...guarantor, 
+          status: guarantor.status === 'pending' ? 'complete' as const : 'pending' as const 
+        };
       }
       return guarantor;
     });
