@@ -7,10 +7,25 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import { 
   ArrowLeft, ArrowRight, Save, Send, AlertCircle, 
   User, Search, Briefcase, DollarSign, FileText, FileCheck, CheckCircle,
-  Calculator, XCircle
+  Calculator, XCircle, Menu
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from '@/components/ui/dialog';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 // Form section components
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
@@ -22,7 +37,6 @@ import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
 import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
 import PhotoDocumentUpload from '@/components/requestForm/PhotoDocumentUpload';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const steps = [
   { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
@@ -50,6 +64,7 @@ const RequestForm = () => {
     consent: 'pending',
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showSectionMenu, setShowSectionMenu] = useState(false);
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -122,6 +137,12 @@ const RequestForm = () => {
     } else {
       handleShowExitDialog();
     }
+  };
+  
+  const handleChangeSection = (index: number) => {
+    setActiveStep(index);
+    console.log(`Jumping to step: ${steps[index].id}`);
+    window.scrollTo(0, 0);
   };
   
   const handleSaveDraft = () => {
@@ -225,15 +246,51 @@ const RequestForm = () => {
             </h1>
           </div>
           
-          <Button
-            variant="outline"
-            size="icon"
-            className="text-muted-foreground"
-            onClick={handleShowExitDialog}
-            title="Guardar y salir"
-          >
-            <XCircle className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Section selector dropdown */}
+            {id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-1 font-medium text-sm"
+                    aria-label="Cambiar sección"
+                  >
+                    <Menu className="h-4 w-4" />
+                    Secciones
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-background">
+                  {steps.map((step, index) => (
+                    <DropdownMenuItem 
+                      key={step.id}
+                      onClick={() => handleChangeSection(index)} 
+                      className={`gap-2 ${activeStep === index ? 'bg-accent text-accent-foreground' : ''}`}
+                    >
+                      <div className={`
+                        flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
+                        ${sectionStatus[step.id] === 'complete' ? 'bg-green-600 text-white dark:bg-green-500' : 'bg-muted border'}
+                      `}>
+                        {sectionStatus[step.id] === 'complete' ? <CheckCircle size={14} /> : index + 1}
+                      </div>
+                      <span>{step.title}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
+            <Button
+              variant="outline"
+              size="icon"
+              className="text-muted-foreground"
+              onClick={handleShowExitDialog}
+              title="Guardar y salir"
+            >
+              <XCircle className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
         {/* Section navigation - sleek design */}
@@ -243,12 +300,12 @@ const RequestForm = () => {
               const isActive = activeStep === index;
               const isCompleted = sectionStatus[step.id] === 'complete';
               const isPast = index < activeStep;
-              const isClickable = index <= activeStep;
+              const isClickable = true; // Make all sections clickable for non-linear access
               
               return (
                 <button
                   key={step.id}
-                  onClick={() => isClickable && setActiveStep(index)}
+                  onClick={() => isClickable && handleChangeSection(index)}
                   disabled={!isClickable}
                   className={`
                     flex items-center gap-2 py-2 px-3 min-w-fit rounded-lg transition-all duration-200
