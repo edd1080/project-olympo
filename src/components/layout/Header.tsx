@@ -1,15 +1,22 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import { Bell } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const Header = () => {
+const Header = ({ personName }: { personName?: string }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   // Get page title based on current path
   const getPageTitle = () => {
+    const isEditRoute = location.pathname.includes('/edit');
+    
+    if (personName && isEditRoute) {
+      return personName;
+    }
+    
     switch (location.pathname) {
       case '/prospects':
         return 'Prospectos';
@@ -26,19 +33,51 @@ const Header = () => {
     }
   };
 
+  const handleGoBack = () => {
+    if (location.pathname.includes('/edit')) {
+      navigate('/applications');
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const handleExit = () => {
+    if (location.pathname.includes('/edit')) {
+      navigate('/applications');
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center justify-between px-4">
-        <h1 className="text-lg font-bold text-primary">{getPageTitle()}</h1>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="rounded-full w-8 h-8"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Button>
+          {location.pathname.includes('/edit') && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handleGoBack}
+              className="rounded-full w-8 h-8"
+              aria-label="Volver"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
+          <h1 className="text-lg font-bold text-primary">{getPageTitle()}</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          {location.pathname.includes('/edit') && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="rounded-full w-8 h-8"
+              onClick={handleExit}
+              aria-label="Cerrar"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          )}
           <ThemeToggle />
         </div>
       </div>
