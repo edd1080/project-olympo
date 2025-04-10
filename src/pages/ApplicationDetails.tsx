@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -10,13 +10,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import GuarantorsList from '@/components/guarantors/GuarantorsList';
 import { 
   ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertTriangle,
-  User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar
+  User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar,
+  UserCheck, Users
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
-// Mock data - in a real app, this would come from an API or database
 const applicationStatuses = {
   'pending': { label: 'Pendiente', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' },
   'reviewing': { label: 'En revisión', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
@@ -30,13 +31,11 @@ const ApplicationDetails = () => {
   const { toast } = useToast();
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [toastShown, setToastShown] = useState(false);
 
   useEffect(() => {
-    // Mock API call - in a real app, this would fetch data from an API
     const fetchApplicationData = () => {
-      // Simulate API call delay
       setTimeout(() => {
-        // Mock data for the application
         const mockApplication = {
           id: id,
           status: 'reviewing',
@@ -97,6 +96,22 @@ const ApplicationDetails = () => {
             { date: '2025-04-05', author: 'Juan Pérez', content: 'Solicitud creada y documentos básicos cargados.' },
             { date: '2025-04-06', author: 'Ana López', content: 'Se requiere verificación adicional de ingresos.' },
             { date: '2025-04-07', author: 'Carlos Gómez', content: 'Evaluación crediticia completada. Pendiente de aprobación final.' }
+          ],
+          guarantors: [
+            { 
+              id: 'G001', 
+              name: 'Carlos Martínez', 
+              relationship: 'Familiar',
+              progress: 80,
+              status: 'in-progress'
+            },
+            { 
+              id: 'G002', 
+              name: 'Ana López', 
+              relationship: 'Socio',
+              progress: 100,
+              status: 'complete'
+            }
           ]
         };
 
@@ -107,6 +122,17 @@ const ApplicationDetails = () => {
 
     fetchApplicationData();
   }, [id]);
+
+  useEffect(() => {
+    if (application && !toastShown) {
+      toast({
+        title: "Solicitud cargada",
+        description: `Solicitud ${id} cargada correctamente`,
+        duration: 3000,
+      });
+      setToastShown(true);
+    }
+  }, [application, toast, id, toastShown]);
 
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
@@ -189,10 +215,11 @@ const ApplicationDetails = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header personName={application?.personalInfo?.fullName?.split(' ')[0] || ''} />
       
-      <main className="flex-1 container mx-auto px-4 py-4 pb-20">
-        {/* Header with status */}
+      <main className="flex-1 container mx-auto px-4 py-0 pb-20">
+        <BreadcrumbNavigation />
+        
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/applications')}>
@@ -220,7 +247,6 @@ const ApplicationDetails = () => {
           </div>
         </div>
 
-        {/* Progress bar */}
         <div className="mb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className="font-medium">Progreso de la solicitud</span>
@@ -229,16 +255,20 @@ const ApplicationDetails = () => {
           <Progress value={(application.progress / 7) * 100} className="h-2" />
         </div>
 
-        {/* Main content tabs */}
         <Tabs defaultValue="summary" className="mb-6">
           <TabsList className="mb-4">
             <TabsTrigger value="summary">Resumen</TabsTrigger>
             <TabsTrigger value="details">Detalles</TabsTrigger>
+            <TabsTrigger value="guarantors">
+              <div className="flex items-center gap-1">
+                <UserCheck className="h-4 w-4" />
+                <span>Fiadores</span>
+              </div>
+            </TabsTrigger>
             <TabsTrigger value="docs">Documentos</TabsTrigger>
             <TabsTrigger value="notes">Notas</TabsTrigger>
           </TabsList>
           
-          {/* Summary Tab */}
           <TabsContent value="summary">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <Card>
@@ -376,10 +406,8 @@ const ApplicationDetails = () => {
             </Card>
           </TabsContent>
           
-          {/* Details Tab */}
           <TabsContent value="details">
             <div className="space-y-6">
-              {/* Personal Information Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
@@ -417,7 +445,6 @@ const ApplicationDetails = () => {
                 </CardContent>
               </Card>
 
-              {/* Work Information Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
@@ -451,7 +478,6 @@ const ApplicationDetails = () => {
                 </CardContent>
               </Card>
 
-              {/* Financial Information Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
@@ -575,7 +601,13 @@ const ApplicationDetails = () => {
             </div>
           </TabsContent>
           
-          {/* Documents Tab */}
+          <TabsContent value="guarantors">
+            <GuarantorsList 
+              applicationId={application.id} 
+              guarantors={application.guarantors} 
+            />
+          </TabsContent>
+          
           <TabsContent value="docs">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {Object.entries(application.documents).map(([key, value]: [string, any]) => (
@@ -623,7 +655,6 @@ const ApplicationDetails = () => {
             </div>
           </TabsContent>
           
-          {/* Notes Tab */}
           <TabsContent value="notes">
             <Card>
               <CardContent className="p-4">

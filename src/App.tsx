@@ -36,6 +36,9 @@ const App = () => (
             <Route path="/applications/new" element={<RequestForm />} />
             <Route path="/applications/:id" element={<ApplicationDetails />} />
             <Route path="/applications/:id/edit" element={<RequestForm />} />
+            <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
+            <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
+            <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="*" element={<NotFound />} />

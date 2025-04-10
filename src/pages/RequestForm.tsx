@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import SectionHeader from '@/components/requestForm/SectionHeader';
 import { 
   ArrowRight, Save, Send, AlertCircle, 
@@ -67,6 +68,7 @@ const RequestForm = () => {
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showSectionMenu, setShowSectionMenu] = useState(false);
+  const [toastShown, setToastShown] = useState(false);
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -108,14 +110,18 @@ const RequestForm = () => {
         }
         // Do the same for other sections...
         
-        toast({
-          title: "Datos cargados",
-          description: `Se ha cargado la solicitud ${id} para edición`,
-          duration: 3000,
-        });
+        // Only show toast once
+        if (!toastShown) {
+          toast({
+            title: "Datos cargados",
+            description: `Se ha cargado la solicitud ${id} para edición`,
+            duration: 3000,
+          });
+          setToastShown(true);
+        }
       }, 500);
     }
-  }, [navigate, activeStep, id, toast]);
+  }, [navigate, activeStep, id, toast, toastShown]);
   
   const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -231,10 +237,12 @@ const RequestForm = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
-      <Header personName={personName} />
+      <Header personName={personName?.split(' ')[0] || ''} />
       
-      <main className="flex-1 container mx-auto px-4 py-4 pb-20 max-w-5xl">
-        <div className="mb-6">
+      <main className="flex-1 container mx-auto px-4 py-0 pb-20 max-w-5xl">
+        <BreadcrumbNavigation />
+        
+        <div className="mb-4">
           <div className="relative">
             <div className="flex overflow-x-auto gap-1 pb-1" style={hideScrollbarStyle}>
               {steps.map((step, index) => {
