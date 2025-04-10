@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -6,7 +5,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import SectionHeader from '@/components/requestForm/SectionHeader';
 import { 
-  User, Search, Briefcase, DollarSign, Calculator, CheckCircle, FileCheck 
+  User, Search, Briefcase, DollarSign, Calculator, CheckCircle, FileCheck, FileSignature, ImageIcon
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,12 +13,12 @@ import { useToast } from "@/hooks/use-toast";
 import PersonalInfo from '@/components/requestForm/PersonalInfo';
 import WorkInfo from '@/components/requestForm/WorkInfo';
 import FinancialInfo from '@/components/requestForm/FinancialInfo';
-import CreditInfo from '@/components/requestForm/CreditInfo';
-import DocumentsSection from '@/components/requestForm/DocumentsSection';
-import ConsentSection from '@/components/requestForm/ConsentSection';
 import CharacterAnalysis from '@/components/requestForm/CharacterAnalysis';
-import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
 import PhotoDocumentUpload from '@/components/requestForm/PhotoDocumentUpload';
+import ConsentSection from '@/components/requestForm/ConsentSection';
+import SignatureSection from '@/components/requestForm/SignatureSection';
+import CreditEvaluation from '@/components/requestForm/CreditEvaluation';
+import GuarantorsSection from '@/components/requestForm/GuarantorsSection';
 
 // New refactored components
 import ExitDialog from '@/components/requestForm/ExitDialog';
@@ -29,11 +28,11 @@ import FormActionBar from '@/components/requestForm/FormActionBar';
 const steps = [
   { id: 'personal', title: 'Información Personal', icon: <User size={18} /> },
   { id: 'character', title: 'Análisis de Carácter', icon: <Search size={18} /> },
-  { id: 'work', title: 'Información Laboral', icon: <Briefcase size={18} /> },
   { id: 'finances', title: 'Información Financiera', icon: <DollarSign size={18} /> },
-  { id: 'evaluation', title: 'Evaluación Crediticia', icon: <Calculator size={18} /> },
-  { id: 'documents', title: 'Documentos', icon: <FileCheck size={18} /> },
+  { id: 'documents', title: 'Documentos e Imágenes', icon: <FileCheck size={18} /> },
   { id: 'consent', title: 'Consentimiento', icon: <CheckCircle size={18} /> },
+  { id: 'signature', title: 'Firma de Acta', icon: <FileSignature size={18} /> },
+  { id: 'guarantors', title: 'Fiadores', icon: <User size={18} /> },
 ];
 
 const RequestForm = () => {
@@ -51,9 +50,14 @@ const RequestForm = () => {
     evaluation: 'pending',
     documents: 'pending',
     consent: 'pending',
+    signature: 'pending',
+    guarantors: 'pending',
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [toastShown, setToastShown] = useState(false);
+  const [hasFatca, setHasFatca] = useState(false);
+  const [isPep, setIsPep] = useState(false);
+  const [agentComments, setAgentComments] = useState("");
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -79,7 +83,10 @@ const RequestForm = () => {
           },
           termsAccepted: false,
           dataProcessingAccepted: false,
-          creditCheckAccepted: false
+          creditCheckAccepted: false,
+          hasFatca: false,
+          isPep: false,
+          agentComments: ""
         };
         
         setFormData(mockData);
@@ -177,15 +184,15 @@ const RequestForm = () => {
       case 1:
         return <CharacterAnalysis formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <WorkInfo formData={formData} updateFormData={updateFormData} />;
-      case 3:
         return <FinancialInfo formData={formData} updateFormData={updateFormData} />;
-      case 4:
-        return <CreditEvaluation formData={formData} updateFormData={updateFormData} />;
-      case 5:
+      case 3:
         return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
-      case 6:
+      case 4:
         return <ConsentSection formData={formData} updateFormData={updateFormData} />;
+      case 5:
+        return <SignatureSection formData={formData} updateFormData={updateFormData} />;
+      case 6:
+        return <GuarantorsSection formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
