@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
@@ -12,9 +13,13 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+      "inline-flex h-10 items-center justify-start overflow-x-auto max-w-full pb-2 hide-scrollbar rounded-md bg-muted p-1 text-muted-foreground",
       className
     )}
+    style={{
+      msOverflowStyle: 'none',
+      scrollbarWidth: 'none',
+    }}
     {...props}
   />
 ))
@@ -49,5 +54,18 @@ const TabsContent = React.forwardRef<
   />
 ))
 TabsContent.displayName = TabsPrimitive.Content.displayName
+
+// Add global styles to hide scrollbars while maintaining functionality
+const style = document.createElement('style');
+style.textContent = `
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`;
+document.head.appendChild(style);
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }
