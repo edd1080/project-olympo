@@ -1,6 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent } from '@/components/ui/card';
@@ -61,13 +59,11 @@ const Prospects = () => {
   ]);
   
   useEffect(() => {
-    // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
     }
     
-    // For logging purposes
     console.log('ProspectsScreen mounted');
   }, [navigate]);
 
@@ -104,7 +100,6 @@ const Prospects = () => {
 
   const handleViewDetails = (prospectId: number) => {
     console.log(`Navigating to details for prospect ${prospectId}`);
-    // Here we would navigate to the details page with the prospect ID
     setShowAddForm(false);
   };
 
@@ -115,15 +110,14 @@ const Prospects = () => {
 
   const handleSaveProspect = (prospect: any) => {
     console.log('Saving new prospect:', prospect);
-    // Here we would save the prospect to the local database
     setShowAddForm(false);
   };
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
-      <main className="flex-1 px-4 py-4 pb-20">
+      <main className="flex-1 px-4 py-6 pb-20">
         {showAddForm ? (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -320,7 +314,6 @@ const Prospects = () => {
                 )}
               </TabsContent>
               
-              {/* Similar content for contacted and interested tabs */}
               <TabsContent value="contacted" className="flex flex-col items-center justify-center py-10 text-center">
                 <p className="text-muted-foreground">No hay prospectos contactados</p>
               </TabsContent>

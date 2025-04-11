@@ -1,118 +1,80 @@
-
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, FileSpreadsheet, Pencil, Phone, Mail, Calendar, FileText } from 'lucide-react';
+import { MoreVertical, Edit, Trash } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const ProspectDetails = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
-  
-  useEffect(() => {
-    console.log(`ProspectDetails mounted for prospect ID: ${id}`);
-  }, [id]);
-  
-  const prospectData = {
-    id: 1, 
-    name: 'Juan Pérez', 
-    identification: 'PERJ850513HDFRZN09',
-    phone: '+52 5512345678', 
-    email: 'juan.perez@mail.com', 
-    source: 'Sitio Web',
-    status: 'new',
-    date: '2025-04-05',
-    notes: 'Cliente interesado en crédito hipotecario, tiene documentos listos.'
+  const navigate = useNavigate();
+
+  // Placeholder data for prospect details
+  const prospectName = "Juan Pérez"; // Replace with actual data fetching
+  const prospectDetails = {
+    email: "juan.perez@example.com",
+    phone: "555-123-4567",
+    address: "123 Main St, Anytown",
+    // Add more details as needed
+  };
+
+  const handleEdit = () => {
+    navigate(`/prospect/${id}/edit`);
+  };
+
+  const handleDelete = () => {
+    // Implement delete logic here
+    console.log("Delete prospect", id);
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header personName={prospectName} />
       
-      <main className="flex-1 px-4 py-4 pb-20">
-        <div className="flex items-center gap-2 mb-4">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => navigate('/prospects')}
-            className="h-9 w-9"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h2 className="text-lg font-medium">Detalles del Prospecto</h2>
+      <main className="flex-1 px-4 py-6 pb-20">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">{prospectName}</h1>
+          <p className="text-muted-foreground">Detalles del prospecto</p>
         </div>
-        
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold">{prospectData.name}</h1>
-            <div className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
-              Nuevo
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Identificación</p>
-              <p>{prospectData.identification}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Fuente</p>
-              <p>{prospectData.source}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Fecha de registro</p>
-              <div className="flex items-center">
-                <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                <p>{prospectData.date}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <h3 className="font-semibold">Información de contacto</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Teléfono</p>
-                <div className="flex items-center">
-                  <Phone className="mr-2 h-4 w-4 text-primary" />
-                  <p>{prospectData.phone}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Email</p>
-                <div className="flex items-center">
-                  <Mail className="mr-2 h-4 w-4 text-primary" />
-                  <p>{prospectData.email}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-semibold">Notas</h3>
-            <div className="p-3 bg-muted/30 rounded-md">
-              <div className="flex gap-2 items-start">
-                <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
-                <p className="text-sm">{prospectData.notes}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="pt-4 flex gap-3 justify-center sm:justify-end">
-            <Button variant="outline" className="flex-1 sm:flex-none">
-              <Pencil className="mr-2 h-4 w-4" />
-              Editar
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Información de Contacto</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p><strong>Email:</strong> {prospectDetails.email}</p>
+            <p><strong>Teléfono:</strong> {prospectDetails.phone}</p>
+            <p><strong>Dirección:</strong> {prospectDetails.address}</p>
+            {/* Add more details here */}
+          </CardContent>
+        </Card>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="ml-auto flex h-8 w-8 p-0 data-[state=open]:bg-muted">
+              <MoreVertical className="h-4 w-4" />
             </Button>
-            <Button className="flex-1 sm:flex-none">
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Iniciar Solicitud
-            </Button>
-          </div>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[160px]">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={handleEdit}>
+              <Edit className="mr-2 h-4 w-4" /> Editar
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleDelete}>
+              <Trash className="mr-2 h-4 w-4" /> Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </main>
       
       <BottomNavigation />
