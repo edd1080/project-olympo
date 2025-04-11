@@ -11,28 +11,39 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import GuarantorsList from '@/components/guarantors/GuarantorsList';
-import { 
-  ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertTriangle,
-  User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar,
-  UserCheck, Users
-} from 'lucide-react';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertTriangle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-
 const applicationStatuses = {
-  'pending': { label: 'Pendiente', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' },
-  'reviewing': { label: 'En revisión', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
-  'approved': { label: 'Aprobado', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
-  'rejected': { label: 'Rechazado', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' },
+  'pending': {
+    label: 'Pendiente',
+    color: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+  },
+  'reviewing': {
+    label: 'En revisión',
+    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+  },
+  'approved': {
+    label: 'Aprobado',
+    color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+  },
+  'rejected': {
+    label: 'Rechazado',
+    color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  }
 };
-
 const ApplicationDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const {
+    id
+  } = useParams<{
+    id: string;
+  }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
-
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -61,10 +72,21 @@ const ApplicationDetails = () => {
             monthlySales: 25000,
             cashSales: 15000,
             creditSales: 10000,
-            mainProducts: [
-              { name: 'Granos básicos', unitMeasure: 'Quintal', quantity: 10, unitPrice: 500, totalSales: 5000, profit: 1500 },
-              { name: 'Productos enlatados', unitMeasure: 'Caja', quantity: 20, unitPrice: 300, totalSales: 6000, profit: 1800 }
-            ],
+            mainProducts: [{
+              name: 'Granos básicos',
+              unitMeasure: 'Quintal',
+              quantity: 10,
+              unitPrice: 500,
+              totalSales: 5000,
+              profit: 1500
+            }, {
+              name: 'Productos enlatados',
+              unitMeasure: 'Caja',
+              quantity: 20,
+              unitPrice: 300,
+              totalSales: 6000,
+              profit: 1800
+            }],
             bestMonths: ['Noviembre', 'Diciembre'],
             worstMonths: ['Febrero', 'Septiembre'],
             bestMonthsAmount: 35000,
@@ -86,61 +108,75 @@ const ApplicationDetails = () => {
             interestRate: 15
           },
           documents: {
-            personalPhoto: { status: 'complete', url: '/placeholder.svg' },
-            agentPhoto: { status: 'complete', url: '/placeholder.svg' },
-            businessPhoto: { status: 'complete', url: '/placeholder.svg' },
-            utilityBill: { status: 'pending', url: null },
-            additionalDocs: { status: 'pending', url: null }
-          },
-          notes: [
-            { date: '2025-04-05', author: 'Juan Pérez', content: 'Solicitud creada y documentos básicos cargados.' },
-            { date: '2025-04-06', author: 'Ana López', content: 'Se requiere verificación adicional de ingresos.' },
-            { date: '2025-04-07', author: 'Carlos Gómez', content: 'Evaluación crediticia completada. Pendiente de aprobación final.' }
-          ],
-          guarantors: [
-            { 
-              id: 'G001', 
-              name: 'Carlos Martínez', 
-              relationship: 'Familiar',
-              progress: 80,
-              status: 'in-progress'
+            personalPhoto: {
+              status: 'complete',
+              url: '/placeholder.svg'
             },
-            { 
-              id: 'G002', 
-              name: 'Ana López', 
-              relationship: 'Socio',
-              progress: 100,
-              status: 'complete'
+            agentPhoto: {
+              status: 'complete',
+              url: '/placeholder.svg'
+            },
+            businessPhoto: {
+              status: 'complete',
+              url: '/placeholder.svg'
+            },
+            utilityBill: {
+              status: 'pending',
+              url: null
+            },
+            additionalDocs: {
+              status: 'pending',
+              url: null
             }
-          ]
+          },
+          notes: [{
+            date: '2025-04-05',
+            author: 'Juan Pérez',
+            content: 'Solicitud creada y documentos básicos cargados.'
+          }, {
+            date: '2025-04-06',
+            author: 'Ana López',
+            content: 'Se requiere verificación adicional de ingresos.'
+          }, {
+            date: '2025-04-07',
+            author: 'Carlos Gómez',
+            content: 'Evaluación crediticia completada. Pendiente de aprobación final.'
+          }],
+          guarantors: [{
+            id: 'G001',
+            name: 'Carlos Martínez',
+            relationship: 'Familiar',
+            progress: 80,
+            status: 'in-progress'
+          }, {
+            id: 'G002',
+            name: 'Ana López',
+            relationship: 'Socio',
+            progress: 100,
+            status: 'complete'
+          }]
         };
-
         setApplication(mockApplication);
         setLoading(false);
       }, 500);
     };
-
     fetchApplicationData();
   }, [id]);
-
   useEffect(() => {
     if (application && !toastShown) {
       toast({
         title: "Solicitud cargada",
         description: `Solicitud ${id} cargada correctamente`,
-        duration: 3000,
+        duration: 3000
       });
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
-
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -162,13 +198,10 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>
-    );
+      </div>;
   }
-
   if (!application) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -186,10 +219,8 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>
-    );
+      </div>;
   }
-
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -204,17 +235,13 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
-
   const getProgressState = () => {
-    return `${(application.progress / 7) * 100}%`;
+    return `${application.progress / 7 * 100}%`;
   };
-
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header personName={application?.personalInfo?.fullName?.split(' ')[0] || ''} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
@@ -229,8 +256,8 @@ const ApplicationDetails = () => {
               <h1 className="text-xl font-medium">{application.personalInfo.fullName}</h1>
               <div className="flex items-center text-sm text-muted-foreground">
                 <span>{application.id}</span>
-                <span className="mx-2">•</span>
-                <span>{application.createdAt}</span>
+                
+                
               </div>
             </div>
           </div>
@@ -252,12 +279,12 @@ const ApplicationDetails = () => {
             <span className="font-medium">Progreso de la solicitud</span>
             <span>{application.progress}/7 secciones completadas</span>
           </div>
-          <Progress value={(application.progress / 7) * 100} className="h-2" />
+          <Progress value={application.progress / 7 * 100} className="h-2" />
         </div>
 
         <Tabs defaultValue="summary" className="mb-6">
           <TabsList className="mb-4">
-            <TabsTrigger value="summary">Resumen</TabsTrigger>
+            <TabsTrigger value="summary" className="font-semibold">Resumen</TabsTrigger>
             <TabsTrigger value="details">Detalles</TabsTrigger>
             <TabsTrigger value="guarantors">
               <div className="flex items-center gap-1">
@@ -358,15 +385,15 @@ const ApplicationDetails = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Monto Aprobado</p>
-                    <p className="text-xl font-bold">Q{application.creditEvaluation.approvedAmount.toLocaleString()}</p>
+                    <p className="font-bold text-lg">Q{application.creditEvaluation.approvedAmount.toLocaleString()}</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Plazo</p>
-                    <p className="text-xl font-bold">{application.creditEvaluation.months} meses</p>
+                    <p className="font-bold text-lg">{application.creditEvaluation.months} meses</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Pago Mensual</p>
-                    <p className="text-xl font-bold">Q{application.creditEvaluation.monthlyPayment.toLocaleString()}</p>
+                    <p className="font-bold text-lg">Q{application.creditEvaluation.monthlyPayment.toLocaleString()}</p>
                   </div>
                 </div>
               </CardContent>
@@ -381,17 +408,12 @@ const ApplicationDetails = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                  {Object.entries(application.documents).map(([key, value]: [string, any]) => (
-                    <div key={key} className="flex flex-col items-center p-2 rounded-md border">
-                      {value.status === 'complete' ? (
-                        <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
+                  {Object.entries(application.documents).map(([key, value]: [string, any]) => <div key={key} className="flex flex-col items-center p-2 rounded-md border">
+                      {value.status === 'complete' ? <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
                           <CheckCircle className="h-5 w-5" />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-2">
+                        </div> : <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-2">
                           <Clock className="h-5 w-5" />
-                        </div>
-                      )}
+                        </div>}
                       <span className="text-xs text-center">
                         {key === 'personalPhoto' && 'Foto Personal'}
                         {key === 'agentPhoto' && 'Foto con Agente'}
@@ -399,8 +421,7 @@ const ApplicationDetails = () => {
                         {key === 'utilityBill' && 'Recibo Servicios'}
                         {key === 'additionalDocs' && 'Docs. Adicionales'}
                       </span>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </CardContent>
             </Card>
@@ -515,16 +536,14 @@ const ApplicationDetails = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {application.financialInfo.mainProducts.map((product: any, index: number) => (
-                          <TableRow key={index}>
+                        {application.financialInfo.mainProducts.map((product: any, index: number) => <TableRow key={index}>
                             <TableCell>{product.name}</TableCell>
                             <TableCell>{product.unitMeasure}</TableCell>
                             <TableCell className="text-right">{product.quantity}</TableCell>
                             <TableCell className="text-right">Q{product.unitPrice.toLocaleString()}</TableCell>
                             <TableCell className="text-right">Q{product.totalSales.toLocaleString()}</TableCell>
                             <TableCell className="text-right">Q{product.profit.toLocaleString()}</TableCell>
-                          </TableRow>
-                        ))}
+                          </TableRow>)}
                       </TableBody>
                     </Table>
                   </div>
@@ -536,9 +555,7 @@ const ApplicationDetails = () => {
                         <div>
                           <p className="text-sm text-muted-foreground">Mejores Meses</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {application.financialInfo.bestMonths.map((month: string) => (
-                              <Badge key={month} variant="outline" className="bg-green-50">{month}</Badge>
-                            ))}
+                            {application.financialInfo.bestMonths.map((month: string) => <Badge key={month} variant="outline" className="bg-green-50">{month}</Badge>)}
                           </div>
                           <p className="text-sm mt-1">
                             <span className="text-muted-foreground">Monto: </span>
@@ -548,9 +565,7 @@ const ApplicationDetails = () => {
                         <div>
                           <p className="text-sm text-muted-foreground">Peores Meses</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {application.financialInfo.worstMonths.map((month: string) => (
-                              <Badge key={month} variant="outline" className="bg-red-50">{month}</Badge>
-                            ))}
+                            {application.financialInfo.worstMonths.map((month: string) => <Badge key={month} variant="outline" className="bg-red-50">{month}</Badge>)}
                           </div>
                           <p className="text-sm mt-1">
                             <span className="text-muted-foreground">Monto: </span>
@@ -602,26 +617,17 @@ const ApplicationDetails = () => {
           </TabsContent>
           
           <TabsContent value="guarantors">
-            <GuarantorsList 
-              applicationId={application.id} 
-              guarantors={application.guarantors} 
-            />
+            <GuarantorsList applicationId={application.id} guarantors={application.guarantors} />
           </TabsContent>
           
           <TabsContent value="docs">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Object.entries(application.documents).map(([key, value]: [string, any]) => (
-                <Card key={key} className={value.status === 'complete' ? 'border-green-200' : 'border-amber-200'}>
+              {Object.entries(application.documents).map(([key, value]: [string, any]) => <Card key={key} className={value.status === 'complete' ? 'border-green-200' : 'border-amber-200'}>
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center">
-                      {value.status === 'complete' ? (
-                        <>
+                      {value.status === 'complete' ? <>
                           <div className="relative aspect-square w-full max-w-[180px] rounded-md overflow-hidden mb-3">
-                            <img 
-                              src={value.url} 
-                              alt={`Document ${key}`}
-                              className="object-cover w-full h-full"
-                            />
+                            <img src={value.url} alt={`Document ${key}`} className="object-cover w-full h-full" />
                             <div className="absolute top-2 right-2">
                               <Badge className="bg-green-500">
                                 <CheckCircle className="h-3 w-3 mr-1" />
@@ -629,9 +635,7 @@ const ApplicationDetails = () => {
                               </Badge>
                             </div>
                           </div>
-                        </>
-                      ) : (
-                        <div className="aspect-square w-full max-w-[180px] rounded-md bg-muted flex items-center justify-center mb-3">
+                        </> : <div className="aspect-square w-full max-w-[180px] rounded-md bg-muted flex items-center justify-center mb-3">
                           <div className="text-center p-4">
                             <Camera className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
                             <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
@@ -639,8 +643,7 @@ const ApplicationDetails = () => {
                               Pendiente
                             </Badge>
                           </div>
-                        </div>
-                      )}
+                        </div>}
                       <p className="font-medium text-center">
                         {key === 'personalPhoto' && 'Foto Personal'}
                         {key === 'agentPhoto' && 'Foto con Agente'}
@@ -650,8 +653,7 @@ const ApplicationDetails = () => {
                       </p>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </TabsContent>
           
@@ -659,8 +661,7 @@ const ApplicationDetails = () => {
             <Card>
               <CardContent className="p-4">
                 <div className="space-y-4">
-                  {application.notes.map((note: any, index: number) => (
-                    <div key={index} className="flex gap-4">
+                  {application.notes.map((note: any, index: number) => <div key={index} className="flex gap-4">
                       <div className="min-w-8 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <ClipboardList className="h-4 w-4 text-primary" />
                       </div>
@@ -675,8 +676,7 @@ const ApplicationDetails = () => {
                         <p className="text-sm">{note.content}</p>
                         {index < application.notes.length - 1 && <Separator className="mt-3" />}
                       </div>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </CardContent>
             </Card>
@@ -685,8 +685,6 @@ const ApplicationDetails = () => {
       </main>
       
       <BottomNavigation />
-    </div>
-  );
+    </div>;
 };
-
 export default ApplicationDetails;
