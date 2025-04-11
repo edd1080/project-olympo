@@ -37,7 +37,7 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
               Anterior
             </Button>
           ) : (
-            <div></div> {/* Empty div to maintain layout */}
+            <div></div>
           )}
           
           <Button 
