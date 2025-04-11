@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -137,10 +138,31 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
+interface ToastOptions {
+  variant?: "default" | "destructive" | "success" | "warning"
+  description?: React.ReactNode
+  action?: ToastActionElement
+  duration?: number
+  className?: string
+}
 
-function toast({ ...props }: Toast) {
+type Toast = Omit<ToasterToast, "id"> & ToastOptions
+
+function toast({ variant = "default", className, ...props }: Toast) {
   const id = genId()
+
+  // Add appropriate styling based on variant
+  let finalClassName = className || "";
+  
+  if (!className) {
+    if (variant === "success") {
+      finalClassName = "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100";
+    } else if (variant === "destructive") {
+      finalClassName = "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100";
+    } else if (variant === "warning") {
+      finalClassName = "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100";
+    }
+  }
 
   const update = (props: ToasterToast) =>
     dispatch({
@@ -153,6 +175,8 @@ function toast({ ...props }: Toast) {
     type: "ADD_TOAST",
     toast: {
       ...props,
+      variant,
+      className: finalClassName,
       id,
       open: true,
       onOpenChange: (open) => {

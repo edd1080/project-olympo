@@ -2,6 +2,7 @@
 import React from 'react';
 import { CheckCircle, Clock, User, Briefcase, DollarSign, Calculator, FileCheck, CheckSquare } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface SectionHeaderProps {
   sectionId: string;
@@ -55,8 +56,34 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         return 'Documentos';
       case 'consent':
         return 'Consentimiento';
+      case 'signature':
+        return 'Firma de Acta';
+      case 'guarantors':
+        return 'Fiadores';
       default:
         return 'Sección';
+    }
+  };
+
+  // Get section instructions based on section ID
+  const getSectionInstructions = () => {
+    switch (sectionId) {
+      case 'personal':
+        return 'Complete todos los datos personales del solicitante, incluyendo información del cónyuge y dependientes si aplica.';
+      case 'character':
+        return 'Evalúe el comportamiento y contexto social o financiero del solicitante. Identifique posibles riesgos.';
+      case 'finances':
+        return 'Ingrese información general financiera, desglose de ingresos y egresos del solicitante.';
+      case 'documents':
+        return 'Suba fotografías del solicitante, documentos de identificación, comprobantes de domicilio y firma.';
+      case 'consent':
+        return 'El solicitante debe revisar y aceptar los términos y condiciones del crédito antes de firmar.';
+      case 'signature':
+        return 'Capture la firma del solicitante y fotografías de la reunión si es necesario.';
+      case 'guarantors':
+        return 'Agregue hasta 3 fiadores con su información y porcentaje de cobertura de la deuda.';
+      default:
+        return 'Complete todos los campos requeridos en esta sección.';
     }
   };
 
@@ -92,7 +119,13 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
           )}
         </Badge>
       </div>
-      <div className="h-px bg-gray-200 dark:bg-gray-700 w-full mt-4"></div>
+      <div className="h-px bg-gray-200 dark:bg-gray-700 w-full mt-4 mb-4"></div>
+      
+      <Alert className="bg-muted/50 border-muted mb-6">
+        <AlertDescription className="text-foreground font-medium">
+          {getSectionInstructions()}
+        </AlertDescription>
+      </Alert>
     </div>
   );
 };

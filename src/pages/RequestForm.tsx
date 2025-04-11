@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -5,7 +6,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import SectionHeader from '@/components/requestForm/SectionHeader';
 import { 
-  User, Search, Briefcase, DollarSign, Calculator, CheckCircle, FileCheck, FileSignature, ImageIcon
+  User, Search, Briefcase, DollarSign, Calculator, CheckCircle, FileCheck, FileSignature, ImageIcon, Users
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
@@ -32,7 +33,7 @@ const steps = [
   { id: 'documents', title: 'Documentos e Imágenes', icon: <FileCheck size={18} /> },
   { id: 'consent', title: 'Consentimiento', icon: <CheckCircle size={18} /> },
   { id: 'signature', title: 'Firma de Acta', icon: <FileSignature size={18} /> },
-  { id: 'guarantors', title: 'Fiadores', icon: <User size={18} /> },
+  { id: 'guarantors', title: 'Fiadores', icon: <Users size={18} /> },
 ];
 
 const RequestForm = () => {
@@ -84,9 +85,26 @@ const RequestForm = () => {
           termsAccepted: false,
           dataProcessingAccepted: false,
           creditCheckAccepted: false,
+          applicationCode: 'BVM_123456',
           hasFatca: false,
           isPep: false,
-          agentComments: ""
+          agentComments: "",
+          guarantors: [
+            {
+              id: 'guarantor-1',
+              name: 'Juan Pérez',
+              identification: '1234-5678-9012',
+              coveragePercentage: 50,
+              status: 'complete' as const
+            },
+            {
+              id: 'guarantor-2',
+              name: 'Ana López',
+              identification: '9876-5432-1098',
+              coveragePercentage: 50,
+              status: 'pending' as const
+            }
+          ]
         };
         
         setFormData(mockData);
@@ -101,7 +119,7 @@ const RequestForm = () => {
         if (!toastShown) {
           toast({
             title: "Datos cargados",
-            description: `Se ha cargado la solicitud ${id} para edición`,
+            description: `Se ha cargado la solicitud ${mockData.applicationCode || id} para edición`,
             duration: 3000,
           });
           setToastShown(true);
@@ -136,6 +154,8 @@ const RequestForm = () => {
     toast({
       title: "Borrador guardado",
       description: "Tu solicitud ha sido guardada como borrador.",
+      variant: "default",
+      className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
       duration: 3000,
     });
   };
@@ -148,6 +168,7 @@ const RequestForm = () => {
         title: "Error en el envío",
         description: "Debes aceptar los términos obligatorios para continuar.",
         variant: "destructive",
+        className: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
         duration: 3000,
       });
       return;
@@ -156,6 +177,8 @@ const RequestForm = () => {
     toast({
       title: "Solicitud enviada",
       description: "Tu solicitud ha sido enviada correctamente.",
+      variant: "default",
+      className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
       duration: 3000,
     });
     
@@ -207,7 +230,7 @@ const RequestForm = () => {
       <main className="flex-1 container mx-auto px-4 py-0 pb-20 max-w-5xl">
         <BreadcrumbNavigation />
         
-        <div className="mb-4">
+        <div className="mb-6 mt-4">
           <StepNavigation 
             steps={steps} 
             activeStep={activeStep} 
