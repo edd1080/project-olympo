@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -26,6 +25,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+
+const generateRandomId = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -87,7 +90,7 @@ const Applications = () => {
   
   const applications = [
     { 
-      id: 'SOL-2025-001',
+      id: `BVM_${generateRandomId()}`,
       clientName: 'Ana García',
       product: 'Crédito Personal',
       amount: '$25,000',
@@ -96,7 +99,7 @@ const Applications = () => {
       progress: 2
     },
     { 
-      id: 'SOL-2025-002',
+      id: `BVM_${generateRandomId()}`,
       clientName: 'Carlos López',
       product: 'Hipoteca',
       amount: '$1,200,000',
@@ -105,7 +108,7 @@ const Applications = () => {
       progress: 4
     },
     { 
-      id: 'SOL-2025-003',
+      id: `BVM_${generateRandomId()}`,
       clientName: 'María Rodríguez',
       product: 'Crédito Auto',
       amount: '$350,000',
@@ -114,7 +117,7 @@ const Applications = () => {
       progress: 3
     },
     { 
-      id: 'SOL-2025-004',
+      id: `BVM_${generateRandomId()}`,
       clientName: 'José Hernández',
       product: 'Crédito PYME',
       amount: '$500,000',
@@ -123,7 +126,7 @@ const Applications = () => {
       progress: 3
     },
     { 
-      id: 'SOL-2025-005',
+      id: `BVM_${generateRandomId()}`,
       clientName: 'Laura Sánchez',
       product: 'Crédito Personal',
       amount: '$30,000',

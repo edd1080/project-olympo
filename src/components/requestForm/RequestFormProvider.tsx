@@ -3,6 +3,11 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 
+// Generate a random 6-digit number for application IDs
+const generateRandomId = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 interface FormContextType {
   activeStep: number;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -96,7 +101,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
           termsAccepted: false,
           dataProcessingAccepted: false,
           creditCheckAccepted: false,
-          applicationCode: 'BVM_123456',
+          applicationCode: `BVM_${generateRandomId()}`,
           hasFatca: false,
           isPep: false,
           agentComments: "",
@@ -132,6 +137,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
             title: "Datos cargados",
             description: `Se ha cargado la solicitud ${mockData.applicationCode || id} para edición`,
             duration: 3000,
+            className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
           });
           setToastShown(true);
         }

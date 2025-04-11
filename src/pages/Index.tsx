@@ -4,10 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, FileSpreadsheet, Users, AlertCircle, Search, SlidersHorizontal, Clock, Calendar } from 'lucide-react';
+import { FileSpreadsheet, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,205 +18,48 @@ const Index = () => {
     }
   }, [navigate]);
   
-  const applications = [
-    { 
-      id: 'SOL-2025-001',
-      clientName: 'Ana García',
-      product: 'Crédito Personal',
-      amount: '$25,000',
-      status: 'pending',
-      date: '2025-04-07',
-      progress: 2
-    },
-    { 
-      id: 'SOL-2025-002',
-      clientName: 'Carlos López',
-      product: 'Hipoteca',
-      amount: '$1,200,000',
-      status: 'approved',
-      date: '2025-04-06',
-      progress: 4
-    },
-    { 
-      id: 'SOL-2025-003',
-      clientName: 'María Rodríguez',
-      product: 'Crédito Auto',
-      amount: '$350,000',
-      status: 'pending',
-      date: '2025-04-05',
-      progress: 3
-    },
-    { 
-      id: 'SOL-2025-004',
-      clientName: 'José Hernández',
-      product: 'Crédito PYME',
-      amount: '$500,000',
-      status: 'reviewing',
-      date: '2025-04-03',
-      progress: 3
-    },
-    { 
-      id: 'SOL-2025-005',
-      clientName: 'Laura Sánchez',
-      product: 'Crédito Personal',
-      amount: '$30,000',
-      status: 'rejected',
-      date: '2025-04-02',
-      progress: 4
-    },
-  ];
-
-  const getStatusBadge = (status: string) => {
-    switch(status) {
-      case 'pending':
-        return (
-          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full">
-            Pendiente
-          </span>
-        );
-      case 'reviewing':
-        return (
-          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
-            En revisión
-          </span>
-        );
-      case 'approved':
-        return (
-          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full">
-            Aprobado
-          </span>
-        );
-      case 'rejected':
-        return (
-          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full">
-            Rechazado
-          </span>
-        );
-      default:
-        return null;
-    }
-  };
-  
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
-      <main className="flex-1 px-4 py-4 pb-20">
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <Card className="card-hover" onClick={() => navigate('/prospects')}>
-            <CardHeader className="pb-1 p-3">
-              <CardTitle className="text-base flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-primary" />
-                Prospectos
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 p-3">
-              <p className="text-xl font-bold">48</p>
-              <p className="text-muted-foreground text-xs">Prospectos activos</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-hover">
-            <CardHeader className="pb-1 p-3">
-              <CardTitle className="text-base flex items-center gap-1.5">
-                <FileSpreadsheet className="h-4 w-4 text-primary" />
-                Solicitudes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 p-3">
-              <p className="text-xl font-bold">23</p>
-              <p className="text-muted-foreground text-xs">Solicitudes pendientes</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-hover" onClick={() => navigate('/alerts')}>
-            <CardHeader className="pb-1 p-3">
-              <CardTitle className="text-base flex items-center gap-1.5">
-                <AlertCircle className="h-4 w-4 text-primary" />
-                Alertas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 p-3">
-              <p className="text-xl font-bold">7</p>
-              <p className="text-muted-foreground text-xs">Alertas sin revisar</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-hover">
-            <CardHeader className="pb-1 p-3">
-              <CardTitle className="text-base flex items-center gap-1.5">
-                <BarChart className="h-4 w-4 text-primary" />
-                Rendimiento
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 p-3">
-              <p className="text-xl font-bold">85%</p>
-              <p className="text-muted-foreground text-xs">Tasa de aprobación</p>
-            </CardContent>
-          </Card>
+      <main className="flex-1 px-4 py-8 pb-20">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-2">¡Bienvenido a CreditFlow!</h1>
+          <p className="text-muted-foreground">Sistema de gestión de créditos</p>
         </div>
         
-        <div className="flex flex-col gap-4 mb-4">
-          <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar solicitudes..."
-                className="pl-10"
-              />
-            </div>
-            
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="rounded-full"
-                aria-label="Filtrar"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-              </Button>
-              <Button 
-                className="flex-1 sm:flex-none"
-                onClick={() => navigate('/applications/new')}
-              >
-                <FileSpreadsheet className="mr-2 h-4 w-4" />
+        <div className="grid grid-cols-1 gap-6 mb-6">
+          <Card className="card-hover" onClick={() => navigate('/applications/new')}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileSpreadsheet className="h-5 w-5 text-primary" />
                 Nueva Solicitud
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Crear una nueva solicitud de crédito</p>
+              <Button className="mt-4 w-full">
+                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                Comenzar solicitud
               </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {applications.map((application) => (
-            <Card key={application.id} className="card-hover cursor-pointer">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">{application.clientName}</h3>
-                      {getStatusBadge(application.status)}
-                    </div>
-                    <p className="text-sm">{application.product} - {application.amount}</p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
-                      <div className="flex items-center">
-                        <Clock className="mr-1 h-3 w-3" />
-                        {application.id}
-                      </div>
-                      <div className="flex items-center">
-                        <Calendar className="mr-1 h-3 w-3" />
-                        {application.date}
-                      </div>
-                    </div>
-                    <Progress value={application.progress * 25} className="h-1.5 mt-2" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        
-        <div className="flex justify-center py-2">
-          <Button variant="outline">Cargar más</Button>
+            </CardContent>
+          </Card>
+          
+          <Card className="card-hover" onClick={() => navigate('/prospects')}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Nuevo Prospecto
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Registrar un nuevo prospecto en el sistema</p>
+              <Button className="mt-4 w-full" variant="outline">
+                <Users className="mr-2 h-4 w-4" />
+                Crear prospecto
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
       
