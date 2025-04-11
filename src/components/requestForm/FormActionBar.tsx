@@ -1,119 +1,72 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, Save, Send, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-
-interface Step {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-}
+import { ArrowLeft, ArrowRight, Save, Check } from 'lucide-react';
+import { useFormContext } from './RequestFormProvider';
 
 interface FormActionBarProps {
-  steps: Step[];
-  activeStep: number;
-  isLastStep: boolean;
-  formData: Record<string, any>;
-  sectionStatus: Record<string, 'pending' | 'complete'>;
-  onChangeSection: (index: number) => void;
-  onNext: () => void;
-  onSaveDraft: () => void;
-  onSubmit: () => void;
+  steps: {
+    id: string;
+    title: string;
+    icon: React.ReactNode;
+  }[];
 }
 
-const FormActionBar: React.FC<FormActionBarProps> = ({ 
-  steps, 
-  activeStep,
-  isLastStep,
-  formData,
-  sectionStatus,
-  onChangeSection,
-  onNext,
-  onSaveDraft,
-  onSubmit
-}) => {
-  const consentComplete = formData.termsAccepted && formData.dataProcessingAccepted && formData.creditCheckAccepted;
+const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
+  const {
+    activeStep,
+    isLastStep,
+    formData,
+    sectionStatus,
+    handleSaveDraft,
+    handleNext,
+    handleSubmit,
+    handleChangeSection
+  } = useFormContext();
 
   return (
-    <div className="fixed bottom-16 sm:bottom-4 left-0 right-0 z-10">
-      <div className="bg-background/80 backdrop-blur-lg border-t py-3 shadow-md">
-        <div className="flex justify-between items-center gap-4 container max-w-5xl px-4 mx-auto">
-          {/* Section selector dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="gap-1 font-medium text-sm"
-                aria-label="Cambiar sección"
-              >
-                <Menu className="h-4 w-4" />
-                Secciones
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-background">
-              {steps.map((step, index) => (
-                <DropdownMenuItem 
-                  key={step.id}
-                  onClick={() => onChangeSection(index)} 
-                  className={`gap-2 ${activeStep === index ? 'bg-accent text-accent-foreground' : ''}`}
-                >
-                  <div className={`
-                    flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-                    ${sectionStatus[step.id] === 'complete' ? 'bg-green-600 text-white dark:bg-green-500' : 'bg-muted border'}
-                  `}>
-                    {sectionStatus[step.id] === 'complete' ? <CheckCircle size={14} /> : index + 1}
-                  </div>
-                  <span>{step.title}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
-          <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              size="icon"
-              onClick={onSaveDraft}
-              className="transition-all hover:bg-secondary/80"
-              aria-label="Guardar Borrador"
+    <div className="fixed bottom-16 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t z-40">
+      <div className="container max-w-5xl mx-auto">
+        <div className="flex justify-between gap-3">
+          {activeStep > 0 ? (
+            <Button 
+              variant="outline" 
+              onClick={() => handleChangeSection(activeStep - 1)}
             >
-              <Save className="h-4 w-4" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Anterior
             </Button>
-            
-            {isLastStep ? (
-              <Button
-                onClick={onSubmit}
-                disabled={!consentComplete}
-                className="transition-all hover:bg-primary/90"
-              >
-                <Send className="mr-2 h-4 w-4" />
-                Enviar Solicitud
-              </Button>
-            ) : (
-              <Button
-                onClick={onNext}
-                className="transition-all hover:translate-x-[2px]"
-              >
-                Siguiente
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
-          </div>
+          ) : (
+            <div></div> {/* Empty div to maintain layout */}
+          )}
+          
+          <Button 
+            variant="outline" 
+            onClick={handleSaveDraft}
+          >
+            <Save className="mr-2 h-4 w-4" />
+            Guardar borrador
+          </Button>
+
+          {isLastStep ? (
+            <Button 
+              onClick={handleSubmit}
+              disabled={
+                !formData.termsAccepted || 
+                !formData.dataProcessingAccepted || 
+                !formData.creditCheckAccepted
+              }
+            >
+              <Check className="mr-2 h-4 w-4" />
+              Enviar solicitud
+            </Button>
+          ) : (
+            <Button onClick={handleNext}>
+              Siguiente
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
-        
-        {isLastStep && !consentComplete && (
-          <div className="flex items-center gap-2 mt-4 p-2 rounded-md bg-destructive/10 text-destructive text-sm container max-w-5xl mx-auto px-4">
-            <AlertCircle className="h-4 w-4" />
-            <p>Debes aceptar los términos obligatorios para continuar</p>
-          </div>
-        )}
       </div>
     </div>
   );
