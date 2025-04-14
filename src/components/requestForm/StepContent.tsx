@@ -8,9 +8,11 @@ import PhotoDocumentUpload from './PhotoDocumentUpload';
 import ConsentSection from './ConsentSection';
 import SignatureSection from './SignatureSection';
 import GuarantorsSection from './GuarantorsSection';
+import SectionHeader from './SectionHeader';
+import { steps } from './formSteps';
 
 const StepContent: React.FC = () => {
-  const { activeStep, formData, updateFormData } = useFormContext();
+  const { activeStep, formData, updateFormData, sectionStatus } = useFormContext();
 
   const renderStepContent = () => {
     switch (activeStep) {
@@ -35,6 +37,14 @@ const StepContent: React.FC = () => {
 
   return (
     <div className="mb-24">
+      {activeStep >= 0 && activeStep < steps.length && (
+        <SectionHeader
+          sectionId={steps[activeStep].id}
+          currentStep={activeStep + 1}
+          totalSteps={steps.length}
+          status={sectionStatus[steps[activeStep].id]}
+        />
+      )}
       {renderStepContent()}
     </div>
   );
