@@ -1,10 +1,12 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Phone, Mail, Plus, UserPlus, SlidersHorizontal, ArrowLeft } from 'lucide-react';
+import { Search, Phone, Mail, UserPlus, SlidersHorizontal, ArrowLeft } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Prospects = () => {
