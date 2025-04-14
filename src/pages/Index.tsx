@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileSpreadsheet, Users } from 'lucide-react';
+import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
@@ -23,9 +23,60 @@ const Index = () => {
       <Header />
       
       <main className="flex-1 px-4 py-8 pb-20">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">¡Bienvenido a CreditFlow!</h1>
-          <p className="text-muted-foreground">Sistema de gestión de créditos</p>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold mb-2">¡Bienvenido, Carlos!</h1>
+          <p className="text-muted-foreground">Asesor de créditos | Sucursal Central</p>
+        </div>
+        
+        {/* Metrics Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 mb-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                </div>
+                <p className="text-sm text-muted-foreground">Solicitudes Activas</p>
+                <h2 className="text-2xl font-bold">24</h2>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 mb-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                </div>
+                <p className="text-sm text-muted-foreground">Aprobadas</p>
+                <h2 className="text-2xl font-bold">12</h2>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10 mb-2">
+                  <Clock className="h-5 w-5 text-amber-500" />
+                </div>
+                <p className="text-sm text-muted-foreground">Pendientes</p>
+                <h2 className="text-2xl font-bold">8</h2>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 mb-2">
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                </div>
+                <p className="text-sm text-muted-foreground">Rechazadas</p>
+                <h2 className="text-2xl font-bold">4</h2>
+              </div>
+            </CardContent>
+          </Card>
         </div>
         
         <div className="grid grid-cols-1 gap-6 mb-6">
