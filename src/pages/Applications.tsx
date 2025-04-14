@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -169,10 +168,10 @@ const Applications = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 py-6 pb-20">
+      <main className="flex-1 px-4 py-4 pb-20 space-y-6">
         <div>
           <h1 className="text-title mb-1">Solicitudes</h1>
           <p className="text-muted-foreground">Gestiona y visualiza todas las solicitudes de crédito</p>

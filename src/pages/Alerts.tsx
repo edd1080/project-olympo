@@ -1,8 +1,7 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertCircle, Calendar, Clock, AlertTriangle } from 'lucide-react';
@@ -55,6 +54,7 @@ const Alerts = () => {
   ]);
   
   useEffect(() => {
+    // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
@@ -91,10 +91,10 @@ const Alerts = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 py-6 pb-20">
+      <main className="flex-1 container py-6 space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
           <div>
             <h2 className="text-2xl font-bold">Alertas</h2>
@@ -160,8 +160,6 @@ const Alerts = () => {
           ))}
         </div>
       </main>
-      
-      <BottomNavigation />
     </div>
   );
 };

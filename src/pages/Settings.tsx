@@ -1,8 +1,7 @@
-import React from 'react';
-import { useEffect } from 'react';
+
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -34,10 +33,10 @@ const Settings = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 py-6 pb-20">
+      <main className="flex-1 container py-6 space-y-6">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold">Ajustes</h2>
           <p className="text-muted-foreground">Gestiona tu cuenta y preferencias</p>
@@ -220,8 +219,6 @@ const Settings = () => {
           </Button>
         </div>
       </main>
-      
-      <BottomNavigation />
     </div>
   );
 };
