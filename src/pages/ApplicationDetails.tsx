@@ -11,8 +11,13 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import GuarantorsList from '@/components/guarantors/GuarantorsList';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertTriangle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users } from 'lucide-react';
+import { 
+  ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, 
+  Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, 
+  Users, Search, FileSignature, BarChart3 
+} from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -31,6 +36,17 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
+
+const formSections = [
+  { id: 'personal', icon: <User size={18} />, name: 'Información Personal' },
+  { id: 'character', icon: <Search size={18} />, name: 'Análisis de Carácter' },
+  { id: 'finances', icon: <DollarSign size={18} />, name: 'Información Financiera' },
+  { id: 'documents', icon: <FileCheck size={18} />, name: 'Documentos e Imágenes' },
+  { id: 'consent', icon: <CheckCircle size={18} />, name: 'Consentimiento' },
+  { id: 'signature', icon: <FileSignature size={18} />, name: 'Firma de Acta' },
+  { id: 'guarantors', icon: <Users size={18} />, name: 'Fiadores' }
+];
+
 const ApplicationDetails = () => {
   const {
     id
@@ -44,6 +60,7 @@ const ApplicationDetails = () => {
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
+
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -162,6 +179,7 @@ const ApplicationDetails = () => {
     };
     fetchApplicationData();
   }, [id]);
+
   useEffect(() => {
     if (application && !toastShown) {
       toast({
@@ -172,9 +190,20 @@ const ApplicationDetails = () => {
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
+
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
+
+  const navigateToFormSection = (sectionId: string) => {
+    navigate(`/applications/${id}/edit`, { state: { sectionId } });
+    toast({
+      title: "Navegación a sección",
+      description: `Navegando a la sección: ${sectionId}`,
+      duration: 2000,
+    });
+  };
+
   if (loading) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -200,6 +229,7 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
+
   if (!application) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -211,7 +241,7 @@ const ApplicationDetails = () => {
             <h1 className="text-xl font-medium">Solicitud no encontrada</h1>
           </div>
           <div className="flex flex-col items-center justify-center h-[70vh] space-y-4">
-            <AlertTriangle className="h-16 w-16 text-muted-foreground" />
+            <AlertCircle className="h-16 w-16 text-muted-foreground" />
             <p className="text-lg text-muted-foreground">No se pudo encontrar la solicitud solicitada.</p>
             <Button onClick={() => navigate('/applications')}>
               Volver a Solicitudes
@@ -221,6 +251,7 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
+
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -235,12 +266,15 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
+
   const getProgressState = () => {
     return `${application.progress / 7 * 100}%`;
   };
+
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
+
   return <div className="min-h-screen flex flex-col">
       <Header personName={application?.personalInfo?.fullName?.split(' ')[0] || ''} />
       
@@ -256,8 +290,6 @@ const ApplicationDetails = () => {
               <h1 className="text-xl font-medium">{application.personalInfo.fullName}</h1>
               <div className="flex items-center text-sm text-muted-foreground">
                 <span>{application.id}</span>
-                
-                
               </div>
             </div>
           </div>
@@ -281,6 +313,32 @@ const ApplicationDetails = () => {
           </div>
           <Progress value={application.progress / 7 * 100} className="h-2" />
         </div>
+
+        <Card className="mb-6 border-primary/20 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center">
+              <FileText className="h-4 w-4 mr-2 text-primary" />
+              Acceso Rápido a Secciones del Formulario
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="py-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+              {formSections.map((section) => (
+                <Button 
+                  key={section.id} 
+                  variant="outline" 
+                  className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1"
+                  onClick={() => navigateToFormSection(section.id)}
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                    {section.icon}
+                  </div>
+                  <span className="text-center">{section.name}</span>
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="summary" className="mb-6">
           <TabsList className="mb-4">
@@ -687,4 +745,5 @@ const ApplicationDetails = () => {
       <BottomNavigation />
     </div>;
 };
+
 export default ApplicationDetails;

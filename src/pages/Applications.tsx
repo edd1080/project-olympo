@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -7,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
   Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar, 
-  Edit, FileText, Copy, Trash2, Share2, MoreVertical 
+  Edit, FileText, Copy, Trash2, Share2, MoreVertical, 
+  CheckCircle, AlertCircle, BarChart3
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -25,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 const generateRandomId = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -91,80 +94,98 @@ const Applications = () => {
   const applications = [
     { 
       id: `BVM_${generateRandomId()}`,
-      clientName: 'Ana García',
+      clientName: 'Ana García Méndez',
       product: 'Crédito Personal',
       amount: '$25,000',
-      status: 'pending',
+      status: 'active',
       date: '2025-04-07',
-      progress: 2
+      progress: 2,
+      stage: 'Información Financiera'
     },
     { 
       id: `BVM_${generateRandomId()}`,
-      clientName: 'Carlos López',
+      clientName: 'Carlos López Ramírez',
       product: 'Hipoteca',
       amount: '$1,200,000',
       status: 'approved',
       date: '2025-04-06',
-      progress: 4
+      progress: 4,
+      stage: 'Firma de Acta'
     },
     { 
       id: `BVM_${generateRandomId()}`,
-      clientName: 'María Rodríguez',
+      clientName: 'María Rodríguez Sánchez',
       product: 'Crédito Auto',
       amount: '$350,000',
-      status: 'pending',
+      status: 'verification',
       date: '2025-04-05',
-      progress: 3
+      progress: 3,
+      stage: 'Análisis de Carácter'
     },
     { 
       id: `BVM_${generateRandomId()}`,
-      clientName: 'José Hernández',
+      clientName: 'José Hernández Torres',
       product: 'Crédito PYME',
       amount: '$500,000',
-      status: 'reviewing',
+      status: 'verification',
       date: '2025-04-03',
-      progress: 3
+      progress: 3,
+      stage: 'Documentos e Imágenes'
     },
     { 
       id: `BVM_${generateRandomId()}`,
-      clientName: 'Laura Sánchez',
+      clientName: 'Laura Sánchez Vega',
       product: 'Crédito Personal',
       amount: '$30,000',
       status: 'rejected',
       date: '2025-04-02',
-      progress: 4
+      progress: 4,
+      stage: 'Fiadores'
     },
   ];
 
   const getStatusBadge = (status: string) => {
     switch(status) {
-      case 'pending':
+      case 'active':
         return (
-          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs px-2 py-1 rounded-full font-medium">
-            Pendiente
-          </span>
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1">
+            <BarChart3 className="h-3 w-3" />
+            <span>Activo</span>
+          </Badge>
         );
-      case 'reviewing':
+      case 'verification':
         return (
-          <span className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
-            En revisión
-          </span>
+          <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200 flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            <span>En Verificación</span>
+          </Badge>
         );
       case 'approved':
         return (
-          <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full font-medium">
-            Aprobado
-          </span>
+          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 flex items-center gap-1">
+            <CheckCircle className="h-3 w-3" />
+            <span>Aprobado</span>
+          </Badge>
         );
       case 'rejected':
         return (
-          <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs px-2 py-1 rounded-full font-medium">
-            Rechazado
-          </span>
+          <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" />
+            <span>Rechazado</span>
+          </Badge>
         );
       default:
         return null;
     }
+  };
+  
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('es-GT', { 
+      day: '2-digit',
+      month: 'short', 
+      year: 'numeric' 
+    }).format(date);
   };
   
   return (
@@ -214,65 +235,79 @@ const Applications = () => {
                   onClick={() => handleViewApplication(application.id)}
                 >
                   <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-section-title">{application.clientName}</h3>
+                    <div className="flex flex-col">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="text-section-title font-semibold">{application.clientName}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center text-xs text-muted-foreground">
+                              <Calendar className="mr-1 h-3 w-3" />
+                              {formatDate(application.date)}
+                            </div>
+                            <div className="flex items-center text-xs text-muted-foreground">
+                              <FileText className="mr-1 h-3 w-3" />
+                              {application.id}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-col items-end gap-2">
                           {getStatusBadge(application.status)}
+                          
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                className="h-8 w-8 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuItem onClick={() => handleViewApplication(application.id)}>
+                                <FileText className="mr-2 h-4 w-4" />
+                                <span>Ver detalles</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => handleEditApplication(application.id, e)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                <span>Editar</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => handleDuplicateApplication(application.id, application.clientName, e)}>
+                                <Copy className="mr-2 h-4 w-4" />
+                                <span>Duplicar</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={(e) => handleShareApplication(application.id, e)}>
+                                <Share2 className="mr-2 h-4 w-4" />
+                                <span>Compartir</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                className="text-destructive focus:text-destructive"
+                                onClick={(e) => handleDeleteApplication(application.id, e)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Eliminar</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
-                        <p className="text-body">{application.product} - <span className="font-medium">{application.amount}</span></p>
-                        <div className="flex items-center gap-3 text-caption pt-1">
-                          <div className="flex items-center">
-                            <Clock className="mr-1 h-3 w-3" />
-                            {application.id}
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="mr-1 h-3 w-3" />
-                            {application.date}
-                          </div>
-                        </div>
-                        <Progress value={application.progress * 25} className="h-1.5 mt-2" />
                       </div>
                       
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem onClick={(e) => handleViewApplication(application.id)}>
-                            <FileText className="mr-2 h-4 w-4" />
-                            <span>Ver detalles</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleEditApplication(application.id, e)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Editar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleDuplicateApplication(application.id, application.clientName, e)}>
-                            <Copy className="mr-2 h-4 w-4" />
-                            <span>Duplicar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={(e) => handleShareApplication(application.id, e)}>
-                            <Share2 className="mr-2 h-4 w-4" />
-                            <span>Compartir</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            className="text-destructive focus:text-destructive"
-                            onClick={(e) => handleDeleteApplication(application.id, e)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            <span>Eliminar</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div className="mt-3 mb-1">
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-muted-foreground">Etapa: <span className="font-medium">{application.stage}</span></span>
+                          <span className="text-muted-foreground">{Math.round((application.progress / 6) * 100)}%</span>
+                        </div>
+                        <Progress value={(application.progress / 6) * 100} className="h-1.5" />
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-2 text-sm">
+                        <div className="font-medium">{application.product}</div>
+                        <div className="text-primary">{application.amount}</div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
