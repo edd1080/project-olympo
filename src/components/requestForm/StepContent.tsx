@@ -8,6 +8,7 @@ import PhotoDocumentUpload from './PhotoDocumentUpload';
 import ConsentSection from './ConsentSection';
 import SignatureSection from './SignatureSection';
 import GuarantorsSection from './GuarantorsSection';
+import FinancialFormSection from './financialForm/FinancialFormSection';
 
 const StepContent: React.FC = () => {
   const { activeStep, formData, updateFormData } = useFormContext();
@@ -21,7 +22,14 @@ const StepContent: React.FC = () => {
       case 2:
         return <FinancialInfo formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
+        return (
+          <>
+            <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />
+            <div className="mt-8">
+              <FinancialFormSection />
+            </div>
+          </>
+        );
       case 4:
         return <ConsentSection formData={formData} updateFormData={updateFormData} />;
       case 5:
