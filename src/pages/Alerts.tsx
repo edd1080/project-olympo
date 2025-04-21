@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -6,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertCircle, Calendar, Clock, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const Alerts = () => {
   const navigate = useNavigate();
@@ -160,6 +160,8 @@ const Alerts = () => {
           ))}
         </div>
       </main>
+      
+      <BottomNavigation />
     </div>
   );
 };

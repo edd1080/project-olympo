@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -9,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { ChevronRight, LogOut, Mail, Bell, Shield, Moon, Smartphone, HelpCircle, User } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useToast } from '@/hooks/use-toast';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -219,6 +219,8 @@ const Settings = () => {
           </Button>
         </div>
       </main>
+      
+      <BottomNavigation />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -148,29 +147,29 @@ const Applications = () => {
     switch(status) {
       case 'active':
         return (
-          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1">
-            <BarChart3 className="h-3 w-3" />
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 text-sm px-3 py-1">
+            <BarChart3 className="h-4 w-4" />
             <span>Activo</span>
           </Badge>
         );
       case 'verification':
         return (
-          <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200 flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>En Verificación</span>
+          <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200 flex items-center gap-1 text-sm px-3 py-1">
+            <Clock className="h-4 w-4" />
+            <span>Verificación</span>
           </Badge>
         );
       case 'approved':
         return (
-          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 flex items-center gap-1">
-            <CheckCircle className="h-3 w-3" />
+          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 flex items-center gap-1 text-sm px-3 py-1">
+            <CheckCircle className="h-4 w-4" />
             <span>Aprobado</span>
           </Badge>
         );
       case 'rejected':
         return (
-          <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" />
+          <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1 text-sm px-3 py-1">
+            <AlertCircle className="h-4 w-4" />
             <span>Rechazado</span>
           </Badge>
         );
@@ -207,23 +206,13 @@ const Applications = () => {
             />
           </div>
           
-          <div className="flex gap-2 w-full sm:w-auto">
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="rounded-full"
-              aria-label="Filtrar"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-            </Button>
-            <Button 
-              className="flex-1 sm:flex-none"
-              onClick={() => navigate('/applications/new')}
-            >
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Nueva Solicitud
-            </Button>
-          </div>
+          <Button 
+            className="flex-1 sm:flex-none"
+            onClick={() => navigate('/applications/new')}
+          >
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Nueva Solicitud
+          </Button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -297,9 +286,10 @@ const Applications = () => {
                       </div>
                       
                       <div className="mt-3 mb-1">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">Etapa: <span className="font-medium">{application.stage}</span></span>
-                          <span className="text-muted-foreground">{Math.round((application.progress / 6) * 100)}%</span>
+                        <div className="text-base font-medium mb-1">{application.stage}</div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-muted-foreground">Progreso</span>
+                          <span className="font-medium">{Math.round((application.progress / 6) * 100)}%</span>
                         </div>
                         <Progress value={(application.progress / 6) * 100} className="h-1.5" />
                       </div>
