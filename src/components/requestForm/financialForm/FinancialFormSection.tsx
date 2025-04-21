@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { useFormContext } from '../RequestFormProvider';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -9,12 +8,40 @@ import { useToast } from '@/hooks/use-toast';
 import BalanceSheet from './BalanceSheet';
 import AssetLiabilityTables from './AssetLiabilityTables';
 import FinancialSummary from './FinancialSummary';
+import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
+import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
 
+// To handle both contexts, we'll check which one we can access
 const FinancialFormSection = () => {
-  const { formData, updateFormData } = useFormContext();
-  const { toast } = useToast();
   const [isProcessingOCR, setIsProcessingOCR] = useState(false);
-  const creditAmount = formData.creditAmount || 0;
+  const { toast } = useToast();
+  
+  // Try to get context from RequestFormProvider
+  let requestContext = null;
+  let formData = {};
+  let updateFormData = (field: string, value: any) => {};
+  let creditAmount = 0;
+  
+  try {
+    requestContext = useRequestFormContext();
+    if (requestContext) {
+      formData = requestContext.formData;
+      updateFormData = requestContext.updateFormData;
+      creditAmount = formData.creditAmount || 0;
+    }
+  } catch {
+    // If RequestFormContext is not available, we'll use the general FormContext
+    try {
+      const generalContext = useGeneralFormContext();
+      if (generalContext) {
+        formData = generalContext.formData;
+        updateFormData = generalContext.updateFormData;
+        creditAmount = formData.creditAmount || 0;
+      }
+    } catch (e) {
+      console.error("No form context available:", e);
+    }
+  }
   
   // Only show if credit amount is greater than 20,000
   if (creditAmount <= 20000) {

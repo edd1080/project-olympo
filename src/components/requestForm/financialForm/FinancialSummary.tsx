@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { useFormContext } from '../RequestFormProvider';
+import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
+import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
 
 type BalanceSheetSection = Record<string, { before: number; current: number }>;
 
@@ -14,7 +15,26 @@ interface BalanceSheet {
 }
 
 const FinancialSummary = () => {
-  const { formData } = useFormContext();
+  // Try to get context from RequestFormProvider
+  let formData = {};
+  
+  try {
+    const requestContext = useRequestFormContext();
+    if (requestContext) {
+      formData = requestContext.formData;
+    }
+  } catch {
+    // If RequestFormContext is not available, we'll use the general FormContext
+    try {
+      const generalContext = useGeneralFormContext();
+      if (generalContext) {
+        formData = generalContext.formData;
+      }
+    } catch (e) {
+      console.error("No form context available:", e);
+    }
+  }
+  
   const balanceSheet = (formData.balanceSheet || {}) as BalanceSheet;
 
   const calculateTotal = (section: keyof BalanceSheet, type: 'before' | 'current'): number => {

@@ -2,7 +2,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { useFormContext } from '../RequestFormProvider';
+import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
+import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
 
 interface BalanceSheetProps {
   section: 'currentAssets' | 'nonCurrentAssets' | 'otherAssets' | 'shortTermLiabilities' | 'longTermLiabilities';
@@ -32,7 +33,29 @@ const sectionItems = {
 };
 
 const BalanceSheet: React.FC<BalanceSheetProps> = ({ section }) => {
-  const { formData, updateFormData } = useFormContext();
+  // Try to get context from RequestFormProvider
+  let formData = {};
+  let updateFormData = (field: string, value: any) => {};
+  
+  try {
+    const requestContext = useRequestFormContext();
+    if (requestContext) {
+      formData = requestContext.formData;
+      updateFormData = requestContext.updateFormData;
+    }
+  } catch {
+    // If RequestFormContext is not available, we'll use the general FormContext
+    try {
+      const generalContext = useGeneralFormContext();
+      if (generalContext) {
+        formData = generalContext.formData;
+        updateFormData = generalContext.updateFormData;
+      }
+    } catch (e) {
+      console.error("No form context available:", e);
+    }
+  }
+  
   const items = sectionItems[section];
 
   const handleValueChange = (itemId: string, type: 'before' | 'current', value: string) => {
