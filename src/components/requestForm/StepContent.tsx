@@ -8,6 +8,7 @@ import PhotoDocumentUpload from './PhotoDocumentUpload';
 import ConsentSection from './ConsentSection';
 import SignatureSection from './SignatureSection';
 import GuarantorsSection from './GuarantorsSection';
+import DocumentsSection from './DocumentsSection';
 import FinancialFormSection from './financialForm/FinancialFormSection';
 
 const StepContent: React.FC = () => {
@@ -26,8 +27,13 @@ const StepContent: React.FC = () => {
           <>
             <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />
             <div className="mt-8">
-              <FinancialFormSection />
+              <DocumentsSection formData={formData} updateFormData={updateFormData} />
             </div>
+            {formData.creditAmount > 20000 && (
+              <div className="mt-8">
+                <FinancialFormSection />
+              </div>
+            )}
           </>
         );
       case 4:
