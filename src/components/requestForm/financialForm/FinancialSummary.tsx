@@ -3,13 +3,24 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useFormContext } from '../RequestFormProvider';
 
+type BalanceSheetSection = Record<string, { before: number; current: number }>;
+
+interface BalanceSheet {
+  currentAssets?: BalanceSheetSection;
+  nonCurrentAssets?: BalanceSheetSection;
+  otherAssets?: BalanceSheetSection;
+  shortTermLiabilities?: BalanceSheetSection;
+  longTermLiabilities?: BalanceSheetSection;
+}
+
 const FinancialSummary = () => {
   const { formData } = useFormContext();
-  const balanceSheet = formData.balanceSheet || {};
+  const balanceSheet = (formData.balanceSheet || {}) as BalanceSheet;
 
-  const calculateTotal = (section: string, type: 'before' | 'current') => {
+  const calculateTotal = (section: keyof BalanceSheet, type: 'before' | 'current'): number => {
     if (!balanceSheet[section]) return 0;
-    return Object.values(balanceSheet[section]).reduce((acc: number, item: any) => {
+    
+    return Object.values(balanceSheet[section] || {}).reduce((acc: number, item) => {
       return acc + (item[type] || 0);
     }, 0);
   };
