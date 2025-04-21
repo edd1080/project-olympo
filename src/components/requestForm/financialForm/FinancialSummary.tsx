@@ -3,20 +3,11 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
 import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
-
-type BalanceSheetSection = Record<string, { before: number; current: number }>;
-
-interface BalanceSheet {
-  currentAssets?: BalanceSheetSection;
-  nonCurrentAssets?: BalanceSheetSection;
-  otherAssets?: BalanceSheetSection;
-  shortTermLiabilities?: BalanceSheetSection;
-  longTermLiabilities?: BalanceSheetSection;
-}
+import { BalanceSheet, FinancialFormData } from './types';
 
 const FinancialSummary = () => {
   // Try to get context from RequestFormProvider
-  let formData = {};
+  let formData: Partial<FinancialFormData> = {};
   
   try {
     const requestContext = useRequestFormContext();

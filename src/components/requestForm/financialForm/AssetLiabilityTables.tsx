@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
 import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
 import { FilePlus, FileMinus } from 'lucide-react';
+import { AssetLiabilityItem, FinancialFormData } from './types';
 
 const AssetLiabilityTables = () => {
   // Try to get context from RequestFormProvider
-  let formData = {};
+  let formData: Partial<FinancialFormData> = {};
   let updateFormData = (field: string, value: any) => {};
   
   try {
@@ -32,7 +33,7 @@ const AssetLiabilityTables = () => {
   }
 
   const addRow = (type: 'assets' | 'liabilities') => {
-    const newItem = {
+    const newItem: AssetLiabilityItem = {
       id: `${type}_${Date.now()}`,
       description: '',
       value: 0
@@ -44,12 +45,12 @@ const AssetLiabilityTables = () => {
 
   const removeRow = (type: 'assets' | 'liabilities', id: string) => {
     const currentItems = formData[type] || [];
-    updateFormData(type, currentItems.filter((item: any) => item.id !== id));
+    updateFormData(type, currentItems.filter((item: AssetLiabilityItem) => item.id !== id));
   };
 
   const updateRow = (type: 'assets' | 'liabilities', id: string, field: string, value: string) => {
     const currentItems = formData[type] || [];
-    const updatedItems = currentItems.map((item: any) => {
+    const updatedItems = currentItems.map((item: AssetLiabilityItem) => {
       if (item.id === id) {
         return { ...item, [field]: field === 'value' ? parseFloat(value) || 0 : value };
       }
@@ -78,7 +79,7 @@ const AssetLiabilityTables = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {(formData.assets || []).map((item: any) => (
+            {(formData.assets || []).map((item: AssetLiabilityItem) => (
               <TableRow key={item.id}>
                 <TableCell>
                   <Input
@@ -126,7 +127,7 @@ const AssetLiabilityTables = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {(formData.liabilities || []).map((item: any) => (
+            {(formData.liabilities || []).map((item: AssetLiabilityItem) => (
               <TableRow key={item.id}>
                 <TableCell>
                   <Input

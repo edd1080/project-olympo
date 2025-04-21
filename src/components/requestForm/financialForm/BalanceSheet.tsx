@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from '@/components/ui/input';
 import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
 import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
+import { FinancialFormData } from './types';
 
 interface BalanceSheetProps {
   section: 'currentAssets' | 'nonCurrentAssets' | 'otherAssets' | 'shortTermLiabilities' | 'longTermLiabilities';
@@ -34,7 +35,7 @@ const sectionItems = {
 
 const BalanceSheet: React.FC<BalanceSheetProps> = ({ section }) => {
   // Try to get context from RequestFormProvider
-  let formData = {};
+  let formData: Partial<FinancialFormData> = {};
   let updateFormData = (field: string, value: any) => {};
   
   try {
@@ -60,12 +61,16 @@ const BalanceSheet: React.FC<BalanceSheetProps> = ({ section }) => {
 
   const handleValueChange = (itemId: string, type: 'before' | 'current', value: string) => {
     const numericValue = value === '' ? 0 : parseFloat(value);
+    const currentBalanceSheet = formData.balanceSheet || {};
+    const sectionData = currentBalanceSheet[section] || {};
+    const itemData = sectionData[itemId] || { before: 0, current: 0 };
+    
     const newBalanceData = {
-      ...formData.balanceSheet,
+      ...currentBalanceSheet,
       [section]: {
-        ...formData.balanceSheet?.[section],
+        ...sectionData,
         [itemId]: {
-          ...formData.balanceSheet?.[section]?.[itemId],
+          ...itemData,
           [type]: numericValue
         }
       }

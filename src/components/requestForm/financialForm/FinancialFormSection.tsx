@@ -10,6 +10,7 @@ import AssetLiabilityTables from './AssetLiabilityTables';
 import FinancialSummary from './FinancialSummary';
 import { useFormContext as useRequestFormContext } from '../RequestFormProvider';
 import { useFormContext as useGeneralFormContext } from '@/context/FormContext';
+import { FinancialFormData } from './types';
 
 // To handle both contexts, we'll check which one we can access
 const FinancialFormSection = () => {
@@ -18,7 +19,7 @@ const FinancialFormSection = () => {
   
   // Try to get context from RequestFormProvider
   let requestContext = null;
-  let formData = {};
+  let formData: Partial<FinancialFormData> = {};
   let updateFormData = (field: string, value: any) => {};
   let creditAmount = 0;
   
