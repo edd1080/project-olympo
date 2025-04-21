@@ -13,9 +13,6 @@ import { Separator } from '@/components/ui/separator';
 import GuarantorsList from '@/components/guarantors/GuarantorsList';
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import FinancialFormSection from '@/components/requestForm/financialForm/FinancialFormSection';
-import { FormProvider } from '@/context/FormContext';
-
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -34,7 +31,6 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
-
 const formSections = [{
   id: 'personal',
   icon: <User size={18} />,
@@ -64,16 +60,19 @@ const formSections = [{
   icon: <Users size={18} />,
   name: 'Fiadores'
 }];
-
 const ApplicationDetails = () => {
-  const { id } = useParams<{ id: string; }>();
+  const {
+    id
+  } = useParams<{
+    id: string;
+  }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
-  const [showFinancialForm, setShowFinancialForm] = useState(false);
-
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -132,9 +131,9 @@ const ApplicationDetails = () => {
             }
           },
           creditEvaluation: {
-            approvedAmount: 50000,
+            approvedAmount: 8500,
             months: 18,
-            monthlyPayment: 3300,
+            monthlyPayment: 630,
             interestRate: 15
           },
           documents: {
@@ -186,18 +185,12 @@ const ApplicationDetails = () => {
             status: 'complete'
           }]
         };
-
-        if (mockApplication.creditEvaluation.approvedAmount > 20000) {
-          setShowFinancialForm(true);
-        }
-
         setApplication(mockApplication);
         setLoading(false);
       }, 500);
     };
     fetchApplicationData();
   }, [id]);
-
   useEffect(() => {
     if (application && !toastShown) {
       toast({
@@ -208,11 +201,9 @@ const ApplicationDetails = () => {
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
-
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
-
   const navigateToFormSection = (sectionId: string) => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -225,7 +216,6 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
-
   if (loading) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -251,7 +241,6 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
-
   if (!application) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -273,7 +262,6 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
-
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -288,15 +276,12 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
-
   const getProgressState = () => {
     return `${application.progress / 7 * 100}%`;
   };
-
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
-
   return <div className="min-h-screen flex flex-col">
       <Header personName={application?.personalInfo?.fullName?.split(' ')[0] || ''} />
       
@@ -359,14 +344,6 @@ const ApplicationDetails = () => {
           <TabsList className="mb-4">
             <TabsTrigger value="summary" className="font-semibold">Resumen</TabsTrigger>
             <TabsTrigger value="details">Detalles</TabsTrigger>
-            {showFinancialForm && (
-              <TabsTrigger value="financial">
-                <div className="flex items-center gap-1">
-                  <BarChart3 className="h-4 w-4" />
-                  <span>Estado Financiero</span>
-                </div>
-              </TabsTrigger>
-            )}
             <TabsTrigger value="guarantors">
               <div className="flex items-center gap-1">
                 <UserCheck className="h-4 w-4" />
@@ -697,53 +674,6 @@ const ApplicationDetails = () => {
             </div>
           </TabsContent>
           
-          <TabsContent value="financial">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-lg">
-                  <BarChart3 className="h-5 w-5 mr-2 text-primary" />
-                  Estado Financiero
-                </CardTitle>
-                <CardDescription>
-                  Este formulario es requerido para solicitudes de crédito superiores a Q20,000
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FormProvider initialData={{
-                  creditAmount: application?.creditEvaluation?.approvedAmount || 0,
-                  balanceSheet: {
-                    currentAssets: {
-                      cash: { before: 15000, current: 18000 },
-                      accounts_receivable: { before: 20000, current: 22000 },
-                      inventory: { before: 35000, current: 50000 }
-                    },
-                    nonCurrentAssets: {
-                      fixed_assets: { before: 60000, current: 65000 },
-                      investments: { before: 10000, current: 10000 }
-                    },
-                    shortTermLiabilities: {
-                      accounts_payable: { before: 18000, current: 20000 },
-                      short_term_loans: { before: 12000, current: 30000 }
-                    },
-                    longTermLiabilities: {
-                      long_term_loans: { before: 25000, current: 45000 }
-                    }
-                  },
-                  assets: [
-                    { id: 'asset_1', description: 'Terreno en Zona 10', value: 50000 },
-                    { id: 'asset_2', description: 'Vehículo de reparto', value: 15000 }
-                  ],
-                  liabilities: [
-                    { id: 'liability_1', description: 'Préstamo Bancario', value: 30000 },
-                    { id: 'liability_2', description: 'Crédito de proveedores', value: 15000 }
-                  ]
-                }}>
-                  <FinancialFormSection />
-                </FormProvider>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
           <TabsContent value="guarantors">
             <GuarantorsList applicationId={application.id} guarantors={application.guarantors} />
           </TabsContent>
@@ -815,5 +745,4 @@ const ApplicationDetails = () => {
       <BottomNavigation />
     </div>;
 };
-
 export default ApplicationDetails;
