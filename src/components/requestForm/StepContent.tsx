@@ -8,9 +8,15 @@ import PhotoDocumentUpload from './PhotoDocumentUpload';
 import ConsentSection from './ConsentSection';
 import SignatureSection from './SignatureSection';
 import GuarantorsSection from './GuarantorsSection';
+import NonSalariedGuarantorForm from './guarantorFlow/NonSalariedGuarantorForm';
 
 const StepContent: React.FC = () => {
-  const { activeStep, formData, updateFormData } = useFormContext();
+  const { activeStep, formData, updateFormData, showNonSalariedGuarantorForm } = useFormContext();
+
+  // If the non-salaried guarantor form is active, show that instead of the regular steps
+  if (showNonSalariedGuarantorForm) {
+    return <NonSalariedGuarantorForm />;
+  }
 
   const renderStepContent = () => {
     switch (activeStep) {
