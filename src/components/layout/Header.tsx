@@ -1,12 +1,15 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, X, User, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Header = ({ personName }: { personName?: string }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Determine if we're in a guarantor form
+  const isGuarantorForm = location.pathname.includes('/guarantors');
   
   // Get page title based on current path
   const getPageTitle = () => {
@@ -66,9 +69,18 @@ const Header = ({ personName }: { personName?: string }) => {
           )}
         </div>
         
-        {/* Centered title */}
-        <div className="flex-1 flex justify-center items-center">
-          <h1 className="text-lg font-bold text-primary">{getPageTitle()}</h1>
+        {/* Centered title with form type indicator */}
+        <div className="flex-1 flex justify-center items-center gap-2">
+          <h1 className="text-lg font-bold text-primary">
+            {getPageTitle()}
+          </h1>
+          {isGuarantorForm ? (
+            <Users className="h-4 w-4 text-[#9b87f5]" />
+          ) : (
+            location.pathname.includes('/applications') && (
+              <User className="h-4 w-4 text-primary" />
+            )
+          )}
         </div>
         
         {/* Right button area */}

@@ -19,7 +19,6 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
   titles,
   onStepChange
 }) => {
-  // Array of step icons
   const stepIcons = [
     <User size={16} />,
     <Search size={16} />,
@@ -30,12 +29,11 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
   
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Registro de Fiador No Asalariado</h2>
+      <h2 className="text-xl font-semibold mb-4 text-[#9b87f5]">Registro de Fiador No Asalariado</h2>
       
       <div className="w-full flex items-center">
         {titles.map((title, index) => (
           <React.Fragment key={index}>
-            {/* Step node */}
             <button
               className={`relative flex flex-col items-center z-10 ${
                 index <= currentStep ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
@@ -47,9 +45,9 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
               <div className={`
                 w-8 h-8 rounded-full flex items-center justify-center
                 ${index < currentStep 
-                  ? 'bg-green-500 text-white' 
+                  ? 'bg-[#9b87f5] text-white' 
                   : index === currentStep 
-                    ? 'bg-primary text-primary-foreground' 
+                    ? 'bg-[#9b87f5] text-white' 
                     : 'bg-muted border'
                 }
               `}>
@@ -58,11 +56,10 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
               <span className="text-xs mt-1 hidden sm:block">{title}</span>
             </button>
             
-            {/* Connecting line */}
             {index < titles.length - 1 && (
               <div className={`
                 flex-1 h-1 mx-2
-                ${index < currentStep ? 'bg-green-500' : 'bg-muted'}
+                ${index < currentStep ? 'bg-[#9b87f5]' : 'bg-muted'}
               `}></div>
             )}
           </React.Fragment>

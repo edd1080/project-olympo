@@ -1,0 +1,24 @@
+
+import React from 'react';
+import { User, Users } from 'lucide-react';
+
+interface FormTypeBannerProps {
+  type: 'applicant' | 'guarantor';
+}
+
+const FormTypeBanner: React.FC<FormTypeBannerProps> = ({ type }) => {
+  const isApplicant = type === 'applicant';
+  
+  return (
+    <div className={`py-2 px-4 mb-4 ${isApplicant ? 'form-container-applicant' : 'form-container-guarantor'}`}>
+      <div className="flex items-center gap-2">
+        {isApplicant ? <User className="h-4 w-4" /> : <Users className="h-4 w-4" />}
+        <span className={`form-type-badge ${isApplicant ? 'form-type-badge-applicant' : 'form-type-badge-guarantor'}`}>
+          {isApplicant ? 'Formulario de Solicitante' : 'Formulario de Fiador'}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default FormTypeBanner;

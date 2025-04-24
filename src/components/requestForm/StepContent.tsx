@@ -9,13 +9,19 @@ import ConsentSection from './ConsentSection';
 import SignatureSection from './SignatureSection';
 import GuarantorsSection from './GuarantorsSection';
 import NonSalariedGuarantorForm from './guarantorFlow/NonSalariedGuarantorForm';
+import FormTypeBanner from '../forms/FormTypeBanner';
 
 const StepContent: React.FC = () => {
   const { activeStep, formData, updateFormData, showNonSalariedGuarantorForm } = useFormContext();
 
-  // If the non-salaried guarantor form is active, show that instead of the regular steps
+  // Si el formulario de fiador no asalariado está activo, mostrar ese en su lugar
   if (showNonSalariedGuarantorForm) {
-    return <NonSalariedGuarantorForm />;
+    return (
+      <>
+        <FormTypeBanner type="guarantor" />
+        <NonSalariedGuarantorForm />
+      </>
+    );
   }
 
   const renderStepContent = () => {
@@ -41,6 +47,7 @@ const StepContent: React.FC = () => {
 
   return (
     <div className="mb-24">
+      <FormTypeBanner type="applicant" />
       {renderStepContent()}
     </div>
   );
