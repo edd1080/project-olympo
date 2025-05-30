@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -106,7 +105,7 @@ const Settings = () => {
                 Ayuda y soporte
               </CardTitle>
               <CardDescription>
-                Encuentra ayuda y recursos para usar CreditFlow
+                Encuentra ayuda y recursos para usar Coopsama App
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

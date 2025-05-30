@@ -29,7 +29,7 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
   
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4 text-[#9b87f5]">Registro de Fiador No Asalariado</h2>
+      <h2 className="text-xl font-semibold mb-4 text-accent">Registro de Fiador No Asalariado</h2>
       
       <div className="w-full flex items-center">
         {titles.map((title, index) => (
@@ -45,9 +45,9 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
               <div className={`
                 w-8 h-8 rounded-full flex items-center justify-center
                 ${index < currentStep 
-                  ? 'bg-[#9b87f5] text-white' 
+                  ? 'bg-accent text-white' 
                   : index === currentStep 
-                    ? 'bg-[#9b87f5] text-white' 
+                    ? 'bg-accent text-white' 
                     : 'bg-muted border'
                 }
               `}>
@@ -59,7 +59,7 @@ const GuarantorWizardHeader: React.FC<GuarantorWizardHeaderProps> = ({
             {index < titles.length - 1 && (
               <div className={`
                 flex-1 h-1 mx-2
-                ${index < currentStep ? 'bg-[#9b87f5]' : 'bg-muted'}
+                ${index < currentStep ? 'bg-accent' : 'bg-muted'}
               `}></div>
             )}
           </React.Fragment>

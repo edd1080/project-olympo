@@ -40,7 +40,7 @@ const LoginForm = () => {
       
       toast({
         title: "¡Inicio de sesión exitoso!",
-        description: "Bienvenido/a a CreditFlow",
+        description: "Bienvenido/a a Coopsama App",
       });
       
       // Redirect to main app

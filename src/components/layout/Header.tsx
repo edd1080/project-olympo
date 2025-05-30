@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, X, User, Users } from 'lucide-react';
@@ -31,7 +30,7 @@ const Header = ({ personName }: { personName?: string }) => {
       case '/login':
         return 'Iniciar Sesión';
       default:
-        return 'CreditFlow';
+        return 'Coopsama App';
     }
   };
 
@@ -75,7 +74,7 @@ const Header = ({ personName }: { personName?: string }) => {
             {getPageTitle()}
           </h1>
           {isGuarantorForm ? (
-            <Users className="h-4 w-4 text-[#9b87f5]" />
+            <Users className="h-4 w-4 text-accent" />
           ) : (
             location.pathname.includes('/applications') && (
               <User className="h-4 w-4 text-primary" />

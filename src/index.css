@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
@@ -6,71 +7,83 @@
 
 @layer base {
   :root {
-    /* Light theme (default) */
-    --background: 0 0% 100%;
-    --foreground: 210 20% 25%;
+    /* Light theme - Nueva paleta pastel */
+    --background: 0 0% 100%; /* Blanco puro */
+    --foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 210 20% 25%;
+    --card: 210 20% 95%; /* Gris claro #F3F4F6 */
+    --card-foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 25%;
+    --popover: 0 0% 100%; /* Blanco puro */
+    --popover-foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
-    /* Primary: Bright Blue #00A1D6 - For Applicant Forms */
-    --primary: 194 100% 42%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Púrpura pastel #D6BCFA */
+    --primary: 266 77% 87%;
+    --primary-foreground: 210 22% 22%;
 
-    /* Secondary: Purple #9b87f5 - For Guarantor Forms */
-    --guarantor: 252 86% 75%;
-    --guarantor-foreground: 0 0% 100%;
+    /* Secondary: Gris claro #F3F4F6 */
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 210 22% 22%;
 
-    --muted: 210 20% 92%;
-    --muted-foreground: 210 20% 45%;
+    /* Accent: Azul claro #BFDBFE */
+    --accent: 213 94% 87%;
+    --accent-foreground: 210 22% 22%;
 
-    --accent: 194 100% 92%;
-    --accent-foreground: 194 100% 32%;
+    --muted: 210 20% 95%; /* Gris claro #F3F4F6 */
+    --muted-foreground: 220 14% 42%; /* Gris medio #6B7280 */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 80%; /* Rojo suave #FCA5A5 */
+    --destructive-foreground: 210 22% 22%;
 
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 194 100% 42%;
+    --border: 210 20% 90%;
+    --input: 210 20% 90%;
+    --ring: 266 77% 87%;
+
+    /* Success, Warning, Error específicos */
+    --success: 150 76% 69%; /* Verde suave #6EE7B7 */
+    --warning: 48 95% 76%; /* Amarillo suave #FDE68A */
+    --error: 0 84% 80%; /* Rojo suave #FCA5A5 */
 
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Dark theme: Navy base #1A2533 */
-    --background: 214 33% 15%;
-    --foreground: 210 20% 92%;
+    /* Dark theme - Nueva paleta pastel */
+    --background: 210 22% 22%; /* Gris oscuro #1F2937 */
+    --foreground: 210 18% 82%; /* Gris claro #D1D5DB */
 
-    --card: 214 28% 13%;
-    --card-foreground: 210 20% 92%;
+    --card: 212 22% 26%; /* Gris medio #374151 */
+    --card-foreground: 210 18% 82%; /* Gris claro #D1D5DB */
 
-    --popover: 214 33% 13%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 210 22% 22%; /* Gris oscuro #1F2937 */
+    --popover-foreground: 210 18% 82%; /* Gris claro #D1D5DB */
 
-    /* Primary: Gold #FFD700 */
-    --primary: 50 100% 50%;
-    --primary-foreground: 214 33% 15%;
+    /* Primary: Púrpura pastel #C4B5FD */
+    --primary: 258 89% 84%;
+    --primary-foreground: 210 22% 22%;
 
-    /* Secondary: Light Grey #B0BEC5 */
-    --secondary: 200 15% 73%;
-    --secondary-foreground: 214 33% 15%;
+    /* Secondary: Gris medio #374151 */
+    --secondary: 212 22% 26%;
+    --secondary-foreground: 210 18% 82%;
 
-    --muted: 214 25% 25%;
-    --muted-foreground: 210 20% 70%;
+    /* Accent: Azul claro #93C5FD */
+    --accent: 213 92% 78%;
+    --accent-foreground: 210 22% 22%;
 
-    --accent: 50 100% 92%;
-    --accent-foreground: 50 100% 40%;
+    --muted: 212 22% 26%; /* Gris medio #374151 */
+    --muted-foreground: 220 13% 63%; /* Gris claro suave #9CA3AF */
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 80%; /* Rojo suave #FCA5A5 */
+    --destructive-foreground: 210 22% 22%;
 
-    --border: 214 25% 25%;
-    --input: 214 25% 25%;
-    --ring: 50 100% 50%;
+    --border: 212 22% 30%;
+    --input: 212 22% 30%;
+    --ring: 258 89% 84%;
+
+    /* Success, Warning, Error específicos */
+    --success: 150 76% 69%; /* Verde suave #6EE7B7 */
+    --warning: 48 95% 76%; /* Amarillo suave #FDE68A */
+    --error: 0 84% 80%; /* Rojo suave #FCA5A5 */
   }
 }
 
@@ -185,17 +198,17 @@
     @apply text-base leading-relaxed;
   }
 
-  /* Nueva clase para el contenedor de formulario de solicitante */
+  /* Contenedor de formulario de solicitante - usando el nuevo primary */
   .form-container-applicant {
     @apply border-l-4 border-primary bg-primary/5;
   }
 
-  /* Nueva clase para el contenedor de formulario de fiador */
+  /* Contenedor de formulario de fiador - usando accent */
   .form-container-guarantor {
-    @apply border-l-4 border-[#9b87f5] bg-[#9b87f5]/5;
+    @apply border-l-4 border-accent bg-accent/5;
   }
 
-  /* Nuevos badges para tipo de formulario */
+  /* Badges para tipo de formulario */
   .form-type-badge {
     @apply text-xs font-medium px-2.5 py-0.5 rounded-full;
   }
@@ -205,6 +218,6 @@
   }
 
   .form-type-badge-guarantor {
-    @apply bg-[#9b87f5]/10 text-[#9b87f5];
+    @apply bg-accent/10 text-accent;
   }
 }

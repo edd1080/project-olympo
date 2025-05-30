@@ -25,7 +25,7 @@ const ConsentSection: React.FC<ConsentSectionProps> = ({ formData, updateFormDat
               Al enviar esta solicitud, usted acepta que toda la información proporcionada es verdadera y correcta según su conocimiento.
             </p>
             <p className="mb-2 text-body">
-              Usted autoriza a CreditFlow y sus socios comerciales a verificar toda la información proporcionada, incluyendo pero no limitado a: historial crediticio, historial laboral, referencias personales y cualquier otra información relevante para el proceso de evaluación crediticia.
+              Usted autoriza a Coopsama App y sus socios comerciales a verificar toda la información proporcionada, incluyendo pero no limitado a: historial crediticio, historial laboral, referencias personales y cualquier otra información relevante para el proceso de evaluación crediticia.
             </p>
             <p className="mb-2 text-body">
               Usted entiende que la aprobación de su solicitud está sujeta a evaluación y puede ser rechazada sin obligación de proporcionar explicaciones detalladas.
