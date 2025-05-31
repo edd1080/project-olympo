@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -98,7 +99,7 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="card-hover" onClick={() => navigate('/prospects')}>
+          {/* <Card className="card-hover" onClick={() => navigate('/prospects')}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
@@ -112,7 +113,7 @@ const Index = () => {
                 Crear prospecto
               </Button>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </main>
       

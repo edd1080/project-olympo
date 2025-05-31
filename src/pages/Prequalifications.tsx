@@ -1,15 +1,17 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
+import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
   Search, FileSpreadsheet, Edit, Trash2, CheckCircle, AlertCircle, XCircle,
-  Calendar, User, DollarSign
+  Calendar, User, Banknote
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -25,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 const Prequalifications = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
   const { prequalifications, deletePrequalification } = usePrequalifications();
 
   useEffect(() => {
@@ -135,64 +138,68 @@ const Prequalifications = () => {
               <Card key={prequalification.id} className="card-hover group">
                 <CardContent className="p-4">
                   <div className="flex flex-col space-y-3">
+                    {/* Header con nombre, fecha y monto */}
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h3 className="font-semibold flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold flex items-center gap-2 mb-2">
                           <User className="h-4 w-4 text-muted-foreground" />
                           {prequalification.data.nombre_completo}
                         </h3>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {formatDate(prequalification.timestamp)}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" />
-                            {formatCurrency(prequalification.data.monto_solicitado)}
-                          </div>
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          {formatDate(prequalification.timestamp)}
                         </div>
                       </div>
+                      
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="flex items-center gap-1 text-lg font-semibold text-primary">
+                          <Banknote className="h-5 w-5" />
+                          {formatCurrency(prequalification.data.monto_solicitado)}
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          {getStatusBadge(prequalification.result.status)}
 
-                      <div className="flex items-center gap-2">
-                        {getStatusBadge(prequalification.result.status)}
-
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              ⋮
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            {prequalification.result.canProceed && (
-                              <DropdownMenuItem onClick={() => handleStartApplication(prequalification.id)}>
-                                <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                <span>Iniciar solicitud</span>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                ⋮
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                              {prequalification.result.canProceed && (
+                                <DropdownMenuItem onClick={() => handleStartApplication(prequalification.id)}>
+                                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                  <span>Iniciar solicitud</span>
+                                </DropdownMenuItem>
+                              )}
+                              {prequalification.result.status === 'yellow' && (
+                                <DropdownMenuItem onClick={() => handleEdit(prequalification.id)}>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  <span>Editar/Completar</span>
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => handleDelete(prequalification.id, prequalification.data.nombre_completo)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Eliminar</span>
                               </DropdownMenuItem>
-                            )}
-                            {prequalification.result.status === 'yellow' && (
-                              <DropdownMenuItem onClick={() => handleEdit(prequalification.id)}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                <span>Editar/Completar</span>
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={() => handleDelete(prequalification.id, prequalification.data.nombre_completo)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Eliminar</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
                     </div>
 
+                    {/* Evaluación */}
                     <div className="text-sm bg-muted/50 p-3 rounded-lg">
-                      <p className="font-medium mb-1">Evaluación:</p>
-                      <p className="text-muted-foreground">{prequalification.result.reason}</p>
+                      <p className="font-medium text-muted-foreground mb-1">Evaluación:</p>
+                      <p className="font-medium">{prequalification.result.reason}</p>
                     </div>
 
+                    {/* Información adicional */}
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-muted-foreground">Ingreso mensual:</span>
@@ -212,6 +219,15 @@ const Prequalifications = () => {
       </main>
 
       <BottomNavigation />
+      
+      <FloatingPrequalificationButton 
+        onClick={() => setShowPrequalificationModal(true)} 
+      />
+      
+      <PrequalificationModal
+        open={showPrequalificationModal}
+        onOpenChange={setShowPrequalificationModal}
+      />
     </div>
   );
 };
