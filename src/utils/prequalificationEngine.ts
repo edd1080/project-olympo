@@ -1,5 +1,5 @@
 
-import prequalificationRules from '@/data/prequalificationRules.json';
+import prequalificationRulesData from '../data/prequalificationRules.json';
 
 export interface PrequalificationData {
   nombre_completo: string;
@@ -34,7 +34,7 @@ export const evaluatePrequalification = (data: PrequalificationData): Prequalifi
     relacion_monto_ingreso: data.monto_solicitado / data.ingreso_mensual
   };
 
-  const rules = prequalificationRules.logic as Rule[];
+  const rules = prequalificationRulesData.logic as Rule[];
   
   // Evaluar reglas en orden de prioridad (rojo → amarillo → verde)
   const redRules = rules.filter(rule => rule.result.status === 'red');
