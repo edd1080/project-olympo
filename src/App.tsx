@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import ProspectDetails from "./pages/ProspectDetails";
 import RequestForm from "./pages/RequestForm";
 import ApplicationDetails from "./pages/ApplicationDetails";
+import Prequalifications from "./pages/Prequalifications";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -42,6 +42,7 @@ const App = () => {
               <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
               <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
               <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+              <Route path="/prequalifications" element={<Prequalifications />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="*" element={<NotFound />} />

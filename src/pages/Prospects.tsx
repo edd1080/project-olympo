@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
+import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 const Prospects = () => {
   const navigate = useNavigate();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
   const [prospects, setProspects] = useState([
     { 
       id: 1, 
@@ -238,6 +241,15 @@ const Prospects = () => {
       </main>
       
       <BottomNavigation />
+      
+      <FloatingPrequalificationButton 
+        onClick={() => setShowPrequalificationModal(true)} 
+      />
+      
+      <PrequalificationModal
+        open={showPrequalificationModal}
+        onOpenChange={setShowPrequalificationModal}
+      />
     </div>
   );
 };

@@ -1,14 +1,16 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
+import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
   
   useEffect(() => {
     // Check if user is authenticated
@@ -115,6 +117,15 @@ const Index = () => {
       </main>
       
       <BottomNavigation />
+      
+      <FloatingPrequalificationButton 
+        onClick={() => setShowPrequalificationModal(true)} 
+      />
+      
+      <PrequalificationModal
+        open={showPrequalificationModal}
+        onOpenChange={setShowPrequalificationModal}
+      />
     </div>
   );
 };

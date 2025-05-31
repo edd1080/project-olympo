@@ -1,0 +1,115 @@
+
+{
+  "version": "1.0.0",
+  "logic": [
+    {
+      "condition": {
+        "ingreso_mensual": { "lt": 1000 }
+      },
+      "result": {
+        "status": "red",
+        "reason": "Ingreso mensual menor a Q1,000"
+      }
+    },
+    {
+      "condition": {
+        "destino_credito": { "in": ["pago de préstamo informal", "apuestas", "gastos no justificables"] }
+      },
+      "result": {
+        "status": "red",
+        "reason": "Destino del crédito no permitido"
+      }
+    },
+    {
+      "condition": {
+        "historial": { "eq": "bloqueado" }
+      },
+      "result": {
+        "status": "red",
+        "reason": "Cliente con historial bloqueado o mora activa"
+      }
+    },
+    {
+      "condition": {
+        "relacion_monto_ingreso": { "gt": 5 }
+      },
+      "result": {
+        "status": "red",
+        "reason": "Monto solicitado supera 5 veces el ingreso mensual"
+      }
+    },
+    {
+      "condition": {
+        "actividad_economica": { "eq": "desempleado" }
+      },
+      "result": {
+        "status": "red",
+        "reason": "El cliente no tiene actividad económica"
+      }
+    },
+    {
+      "condition": {
+        "ingreso_mensual": { "between": [1000, 2000] }
+      },
+      "result": {
+        "status": "yellow",
+        "reason": "Ingreso mensual moderado"
+      }
+    },
+    {
+      "condition": {
+        "destino_credito": { "in": ["vehículo", "gastos personales", "otros"] }
+      },
+      "result": {
+        "status": "yellow",
+        "reason": "Destino del crédito no es prioritario"
+      }
+    },
+    {
+      "condition": {
+        "historial": { "eq": "regular" }
+      },
+      "result": {
+        "status": "yellow",
+        "reason": "Historial muestra moras anteriores"
+      }
+    },
+    {
+      "condition": {
+        "relacion_monto_ingreso": { "between": [3, 5] }
+      },
+      "result": {
+        "status": "yellow",
+        "reason": "Monto solicitado relativamente alto respecto al ingreso"
+      }
+    },
+    {
+      "condition": {
+        "actividad_economica": { "eq": "informal" }
+      },
+      "result": {
+        "status": "yellow",
+        "reason": "Actividad económica informal o difícil de comprobar"
+      }
+    },
+    {
+      "condition": {
+        "ingreso_mensual": { "gt": 2000 },
+        "destino_credito": {
+          "in": ["capital de trabajo", "vivienda", "educación", "salud"]
+        },
+        "historial": { "eq": "bueno" },
+        "relacion_monto_ingreso": { "lte": 3 },
+        "actividad_economica": { "eq": "formal" }
+      },
+      "result": {
+        "status": "green",
+        "reason": "Cliente con condiciones óptimas para iniciar solicitud"
+      }
+    }
+  ],
+  "output": {
+    "status": "semáforo",
+    "reason": "explicación textual"
+  }
+}
