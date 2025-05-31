@@ -20,19 +20,17 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get icon based on section ID
   const getSectionIcon = () => {
     switch (sectionId) {
-      case 'personal':
+      case 'identification':
         return <User className="h-5 w-5 text-primary" />;
-      case 'character':
-        return <CheckSquare className="h-5 w-5 text-primary" />;
-      case 'work':
-        return <Briefcase className="h-5 w-5 text-primary" />;
       case 'finances':
         return <DollarSign className="h-5 w-5 text-primary" />;
-      case 'evaluation':
-        return <Calculator className="h-5 w-5 text-primary" />;
+      case 'business':
+        return <Briefcase className="h-5 w-5 text-primary" />;
+      case 'guarantors':
+        return <CheckSquare className="h-5 w-5 text-primary" />;
       case 'documents':
         return <FileCheck className="h-5 w-5 text-primary" />;
-      case 'consent':
+      case 'review':
         return <CheckCircle className="h-5 w-5 text-primary" />;
       default:
         return <User className="h-5 w-5 text-primary" />;
@@ -42,24 +40,18 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get section title based on section ID
   const getSectionTitle = () => {
     switch (sectionId) {
-      case 'personal':
-        return 'Información Personal';
-      case 'character':
-        return 'Análisis de Carácter';
-      case 'work':
-        return 'Información Laboral';
+      case 'identification':
+        return 'Identificación y Contacto';
       case 'finances':
-        return 'Información Financiera';
-      case 'evaluation':
-        return 'Evaluación Crediticia';
-      case 'documents':
-        return 'Documentos';
-      case 'consent':
-        return 'Consentimiento';
-      case 'signature':
-        return 'Firma de Acta';
+        return 'Finanzas y Patrimonio';
+      case 'business':
+        return 'Negocio y Perfil Económico';
       case 'guarantors':
-        return 'Fiadores';
+        return 'Garantías, Fiadores y Referencias';
+      case 'documents':
+        return 'Documentos y Cierre';
+      case 'review':
+        return 'Revisión Final';
       default:
         return 'Sección';
     }
@@ -68,20 +60,18 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get section instructions based on section ID
   const getSectionInstructions = () => {
     switch (sectionId) {
-      case 'personal':
+      case 'identification':
         return 'Complete todos los datos personales del solicitante, incluyendo información del cónyuge y dependientes si aplica.';
-      case 'character':
-        return 'Evalúe el comportamiento y contexto social o financiero del solicitante. Identifique posibles riesgos.';
       case 'finances':
         return 'Ingrese información general financiera, desglose de ingresos y egresos del solicitante.';
-      case 'documents':
-        return 'Suba fotografías del solicitante, documentos de identificación, comprobantes de domicilio y firma.';
-      case 'consent':
-        return 'El solicitante debe revisar y aceptar los términos y condiciones del crédito antes de firmar.';
-      case 'signature':
-        return 'Capture la firma del solicitante y fotografías de la reunión si es necesario.';
+      case 'business':
+        return 'Complete la información del negocio y perfil económico del solicitante.';
       case 'guarantors':
         return 'Agregue hasta 3 fiadores con su información y porcentaje de cobertura de la deuda.';
+      case 'documents':
+        return 'Suba fotografías del solicitante, documentos de identificación, comprobantes de domicilio y firma.';
+      case 'review':
+        return 'El solicitante debe revisar y aceptar los términos y condiciones del crédito antes de firmar.';
       default:
         return 'Complete todos los campos requeridos en esta sección.';
     }

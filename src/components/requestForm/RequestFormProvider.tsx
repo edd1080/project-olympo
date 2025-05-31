@@ -149,15 +149,12 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
-    personal: 'pending',
-    character: 'pending',
-    work: 'pending',
+    identification: 'pending',
     finances: 'pending',
-    evaluation: 'pending',
-    documents: 'pending',
-    consent: 'pending',
-    signature: 'pending',
+    business: 'pending',
     guarantors: 'pending',
+    documents: 'pending',
+    review: 'pending',
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [toastShown, setToastShown] = useState(false);
@@ -281,7 +278,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
         
         // Set sections that have data as complete
         if (mockData.personalInfo) {
-          setSectionStatus(prev => ({ ...prev, personal: 'complete' }));
+          setSectionStatus(prev => ({ ...prev, identification: 'complete' }));
         }
         
         // Only show toast once
@@ -298,6 +295,29 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     }
   }, [navigate, activeStep, id, toast, toastShown, steps]);
   
+  // Check if current section has sufficient data to be marked as complete
+  const checkSectionCompletion = () => {
+    const currentSectionId = steps[activeStep].id;
+    
+    // Basic validation - in a real app this would be more sophisticated
+    switch (currentSectionId) {
+      case 'identification':
+        return !!(formData.fullName && formData.cui && formData.email && formData.creditPurpose);
+      case 'finances':
+        return !!(formData.monthlyIncome || formData.businessIncome);
+      case 'business':
+        return !!(formData.businessType || formData.businessDescription);
+      case 'guarantors':
+        return !!(formData.guarantors && formData.guarantors.length > 0);
+      case 'documents':
+        return !!(formData.documentsUploaded);
+      case 'review':
+        return !!(formData.termsAccepted && formData.dataProcessingAccepted);
+      default:
+        return false;
+    }
+  };
+  
   // Define sub-steps for each section
   const getSubStepsForSection = (sectionIndex: number) => {
     switch (sectionIndex) {
@@ -312,6 +332,11 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   
   // Handle sub-step navigation
   const handleSubNext = () => {
+    // Mark section as complete if it has sufficient data
+    if (checkSectionCompletion()) {
+      setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
+    }
+    
     if (!isLastSubStep) {
       setSubStep(prev => prev + 1);
       console.log(`Moving to sub-step: ${subStep + 1} of section: ${steps[activeStep].id}`);
@@ -339,11 +364,23 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   
   const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Auto-check completion when data is updated
+    setTimeout(() => {
+      if (checkSectionCompletion()) {
+        setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
+      } else {
+        setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'pending' }));
+      }
+    }, 100);
   };
   
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
-      setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
+      // Mark current section as complete if it has data
+      if (checkSectionCompletion()) {
+        setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
+      }
       setActiveStep(prev => prev + 1);
       setSubStep(0); // Reset sub-step when moving to new section
       console.log(`Moving to step: ${steps[activeStep + 1].id}`);
@@ -361,6 +398,11 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   
   const handleSaveDraft = () => {
     console.log('Saving draft:', formData);
+    
+    // Mark current section as complete if it has sufficient data
+    if (checkSectionCompletion()) {
+      setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
+    }
     
     toast({
       title: "Borrador guardado",
