@@ -2,7 +2,7 @@
 import React from 'react';
 import { useFormContext } from './RequestFormProvider';
 import IdentificationContact from './IdentificationContact';
-import FinancialInfo from './FinancialInfo';
+import AnalisisFinanciero from './AnalisisFinanciero';
 import BusinessEconomicProfile from './BusinessEconomicProfile';
 import GuarantorsSection from './GuarantorsSection';
 import PhotoDocumentUpload from './PhotoDocumentUpload';
@@ -28,7 +28,7 @@ const StepContent: React.FC = () => {
       case 0:
         return <IdentificationContact formData={formData} updateFormData={updateFormData} />;
       case 1:
-        return <FinancialInfo formData={formData} updateFormData={updateFormData} />;
+        return <AnalisisFinanciero formData={formData} updateFormData={updateFormData} />;
       case 2:
         return <BusinessEconomicProfile formData={formData} updateFormData={updateFormData} />;
       case 3:

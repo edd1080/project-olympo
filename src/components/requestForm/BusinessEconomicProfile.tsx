@@ -32,6 +32,8 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
   }, [products, updateFormData]);
 
   const addProduct = () => {
+    if (products.length >= 10) return; // Máximo 10 productos
+    
     const newProduct: Product = {
       id: Date.now().toString(),
       name: '',
@@ -76,7 +78,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
           {/* Información Básica del Negocio */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="activityType">Tipo de Actividad *</Label>
+              <Label htmlFor="activityType">3.01 Tipo de Actividad CNAE *</Label>
               <Select value={formData.activityType || ''} onValueChange={(value) => updateFormData('activityType', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar actividad CNAE" />
@@ -103,7 +105,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="experienceYears">Años de Experiencia *</Label>
+              <Label htmlFor="experienceYears">3.02 Años de Experiencia *</Label>
               <Input 
                 id="experienceYears"
                 type="number"
@@ -116,7 +118,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="businessName">Nombre del Negocio *</Label>
+            <Label htmlFor="businessName">3.03 Nombre del Negocio *</Label>
             <Input 
               id="businessName"
               value={formData.businessName || ''} 
@@ -126,7 +128,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="businessAddress">Dirección del Negocio *</Label>
+            <Label htmlFor="businessAddress">3.04 Dirección del Negocio *</Label>
             <Textarea 
               id="businessAddress"
               value={formData.businessAddress || ''} 
@@ -139,11 +141,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
           {/* Ventas Mensuales */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="cashSales">Ventas Mensuales de Contado Q *</Label>
+              <Label htmlFor="cashSales">3.05 Ventas Mensuales de Contado Q *</Label>
               <Input 
                 id="cashSales"
                 type="number"
                 min="0"
+                step="0.01"
                 value={formData.cashSales || ''} 
                 onChange={(e) => updateFormData('cashSales', e.target.value)}
                 placeholder="0.00"
@@ -151,11 +154,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="creditSales">Ventas Mensuales a Crédito Q *</Label>
+              <Label htmlFor="creditSales">3.06 Ventas Mensuales a Crédito Q *</Label>
               <Input 
                 id="creditSales"
                 type="number"
                 min="0"
+                step="0.01"
                 value={formData.creditSales || ''} 
                 onChange={(e) => updateFormData('creditSales', e.target.value)}
                 placeholder="0.00"
@@ -168,10 +172,16 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
           {/* Productos */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h4 className="font-medium">Productos/Servicios</h4>
-              <Button type="button" variant="outline" size="sm" onClick={addProduct}>
+              <h4 className="font-medium">3.07-3.17 Productos/Servicios (1-10)</h4>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                onClick={addProduct}
+                disabled={products.length >= 10}
+              >
                 <Plus className="mr-2 h-4 w-4" />
-                Agregar Producto
+                Agregar Producto {products.length >= 10 && '(Máx. 10)'}
               </Button>
             </div>
 
@@ -264,11 +274,11 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
 
           {/* Estacionalidad */}
           <div className="space-y-4">
-            <h4 className="font-medium">Estacionalidad del Negocio</h4>
+            <h4 className="font-medium">Estacionalidad del Negocio (3.18-3.21)</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="highSeasonMonths">Meses de Temporada Alta</Label>
+                <Label htmlFor="highSeasonMonths">3.18 Meses de Temporada Alta</Label>
                 <Input 
                   id="highSeasonMonths"
                   value={formData.highSeasonMonths || ''} 
@@ -278,11 +288,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="highSeasonAmount">Ventas Temporada Alta Q</Label>
+                <Label htmlFor="highSeasonAmount">3.19 Ventas Temporada Alta Q</Label>
                 <Input 
                   id="highSeasonAmount"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.highSeasonAmount || ''} 
                   onChange={(e) => updateFormData('highSeasonAmount', e.target.value)}
                   placeholder="0.00"
@@ -292,7 +303,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="lowSeasonMonths">Meses de Temporada Baja</Label>
+                <Label htmlFor="lowSeasonMonths">3.20 Meses de Temporada Baja</Label>
                 <Input 
                   id="lowSeasonMonths"
                   value={formData.lowSeasonMonths || ''} 
@@ -302,11 +313,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lowSeasonAmount">Ventas Temporada Baja Q</Label>
+                <Label htmlFor="lowSeasonAmount">3.21 Ventas Temporada Baja Q</Label>
                 <Input 
                   id="lowSeasonAmount"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.lowSeasonAmount || ''} 
                   onChange={(e) => updateFormData('lowSeasonAmount', e.target.value)}
                   placeholder="0.00"
@@ -319,15 +331,16 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
 
           {/* Gastos Administrativos */}
           <div className="space-y-4">
-            <h4 className="font-medium">Gastos Administrativos Mensuales</h4>
+            <h4 className="font-medium">Gastos Administrativos Mensuales (3.22-3.29)</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="bonuses">Bonificaciones Q</Label>
+                <Label htmlFor="bonuses">3.22 Bonificaciones Q</Label>
                 <Input 
                   id="bonuses"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.bonuses || ''} 
                   onChange={(e) => updateFormData('bonuses', e.target.value)}
                   placeholder="0.00"
@@ -335,11 +348,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="salaries">Sueldos Q</Label>
+                <Label htmlFor="salaries">3.23 Sueldos Q</Label>
                 <Input 
                   id="salaries"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.salaries || ''} 
                   onChange={(e) => updateFormData('salaries', e.target.value)}
                   placeholder="0.00"
@@ -347,11 +361,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="rent">Alquiler Q</Label>
+                <Label htmlFor="rent">3.24 Alquiler Q</Label>
                 <Input 
                   id="rent"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.rent || ''} 
                   onChange={(e) => updateFormData('rent', e.target.value)}
                   placeholder="0.00"
@@ -359,11 +374,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="utilities">Servicios Q</Label>
+                <Label htmlFor="utilities">3.25 Servicios Q</Label>
                 <Input 
                   id="utilities"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.utilities || ''} 
                   onChange={(e) => updateFormData('utilities', e.target.value)}
                   placeholder="0.00"
@@ -371,11 +387,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="transport">Transporte Q</Label>
+                <Label htmlFor="transport">3.26 Transporte Q</Label>
                 <Input 
                   id="transport"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.transport || ''} 
                   onChange={(e) => updateFormData('transport', e.target.value)}
                   placeholder="0.00"
@@ -383,11 +400,12 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="otherExpenses">Otros Gastos Q</Label>
+                <Label htmlFor="otherExpenses">3.27 Otros Gastos Q</Label>
                 <Input 
                   id="otherExpenses"
                   type="number"
                   min="0"
+                  step="0.01"
                   value={formData.otherExpenses || ''} 
                   onChange={(e) => updateFormData('otherExpenses', e.target.value)}
                   placeholder="0.00"
@@ -400,11 +418,11 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
 
           {/* Análisis Cualitativo */}
           <div className="space-y-4">
-            <h4 className="font-medium">Análisis del Negocio</h4>
+            <h4 className="font-medium">Análisis del Negocio (3.30-3.33)</h4>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="incomeRisks">Riesgo de Ingresos *</Label>
+                <Label htmlFor="incomeRisks">3.30 Riesgo de Ingresos *</Label>
                 <Textarea 
                   id="incomeRisks"
                   value={formData.incomeRisks || ''} 
@@ -420,7 +438,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="opportunities">Oportunidades *</Label>
+                <Label htmlFor="opportunities">3.31 Oportunidades *</Label>
                 <Textarea 
                   id="opportunities"
                   value={formData.opportunities || ''} 
@@ -436,7 +454,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="riskMitigation">Mitigación de Riesgos *</Label>
+                <Label htmlFor="riskMitigation">3.32 Mitigación de Riesgos *</Label>
                 <Textarea 
                   id="riskMitigation"
                   value={formData.riskMitigation || ''} 
@@ -452,7 +470,7 @@ const BusinessEconomicProfile: React.FC<BusinessEconomicProfileProps> = ({ formD
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="marketEvaluation">Evaluación del Mercado *</Label>
+                <Label htmlFor="marketEvaluation">3.33 Evaluación del Mercado *</Label>
                 <Textarea 
                   id="marketEvaluation"
                   value={formData.marketEvaluation || ''} 
