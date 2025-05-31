@@ -1,13 +1,12 @@
 
 import React from 'react';
 import { useFormContext } from './RequestFormProvider';
-import PersonalInfo from './PersonalInfo';
-import CharacterAnalysis from './CharacterAnalysis';
+import IdentificationContact from './IdentificationContact';
 import FinancialInfo from './FinancialInfo';
-import PhotoDocumentUpload from './PhotoDocumentUpload';
-import ConsentSection from './ConsentSection';
-import SignatureSection from './SignatureSection';
+import BusinessEconomicProfile from './BusinessEconomicProfile';
 import GuarantorsSection from './GuarantorsSection';
+import PhotoDocumentUpload from './PhotoDocumentUpload';
+import ReviewSection from './ReviewSection';
 import NonSalariedGuarantorForm from './guarantorFlow/NonSalariedGuarantorForm';
 import FormTypeBanner from '../forms/FormTypeBanner';
 
@@ -27,19 +26,17 @@ const StepContent: React.FC = () => {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <PersonalInfo formData={formData} updateFormData={updateFormData} />;
+        return <IdentificationContact formData={formData} updateFormData={updateFormData} />;
       case 1:
-        return <CharacterAnalysis formData={formData} updateFormData={updateFormData} />;
-      case 2:
         return <FinancialInfo formData={formData} updateFormData={updateFormData} />;
+      case 2:
+        return <BusinessEconomicProfile formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
-      case 4:
-        return <ConsentSection formData={formData} updateFormData={updateFormData} />;
-      case 5:
-        return <SignatureSection formData={formData} updateFormData={updateFormData} />;
-      case 6:
         return <GuarantorsSection formData={formData} updateFormData={updateFormData} />;
+      case 4:
+        return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
+      case 5:
+        return <ReviewSection formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
