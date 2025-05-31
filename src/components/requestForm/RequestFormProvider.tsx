@@ -113,6 +113,12 @@ interface FormContextType {
   cancelGuarantorForm: () => void;
   requiredCoveragePercentage: number;
   calculateCoveragePercentage: () => number;
+  subStep: number;
+  setSubStep: React.Dispatch<React.SetStateAction<number>>;
+  handleSubNext: () => void;
+  handleSubPrevious: () => void;
+  isLastSubStep: boolean;
+  getSubStepsForSection: (sectionIndex: number) => number;
 }
 
 export const FormContext = createContext<FormContextType | undefined>(undefined);
@@ -139,6 +145,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [activeStep, setActiveStep] = useState(0);
+  const [subStep, setSubStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
@@ -291,6 +298,45 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     }
   }, [navigate, activeStep, id, toast, toastShown, steps]);
   
+  // Define sub-steps for each section
+  const getSubStepsForSection = (sectionIndex: number) => {
+    switch (sectionIndex) {
+      case 0: // Identificación y Contacto
+        return 3;
+      default:
+        return 1;
+    }
+  };
+  
+  const isLastSubStep = subStep >= getSubStepsForSection(activeStep) - 1;
+  
+  // Handle sub-step navigation
+  const handleSubNext = () => {
+    if (!isLastSubStep) {
+      setSubStep(prev => prev + 1);
+      console.log(`Moving to sub-step: ${subStep + 1} of section: ${steps[activeStep].id}`);
+    } else {
+      // Move to next main section
+      handleNext();
+    }
+    window.scrollTo(0, 0);
+  };
+  
+  const handleSubPrevious = () => {
+    if (subStep > 0) {
+      setSubStep(prev => prev - 1);
+      console.log(`Moving back to sub-step: ${subStep - 1} of section: ${steps[activeStep].id}`);
+    } else if (activeStep > 0) {
+      // Move to previous main section's last sub-step
+      const prevStep = activeStep - 1;
+      const prevSubSteps = getSubStepsForSection(prevStep);
+      setActiveStep(prevStep);
+      setSubStep(prevSubSteps - 1);
+      console.log(`Moving back to previous section: ${steps[prevStep].id}, sub-step: ${prevSubSteps - 1}`);
+    }
+    window.scrollTo(0, 0);
+  };
+  
   const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -299,6 +345,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     if (activeStep < steps.length - 1) {
       setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
       setActiveStep(prev => prev + 1);
+      setSubStep(0); // Reset sub-step when moving to new section
       console.log(`Moving to step: ${steps[activeStep + 1].id}`);
       
       window.scrollTo(0, 0);
@@ -307,6 +354,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   
   const handleChangeSection = (index: number) => {
     setActiveStep(index);
+    setSubStep(0); // Reset sub-step when jumping to section
     console.log(`Jumping to step: ${steps[index].id}`);
     window.scrollTo(0, 0);
   };
@@ -397,7 +445,13 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     saveGuarantor,
     cancelGuarantorForm,
     requiredCoveragePercentage,
-    calculateCoveragePercentage
+    calculateCoveragePercentage,
+    subStep,
+    setSubStep,
+    handleSubNext,
+    handleSubPrevious,
+    isLastSubStep,
+    getSubStepsForSection
   };
 
   return (

@@ -15,23 +15,26 @@ interface FormActionBarProps {
 const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
   const {
     activeStep,
+    subStep,
     isLastStep,
+    isLastSubStep,
     formData,
-    sectionStatus,
     handleSaveDraft,
-    handleNext,
-    handleSubmit,
-    handleChangeSection
+    handleSubNext,
+    handleSubPrevious,
+    handleSubmit
   } = useFormContext();
+
+  const canGoBack = activeStep > 0 || subStep > 0;
 
   return (
     <div className="fixed bottom-16 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t z-40">
       <div className="container max-w-5xl mx-auto">
         <div className="flex justify-between gap-3">
-          {activeStep > 0 ? (
+          {canGoBack ? (
             <Button 
               variant="outline" 
-              onClick={() => handleChangeSection(activeStep - 1)}
+              onClick={handleSubPrevious}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Anterior
@@ -48,7 +51,7 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
             Guardar borrador
           </Button>
 
-          {isLastStep ? (
+          {isLastStep && isLastSubStep ? (
             <Button 
               onClick={handleSubmit}
               disabled={
@@ -61,7 +64,7 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
               Enviar solicitud
             </Button>
           ) : (
-            <Button onClick={handleNext}>
+            <Button onClick={handleSubNext}>
               Siguiente
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
