@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -11,8 +12,9 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import GuarantorsList from '@/components/guarantors/GuarantorsList';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -31,35 +33,40 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
-const formSections = [{
-  id: 'personal',
-  icon: <User size={18} />,
-  name: 'Información Personal'
-}, {
-  id: 'character',
-  icon: <Search size={18} />,
-  name: 'Análisis de Carácter'
-}, {
-  id: 'finances',
-  icon: <DollarSign size={18} />,
-  name: 'Información Financiera'
-}, {
-  id: 'documents',
-  icon: <FileCheck size={18} />,
-  name: 'Documentos e Imágenes'
-}, {
-  id: 'consent',
-  icon: <CheckCircle size={18} />,
-  name: 'Consentimiento'
-}, {
-  id: 'signature',
-  icon: <FileSignature size={18} />,
-  name: 'Firma de Acta'
-}, {
-  id: 'guarantors',
-  icon: <Users size={18} />,
-  name: 'Fiadores'
-}];
+
+const formSections = [
+  {
+    id: 'identification',
+    icon: <User size={18} />,
+    name: 'Identificación y Contacto'
+  },
+  {
+    id: 'finances',
+    icon: <DollarSign size={18} />,
+    name: 'Finanzas y Patrimonio'
+  },
+  {
+    id: 'business',
+    icon: <MapPin size={18} />,
+    name: 'Negocio y Perfil Económico'
+  },
+  {
+    id: 'guarantors',
+    icon: <Users size={18} />,
+    name: 'Garantías, Fiadores y Referencias'
+  },
+  {
+    id: 'documents',
+    icon: <FileCheck size={18} />,
+    name: 'Documentos y Cierre'
+  },
+  {
+    id: 'review',
+    icon: <CheckCircle size={18} />,
+    name: 'Revisión Final'
+  }
+];
+
 const ApplicationDetails = () => {
   const {
     id
@@ -73,6 +80,7 @@ const ApplicationDetails = () => {
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
+
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -82,108 +90,151 @@ const ApplicationDetails = () => {
           progress: 4,
           createdAt: '2025-04-05',
           updatedAt: '2025-04-07',
-          personalInfo: {
-            fullName: 'María Rodríguez',
+          identification: {
+            agencia: 'Guatemala Central',
+            cui: '3456 78901 2345',
+            nit: '1234567-8',
+            tipoSocio: 'Nuevo',
+            fullName: 'María Elena Rodríguez García',
             email: 'maria.rodriguez@example.com',
             phone: '502-5555-1234',
-            dpi: '3456789012345',
+            estadoCivil: 'Casada',
             address: 'Zona 10, Ciudad de Guatemala',
-            birthDate: '1990-05-15'
+            birthDate: '1990-05-15',
+            nacionalidad: 'Guatemalteca',
+            genero: 'Femenino',
+            profesion: 'Comerciante',
+            conyuge: {
+              nombre: 'Carlos Martínez',
+              dpi: '2345 67890 1234',
+              telefono: '502-5555-5678'
+            }
           },
-          workInfo: {
-            occupation: 'Comerciante',
-            businessName: 'Abarrotes María',
-            businessAddress: 'Mercado Central, Local 45, Zona 1',
-            businessPhone: '502-2222-5678',
-            businessType: 'Comercio minorista'
+          finances: {
+            ingresosMensuales: 25000,
+            gastosMensuales: 18000,
+            ventasContado: 15000,
+            ventasCredito: 10000,
+            activos: {
+              inventario: 50000,
+              cuentasPorCobrar: 25000,
+              equipos: 30000,
+              inmuebles: 200000,
+              total: 305000
+            },
+            pasivos: {
+              proveedores: 15000,
+              prestamos: 45000,
+              total: 60000
+            },
+            patrimonio: 245000
           },
-          financialInfo: {
-            monthlySales: 25000,
-            cashSales: 15000,
-            creditSales: 10000,
-            mainProducts: [{
-              name: 'Granos básicos',
-              unitMeasure: 'Quintal',
-              quantity: 10,
-              unitPrice: 500,
-              totalSales: 5000,
-              profit: 1500
-            }, {
-              name: 'Productos enlatados',
-              unitMeasure: 'Caja',
-              quantity: 20,
-              unitPrice: 300,
-              totalSales: 6000,
-              profit: 1800
-            }],
-            bestMonths: ['Noviembre', 'Diciembre'],
-            worstMonths: ['Febrero', 'Septiembre'],
-            bestMonthsAmount: 35000,
-            worstMonthsAmount: 18000,
-            expenses: {
-              rent: 2000,
-              electricity: 500,
-              phone: 300,
-              water: 150,
-              transport: 800,
-              other: 500,
-              total: 4250
+          business: {
+            tipoActividad: 'Comercio al por menor',
+            codigoCNAE: '47.11.01',
+            nombreNegocio: 'Abarrotes María',
+            direccionNegocio: 'Mercado Central, Local 45, Zona 1',
+            telefonoNegocio: '502-2222-5678',
+            antiguedadNegocio: '8 años',
+            productos: [
+              {
+                nombre: 'Granos básicos',
+                unidadMedida: 'Quintal',
+                cantidadVendida: 10,
+                precioUnitario: 500,
+                totalVentas: 5000,
+                utilidad: 1500
+              },
+              {
+                nombre: 'Productos enlatados',
+                unidadMedida: 'Caja',
+                cantidadVendida: 20,
+                precioUnitario: 300,
+                totalVentas: 6000,
+                utilidad: 1800
+              }
+            ],
+            estacionalidad: {
+              mejoresMeses: ['Noviembre', 'Diciembre'],
+              peoresMeses: ['Febrero', 'Septiembre'],
+              ventasMejoresMeses: 35000,
+              ventasPeoresMeses: 18000
+            }
+          },
+          guarantors: [
+            {
+              id: 'G001',
+              nombre: 'Carlos Alberto Martínez',
+              dpi: '1234 56789 0123',
+              telefono: '502-5555-9876',
+              parentesco: 'Esposo',
+              salario: 8000,
+              tipoEmpleo: 'Asalariado',
+              empresa: 'Constructora ABC',
+              porcentajeCobertura: 50,
+              status: 'in-progress',
+              progress: 80
+            },
+            {
+              id: 'G002',
+              nombre: 'Ana Patricia López',
+              dpi: '2345 67890 1234',
+              telefono: '502-5555-4321',
+              parentesco: 'Hermana',
+              salario: 6500,
+              tipoEmpleo: 'Independiente',
+              empresa: 'Negocio propio',
+              porcentajeCobertura: 50,
+              status: 'complete',
+              progress: 100
+            }
+          ],
+          documents: {
+            dpiFrontal: {
+              status: 'complete',
+              url: '/placeholder.svg'
+            },
+            dpiTrasero: {
+              status: 'complete',
+              url: '/placeholder.svg'
+            },
+            fotoSolicitante: {
+              status: 'complete',
+              url: '/placeholder.svg'
+            },
+            recibosServicios: {
+              status: 'pending',
+              url: null
+            },
+            firmaCanvas: {
+              status: 'pending',
+              url: null
             }
           },
           creditEvaluation: {
-            approvedAmount: 8500,
-            months: 18,
-            monthlyPayment: 630,
-            interestRate: 15
+            montoSolicitado: 10000,
+            montoAprobado: 8500,
+            plazoMeses: 18,
+            cuotaMensual: 630,
+            tasaInteres: 15
           },
-          documents: {
-            personalPhoto: {
-              status: 'complete',
-              url: '/placeholder.svg'
+          notes: [
+            {
+              date: '2025-04-05',
+              author: 'Juan Pérez',
+              content: 'Solicitud creada y documentos básicos cargados.'
             },
-            agentPhoto: {
-              status: 'complete',
-              url: '/placeholder.svg'
+            {
+              date: '2025-04-06',
+              author: 'Ana López',
+              content: 'Se requiere verificación adicional de ingresos.'
             },
-            businessPhoto: {
-              status: 'complete',
-              url: '/placeholder.svg'
-            },
-            utilityBill: {
-              status: 'pending',
-              url: null
-            },
-            additionalDocs: {
-              status: 'pending',
-              url: null
+            {
+              date: '2025-04-07',
+              author: 'Carlos Gómez',
+              content: 'Evaluación crediticia completada. Pendiente de aprobación final.'
             }
-          },
-          notes: [{
-            date: '2025-04-05',
-            author: 'Juan Pérez',
-            content: 'Solicitud creada y documentos básicos cargados.'
-          }, {
-            date: '2025-04-06',
-            author: 'Ana López',
-            content: 'Se requiere verificación adicional de ingresos.'
-          }, {
-            date: '2025-04-07',
-            author: 'Carlos Gómez',
-            content: 'Evaluación crediticia completada. Pendiente de aprobación final.'
-          }],
-          guarantors: [{
-            id: 'G001',
-            name: 'Carlos Martínez',
-            relationship: 'Familiar',
-            progress: 80,
-            status: 'in-progress'
-          }, {
-            id: 'G002',
-            name: 'Ana López',
-            relationship: 'Socio',
-            progress: 100,
-            status: 'complete'
-          }]
+          ]
         };
         setApplication(mockApplication);
         setLoading(false);
@@ -191,6 +242,7 @@ const ApplicationDetails = () => {
     };
     fetchApplicationData();
   }, [id]);
+
   useEffect(() => {
     if (application && !toastShown) {
       toast({
@@ -201,9 +253,11 @@ const ApplicationDetails = () => {
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
+
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
+
   const navigateToFormSection = (sectionId: string) => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -216,6 +270,7 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
+
   if (loading) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -241,6 +296,7 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
+
   if (!application) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -262,6 +318,7 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
+
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -276,14 +333,13 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
-  const getProgressState = () => {
-    return `${application.progress / 7 * 100}%`;
-  };
+
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
+
   return <div className="min-h-screen flex flex-col">
-      <Header personName={application?.personalInfo?.fullName?.split(' ')[0] || ''} />
+      <Header personName={application?.identification?.fullName?.split(' ')[0] || ''} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
         <BreadcrumbNavigation />
@@ -294,7 +350,7 @@ const ApplicationDetails = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-xl font-medium">{application.personalInfo.fullName}</h1>
+              <h1 className="text-xl font-medium">{application.identification.fullName}</h1>
               <div className="flex items-center text-sm text-muted-foreground">
                 <span>{application.id}</span>
               </div>
@@ -316,20 +372,20 @@ const ApplicationDetails = () => {
         <div className="mb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className="font-medium">Progreso:</span>
-            <span>{application.progress}/7 secciones completadas</span>
+            <span>{application.progress}/6 secciones completadas</span>
           </div>
-          <Progress value={application.progress / 7 * 100} className="h-2" />
+          <Progress value={application.progress / 6 * 100} className="h-2" />
         </div>
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
               <FileText className="h-4 w-4 mr-2 text-primary" />
-              Acceso Rápido a Secciones del Formulario
+              Acceso Rápido
             </CardTitle>
           </CardHeader>
           <CardContent className="py-3">
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
               {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
@@ -360,47 +416,26 @@ const ApplicationDetails = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center">
                     <User className="h-4 w-4 mr-2 text-primary" />
-                    Información Personal
+                    Identificación
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <dl className="space-y-2 text-sm">
                     <div>
                       <dt className="text-muted-foreground">Nombre</dt>
-                      <dd className="font-medium">{application.personalInfo.fullName}</dd>
+                      <dd className="font-medium">{application.identification.fullName}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">DPI</dt>
-                      <dd className="font-medium">{application.personalInfo.dpi}</dd>
+                      <dt className="text-muted-foreground">CUI</dt>
+                      <dd className="font-medium">{application.identification.cui}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Contacto</dt>
-                      <dd className="font-medium">{application.personalInfo.phone}</dd>
-                    </div>
-                  </dl>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center">
-                    <Briefcase className="h-4 w-4 mr-2 text-primary" />
-                    Información Laboral
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <dl className="space-y-2 text-sm">
-                    <div>
-                      <dt className="text-muted-foreground">Ocupación</dt>
-                      <dd className="font-medium">{application.workInfo.occupation}</dd>
+                      <dt className="text-muted-foreground">NIT</dt>
+                      <dd className="font-medium">{application.identification.nit}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Negocio</dt>
-                      <dd className="font-medium">{application.workInfo.businessName}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Tipo</dt>
-                      <dd className="font-medium">{application.workInfo.businessType}</dd>
+                      <dt className="text-muted-foreground">Teléfono</dt>
+                      <dd className="font-medium">{application.identification.phone}</dd>
                     </div>
                   </dl>
                 </CardContent>
@@ -410,22 +445,47 @@ const ApplicationDetails = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center">
                     <DollarSign className="h-4 w-4 mr-2 text-primary" />
-                    Información Financiera
+                    Finanzas
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <dl className="space-y-2 text-sm">
                     <div>
-                      <dt className="text-muted-foreground">Ventas Mensuales</dt>
-                      <dd className="font-medium">Q{application.financialInfo.monthlySales.toLocaleString()}</dd>
+                      <dt className="text-muted-foreground">Ingresos Mensuales</dt>
+                      <dd className="font-medium">Q{application.finances.ingresosMensuales.toLocaleString()}</dd>
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Gastos Mensuales</dt>
-                      <dd className="font-medium">Q{application.financialInfo.expenses.total.toLocaleString()}</dd>
+                      <dd className="font-medium">Q{application.finances.gastosMensuales.toLocaleString()}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Productos Principales</dt>
-                      <dd className="font-medium">{application.financialInfo.mainProducts.length}</dd>
+                      <dt className="text-muted-foreground">Patrimonio</dt>
+                      <dd className="font-medium">Q{application.finances.patrimonio.toLocaleString()}</dd>
+                    </div>
+                  </dl>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center">
+                    <MapPin className="h-4 w-4 mr-2 text-primary" />
+                    Negocio
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <dl className="space-y-2 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground">Nombre</dt>
+                      <dd className="font-medium">{application.business.nombreNegocio}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Actividad</dt>
+                      <dd className="font-medium">{application.business.tipoActividad}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Antigüedad</dt>
+                      <dd className="font-medium">{application.business.antiguedadNegocio}</dd>
                     </div>
                   </dl>
                 </CardContent>
@@ -443,15 +503,15 @@ const ApplicationDetails = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Monto Aprobado</p>
-                    <p className="font-bold text-lg">Q{application.creditEvaluation.approvedAmount.toLocaleString()}</p>
+                    <p className="font-bold text-lg">Q{application.creditEvaluation.montoAprobado.toLocaleString()}</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Plazo</p>
-                    <p className="font-bold text-lg">{application.creditEvaluation.months} meses</p>
+                    <p className="font-bold text-lg">{application.creditEvaluation.plazoMeses} meses</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Pago Mensual</p>
-                    <p className="font-bold text-lg">Q{application.creditEvaluation.monthlyPayment.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Cuota Mensual</p>
+                    <p className="font-bold text-lg">Q{application.creditEvaluation.cuotaMensual.toLocaleString()}</p>
                   </div>
                 </div>
               </CardContent>
@@ -473,12 +533,13 @@ const ApplicationDetails = () => {
                           <Clock className="h-5 w-5" />
                         </div>}
                       <span className="text-xs text-center">
-                        {key === 'personalPhoto' && 'Foto Personal'}
-                        {key === 'agentPhoto' && 'Foto con Agente'}
-                        {key === 'businessPhoto' && 'Foto Negocio'}
-                        {key === 'utilityBill' && 'Recibo Servicios'}
-                        {key === 'additionalDocs' && 'Docs. Adicionales'}
+                        {key === 'dpiFrontal' && 'DPI Frontal'}
+                        {key === 'dpiTrasero' && 'DPI Trasero'}
+                        {key === 'fotoSolicitante' && 'Foto Solicitante'}
+                        {key === 'recibosServicios' && 'Recibos Servicios'}
+                        {key === 'firmaCanvas' && 'Firma Digital'}
                       </span>
+                      {value.status === 'pending' && <p className="text-xs text-amber-600 mt-1">Pendiente</p>}
                     </div>)}
                 </div>
               </CardContent>
@@ -491,69 +552,72 @@ const ApplicationDetails = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
                     <User className="h-5 w-5 mr-2 text-primary" />
-                    Información Personal
+                    Identificación y Contacto
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Nombre Completo</p>
-                      <p className="font-medium">{application.personalInfo.fullName}</p>
+                      <p className="text-sm text-muted-foreground">Agencia</p>
+                      <p className="font-medium">{application.identification.agencia}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">DPI</p>
-                      <p className="font-medium">{application.personalInfo.dpi}</p>
+                      <p className="text-sm text-muted-foreground">Tipo de Socio</p>
+                      <p className="font-medium">{application.identification.tipoSocio}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">CUI</p>
+                      <p className="font-medium">{application.identification.cui}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">NIT</p>
+                      <p className="font-medium">{application.identification.nit}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Nombre Completo</p>
+                      <p className="font-medium">{application.identification.fullName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Estado Civil</p>
+                      <p className="font-medium">{application.identification.estadoCivil}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Correo Electrónico</p>
-                      <p className="font-medium">{application.personalInfo.email}</p>
+                      <p className="font-medium">{application.identification.email}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Teléfono</p>
-                      <p className="font-medium">{application.personalInfo.phone}</p>
+                      <p className="font-medium">{application.identification.phone}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Dirección</p>
-                      <p className="font-medium">{application.personalInfo.address}</p>
+                      <p className="font-medium">{application.identification.address}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Fecha de Nacimiento</p>
-                      <p className="font-medium">{application.personalInfo.birthDate}</p>
+                      <p className="font-medium">{application.identification.birthDate}</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-lg">
-                    <Briefcase className="h-5 w-5 mr-2 text-primary" />
-                    Información Laboral
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Ocupación</p>
-                      <p className="font-medium">{application.workInfo.occupation}</p>
+                  
+                  {application.identification.conyuge && (
+                    <div className="mt-6">
+                      <h4 className="text-sm font-medium mb-3">Información del Cónyuge</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Nombre</p>
+                          <p className="font-medium">{application.identification.conyuge.nombre}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">DPI</p>
+                          <p className="font-medium">{application.identification.conyuge.dpi}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Teléfono</p>
+                          <p className="font-medium">{application.identification.conyuge.telefono}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Nombre del Negocio</p>
-                      <p className="font-medium">{application.workInfo.businessName}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Dirección del Negocio</p>
-                      <p className="font-medium">{application.workInfo.businessAddress}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Teléfono del Negocio</p>
-                      <p className="font-medium">{application.workInfo.businessPhone}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Tipo de Negocio</p>
-                      <p className="font-medium">{application.workInfo.businessType}</p>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -561,27 +625,122 @@ const ApplicationDetails = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
                     <DollarSign className="h-5 w-5 mr-2 text-primary" />
-                    Información Financiera
+                    Finanzas y Patrimonio
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Ventas Mensuales Totales</p>
-                      <p className="font-medium">Q{application.financialInfo.monthlySales.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Ingresos Mensuales</p>
+                      <p className="font-medium">Q{application.finances.ingresosMensuales.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Gastos Mensuales</p>
+                      <p className="font-medium">Q{application.finances.gastosMensuales.toLocaleString()}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Ventas al Contado</p>
-                      <p className="font-medium">Q{application.financialInfo.cashSales.toLocaleString()}</p>
+                      <p className="font-medium">Q{application.finances.ventasContado.toLocaleString()}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Ventas al Crédito</p>
-                      <p className="font-medium">Q{application.financialInfo.creditSales.toLocaleString()}</p>
+                      <p className="font-medium">Q{application.finances.ventasCredito.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="text-sm font-medium mb-3">Activos</h4>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Inventario</TableCell>
+                            <TableCell className="text-right">Q{application.finances.activos.inventario.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Cuentas por Cobrar</TableCell>
+                            <TableCell className="text-right">Q{application.finances.activos.cuentasPorCobrar.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Equipos</TableCell>
+                            <TableCell className="text-right">Q{application.finances.activos.equipos.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Inmuebles</TableCell>
+                            <TableCell className="text-right">Q{application.finances.activos.inmuebles.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">Total Activos</TableCell>
+                            <TableCell className="text-right font-bold">Q{application.finances.activos.total.toLocaleString()}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-3">Pasivos</h4>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Proveedores</TableCell>
+                            <TableCell className="text-right">Q{application.finances.pasivos.proveedores.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="text-muted-foreground">Préstamos</TableCell>
+                            <TableCell className="text-right">Q{application.finances.pasivos.prestamos.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">Total Pasivos</TableCell>
+                            <TableCell className="text-right font-bold">Q{application.finances.pasivos.total.toLocaleString()}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium text-primary">Patrimonio</TableCell>
+                            <TableCell className="text-right font-bold text-primary">Q{application.finances.patrimonio.toLocaleString()}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <MapPin className="h-5 w-5 mr-2 text-primary" />
+                    Negocio y Perfil Económico
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Tipo de Actividad</p>
+                      <p className="font-medium">{application.business.tipoActividad}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Código CNAE</p>
+                      <p className="font-medium">{application.business.codigoCNAE}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Nombre del Negocio</p>
+                      <p className="font-medium">{application.business.nombreNegocio}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Antigüedad</p>
+                      <p className="font-medium">{application.business.antiguedadNegocio}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Dirección</p>
+                      <p className="font-medium">{application.business.direccionNegocio}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Teléfono</p>
+                      <p className="font-medium">{application.business.telefonoNegocio}</p>
                     </div>
                   </div>
                   
                   <div>
-                    <h4 className="text-sm font-medium mb-2">Productos Principales</h4>
+                    <h4 className="text-sm font-medium mb-3">Productos Principales</h4>
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -594,79 +753,41 @@ const ApplicationDetails = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {application.financialInfo.mainProducts.map((product: any, index: number) => <TableRow key={index}>
-                            <TableCell>{product.name}</TableCell>
-                            <TableCell>{product.unitMeasure}</TableCell>
-                            <TableCell className="text-right">{product.quantity}</TableCell>
-                            <TableCell className="text-right">Q{product.unitPrice.toLocaleString()}</TableCell>
-                            <TableCell className="text-right">Q{product.totalSales.toLocaleString()}</TableCell>
-                            <TableCell className="text-right">Q{product.profit.toLocaleString()}</TableCell>
+                        {application.business.productos.map((product: any, index: number) => <TableRow key={index}>
+                            <TableCell>{product.nombre}</TableCell>
+                            <TableCell>{product.unidadMedida}</TableCell>
+                            <TableCell className="text-right">{product.cantidadVendida}</TableCell>
+                            <TableCell className="text-right">Q{product.precioUnitario.toLocaleString()}</TableCell>
+                            <TableCell className="text-right">Q{product.totalVentas.toLocaleString()}</TableCell>
+                            <TableCell className="text-right">Q{product.utilidad.toLocaleString()}</TableCell>
                           </TableRow>)}
                       </TableBody>
                     </Table>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Estacionalidad</h4>
-                      <div className="space-y-3">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Mejores Meses</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {application.financialInfo.bestMonths.map((month: string) => <Badge key={month} variant="outline" className="bg-green-50">{month}</Badge>)}
-                          </div>
-                          <p className="text-sm mt-1">
-                            <span className="text-muted-foreground">Monto: </span>
-                            <span className="font-medium">Q{application.financialInfo.bestMonthsAmount.toLocaleString()}</span>
-                          </p>
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Estacionalidad</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Mejores Meses</p>
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {application.business.estacionalidad.mejoresMeses.map((month: string) => <Badge key={month} variant="outline" className="bg-green-50">{month}</Badge>)}
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Peores Meses</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {application.financialInfo.worstMonths.map((month: string) => <Badge key={month} variant="outline" className="bg-red-50">{month}</Badge>)}
-                          </div>
-                          <p className="text-sm mt-1">
-                            <span className="text-muted-foreground">Monto: </span>
-                            <span className="font-medium">Q{application.financialInfo.worstMonthsAmount.toLocaleString()}</span>
-                          </p>
-                        </div>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Ventas: </span>
+                          <span className="font-medium">Q{application.business.estacionalidad.ventasMejoresMeses.toLocaleString()}</span>
+                        </p>
                       </div>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Gastos Administrativos</h4>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Alquiler</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.rent.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Electricidad</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.electricity.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Teléfono/Internet</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.phone.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Agua</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.water.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Transporte/Combustible</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.transport.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Otros</TableCell>
-                            <TableCell className="text-right">Q{application.financialInfo.expenses.other.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Total</TableCell>
-                            <TableCell className="text-right font-bold">Q{application.financialInfo.expenses.total.toLocaleString()}</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Peores Meses</p>
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {application.business.estacionalidad.peoresMeses.map((month: string) => <Badge key={month} variant="outline" className="bg-red-50">{month}</Badge>)}
+                        </div>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Ventas: </span>
+                          <span className="font-medium">Q{application.business.estacionalidad.ventasPeoresMeses.toLocaleString()}</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -675,7 +796,70 @@ const ApplicationDetails = () => {
           </TabsContent>
           
           <TabsContent value="guarantors">
-            <GuarantorsList applicationId={application.id} guarantors={application.guarantors} />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <Users className="h-5 w-5 mr-2 text-primary" />
+                  Fiadores Registrados
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {application.guarantors.length === 0 ? (
+                  <div className="text-center p-6">
+                    <Users className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                    <p className="text-muted-foreground">Pendiente - No hay fiadores registrados</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {application.guarantors.map((guarantor: any) => (
+                      <Card key={guarantor.id} className="p-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Nombre</p>
+                            <p className="font-medium">{guarantor.nombre}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">DPI</p>
+                            <p className="font-medium">{guarantor.dpi}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Parentesco</p>
+                            <p className="font-medium">{guarantor.parentesco}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Teléfono</p>
+                            <p className="font-medium">{guarantor.telefono}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Salario</p>
+                            <p className="font-medium">Q{guarantor.salario.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Tipo de Empleo</p>
+                            <p className="font-medium">{guarantor.tipoEmpleo}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Empresa/Empleador</p>
+                            <p className="font-medium">{guarantor.empresa}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">% Cobertura</p>
+                            <p className="font-medium">{guarantor.porcentajeCobertura}%</p>
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <div className="flex justify-between text-sm mb-2">
+                            <span>Progreso:</span>
+                            <span>{guarantor.progress}%</span>
+                          </div>
+                          <Progress value={guarantor.progress} className="h-2" />
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
           
           <TabsContent value="docs">
@@ -703,11 +887,11 @@ const ApplicationDetails = () => {
                           </div>
                         </div>}
                       <p className="font-medium text-center">
-                        {key === 'personalPhoto' && 'Foto Personal'}
-                        {key === 'agentPhoto' && 'Foto con Agente'}
-                        {key === 'businessPhoto' && 'Foto Negocio'}
-                        {key === 'utilityBill' && 'Recibo Servicios'}
-                        {key === 'additionalDocs' && 'Docs. Adicionales'}
+                        {key === 'dpiFrontal' && 'DPI Frontal'}
+                        {key === 'dpiTrasero' && 'DPI Trasero'}
+                        {key === 'fotoSolicitante' && 'Foto Solicitante'}
+                        {key === 'recibosServicios' && 'Recibos Servicios'}
+                        {key === 'firmaCanvas' && 'Firma Digital'}
                       </p>
                     </div>
                   </CardContent>
@@ -745,4 +929,5 @@ const ApplicationDetails = () => {
       <BottomNavigation />
     </div>;
 };
+
 export default ApplicationDetails;
