@@ -7,7 +7,7 @@ import PrequalificationModal from '@/components/prequalification/Prequalificatio
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar, Edit, FileText, Copy, Trash2, Share2, MoreVertical, CheckCircle, AlertCircle, BarChart3 } from 'lucide-react';
+import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar, Edit, FileText, Copy, Trash2, Share2, MoreVertical, CheckCircle, AlertCircle, BarChart3, Banknote, FileSignature, UserCheck, FileImage, Users } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator } from "@/components/ui/context-menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -181,7 +181,8 @@ const Applications = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {applications.map(application => <ContextMenu key={application.id}>
+          {applications.map(application => (
+            <ContextMenu key={application.id}>
               <ContextMenuTrigger>
                 <Card className="card-hover cursor-pointer group relative" onClick={() => handleViewApplication(application.id)}>
                   <CardContent className="p-4">
@@ -189,24 +190,18 @@ const Applications = () => {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h3 className="text-section-title font-semibold">{application.clientName}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Calendar className="mr-1 h-3 w-3" />
-                              {formatDate(application.date)}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <FileText className="mr-1 h-3 w-3" />
-                              {application.id}
-                            </div>
+                          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                            <Calendar className="h-3 w-3" />
+                            <span>{formatDate(application.date)}</span>
+                            <FileText className="h-3 w-3 ml-2" />
+                            <span>{application.id}</span>
                           </div>
                         </div>
                         
                         <div className="flex flex-col items-end gap-2">
-                          {getStatusBadge(application.status)}
-                          
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto transition-opacity" onClick={e => e.stopPropagation()}>
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -235,11 +230,20 @@ const Applications = () => {
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
+                          
+                          {getStatusBadge(application.status)}
                         </div>
                       </div>
                       
-                      <div className="mt-3 mb-1">
-                        <div className="text-base font-medium mb-1">{application.stage}</div>
+                      <div className="mt-1 mb-1">
+                        <div className="flex items-center text-base font-medium mb-1">
+                          {application.stage === 'Información Financiera' && <Banknote className="h-4 w-4 mr-2" />}
+                          {application.stage === 'Firma de Acta' && <FileSignature className="h-4 w-4 mr-2" />}
+                          {application.stage === 'Análisis de Carácter' && <UserCheck className="h-4 w-4 mr-2" />}
+                          {application.stage === 'Documentos e Imágenes' && <FileImage className="h-4 w-4 mr-2" />}
+                          {application.stage === 'Fiadores' && <Users className="h-4 w-4 mr-2" />}
+                          <span>{application.stage}</span>
+                        </div>
                         <div className="flex justify-between text-sm mb-1">
                           <span className="text-muted-foreground">Progreso</span>
                           <span className="font-medium">{Math.round(application.progress / 6 * 100)}%</span>
@@ -279,7 +283,8 @@ const Applications = () => {
                   <span>Eliminar</span>
                 </ContextMenuItem>
               </ContextMenuContent>
-            </ContextMenu>)}
+            </ContextMenu>
+          ))}
         </div>
         
         <div className="flex justify-center py-4">
