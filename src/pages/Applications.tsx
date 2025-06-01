@@ -13,15 +13,18 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, C
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+
 const generateRandomId = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
+
 const Applications = () => {
   const navigate = useNavigate();
   const {
     toast
   } = useToast();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
+
   useEffect(() => {
     // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
@@ -29,9 +32,11 @@ const Applications = () => {
       navigate('/login');
     }
   }, [navigate]);
+
   const handleViewApplication = (id: string) => {
     navigate(`/applications/${id}`);
   };
+
   const handleEditApplication = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     navigate(`/applications/${id}/edit`);
@@ -41,6 +46,7 @@ const Applications = () => {
       duration: 3000
     });
   };
+
   const handleDuplicateApplication = (id: string, clientName: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     toast({
@@ -49,6 +55,7 @@ const Applications = () => {
       duration: 3000
     });
   };
+
   const handleDeleteApplication = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     toast({
@@ -58,6 +65,7 @@ const Applications = () => {
       duration: 3000
     });
   };
+
   const handleShareApplication = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     toast({
@@ -66,6 +74,7 @@ const Applications = () => {
       duration: 3000
     });
   };
+
   const applications = [{
     id: `BVM_${generateRandomId()}`,
     clientName: 'Ana García Méndez',
@@ -112,6 +121,7 @@ const Applications = () => {
     progress: 4,
     stage: 'Fiadores'
   }];
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
@@ -138,6 +148,7 @@ const Applications = () => {
         return null;
     }
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('es-GT', {
@@ -146,7 +157,9 @@ const Applications = () => {
       year: 'numeric'
     }).format(date);
   };
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 px-4 py-4 pb-20 space-y-6">
@@ -155,13 +168,13 @@ const Applications = () => {
           <p className="text-muted-foreground">Gestiona las solicitudes de crédito</p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+        <div className="flex flex-col gap-4">
           <div className="relative w-full sm:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Buscar solicitudes..." className="pl-10" />
           </div>
           
-          <Button className="flex-1 sm:flex-none" onClick={() => navigate('/applications/new')}>
+          <Button className="w-full" onClick={() => navigate('/applications/new')}>
             <FileSpreadsheet className="mr-2 h-4 w-4" />
             Nueva Solicitud
           </Button>
@@ -279,6 +292,8 @@ const Applications = () => {
       <FloatingPrequalificationButton onClick={() => setShowPrequalificationModal(true)} />
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
-    </div>;
+    </div>
+  );
 };
+
 export default Applications;
