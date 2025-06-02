@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -11,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import GuarantorsList from '@/components/guarantors/GuarantorsList';
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
