@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
@@ -6,79 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 const generateRandomId = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
-// Define guarantor types
-export type GuarantorType = 'salaried' | 'non-salaried';
-
-// Define guarantor status and data structure
-export interface GuarantorData {
-  id: string;
-  name: string;
-  identification: string;
-  coveragePercentage: number;
-  status: 'pending' | 'complete';
-  type?: GuarantorType;
-  tempId?: string;
-  isExistingGuarantor?: boolean;
-  personalInfo?: {
-    firstName: string;
-    lastName: string;
-    cui: string;
-    email: string;
-    phone: string;
-    education: string;
-    profession: string;
-    housingType: string;
-    maritalStatus: string;
-    dependents: number;
-    address: string;
-  };
-  characterInfo?: {
-    isReliable: boolean;
-    isOrganized: boolean;
-    hasStableIncome: boolean;
-    hasGoodReputation: boolean;
-    additionalNotes: string;
-  };
-  businessInfo?: {
-    monthlySales: number;
-    cashSales: number;
-    creditSales: number;
-    costs: number;
-    grossProfit: number;
-    administrativeExpenses: number;
-    netProfit: number;
-    profitMargin: number;
-    products: {
-      id: string;
-      name: string;
-      price: number;
-      cost: number;
-      highSeasonMonths: string[];
-      lowSeasonMonths: string[];
-      photoUrl?: string;
-    }[];
-  };
-  documentsStatus?: {
-    dpi: 'pending' | 'complete' | 'error';
-    residenceProof: 'pending' | 'complete' | 'error';
-    businessPhotos: 'pending' | 'complete' | 'error';
-    financialStatement: 'pending' | 'complete' | 'error';
-    taxDeclaration: 'pending' | 'complete' | 'error';
-  };
-  consentInfo?: {
-    hasSignedConsent: boolean;
-    witnessName?: string;
-    witnessId?: string;
-    signatureUrl?: string;
-  };
-  evaluationResult?: {
-    isApproved: boolean;
-    suggestedCoveragePercentage: number;
-    evaluationScore: number;
-    evaluationNotes: string;
-  };
-}
 
 interface FormContextType {
   activeStep: number;
@@ -103,16 +31,6 @@ interface FormContextType {
   setIsPep: React.Dispatch<React.SetStateAction<boolean>>;
   agentComments: string;
   setAgentComments: React.Dispatch<React.SetStateAction<string>>;
-  showNonSalariedGuarantorForm: boolean;
-  setShowNonSalariedGuarantorForm: React.Dispatch<React.SetStateAction<boolean>>;
-  currentGuarantor: GuarantorData | null;
-  setCurrentGuarantor: React.Dispatch<React.SetStateAction<GuarantorData | null>>;
-  guarantorStep: number;
-  setGuarantorStep: React.Dispatch<React.SetStateAction<number>>;
-  saveGuarantor: () => void;
-  cancelGuarantorForm: () => void;
-  requiredCoveragePercentage: number;
-  calculateCoveragePercentage: () => number;
   subStep: number;
   setSubStep: React.Dispatch<React.SetStateAction<number>>;
   handleSubNext: () => void;
@@ -162,67 +80,6 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [isPep, setIsPep] = useState(false);
   const [agentComments, setAgentComments] = useState("");
   
-  // Non-salaried guarantor flow state
-  const [showNonSalariedGuarantorForm, setShowNonSalariedGuarantorForm] = useState(false);
-  const [currentGuarantor, setCurrentGuarantor] = useState<GuarantorData | null>(null);
-  const [guarantorStep, setGuarantorStep] = useState(0);
-  const [requiredCoveragePercentage] = useState(100);
-  
-  // Calculate the total coverage percentage provided by all guarantors
-  const calculateCoveragePercentage = () => {
-    const guarantors = formData.guarantors || [];
-    return guarantors.reduce((total: number, guarantor: GuarantorData) => 
-      total + guarantor.coveragePercentage, 0);
-  };
-  
-  // Save the current guarantor to the list of guarantors
-  const saveGuarantor = () => {
-    if (!currentGuarantor) return;
-    
-    const guarantors = [...(formData.guarantors || [])];
-    const existingIndex = guarantors.findIndex(g => g.id === currentGuarantor.id);
-    
-    if (existingIndex >= 0) {
-      guarantors[existingIndex] = {...currentGuarantor};
-    } else {
-      guarantors.push(currentGuarantor);
-    }
-    
-    // Update form data with new guarantors
-    setFormData(prev => ({
-      ...prev,
-      guarantors
-    }));
-    
-    // Reset guarantor flow
-    setShowNonSalariedGuarantorForm(false);
-    setCurrentGuarantor(null);
-    setGuarantorStep(0);
-    
-    toast({
-      title: "Fiador guardado",
-      description: "La información del fiador ha sido guardada correctamente.",
-      className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
-    });
-  };
-  
-  // Cancel the guarantor form and return to main flow
-  const cancelGuarantorForm = () => {
-    if (currentGuarantor && (
-      currentGuarantor.personalInfo?.firstName || 
-      currentGuarantor.businessInfo?.monthlySales
-    )) {
-      // Show confirmation dialog if there's data to lose
-      if (!window.confirm("¿Está seguro que desea cancelar? Se perderán los datos no guardados.")) {
-        return;
-      }
-    }
-    
-    setShowNonSalariedGuarantorForm(false);
-    setCurrentGuarantor(null);
-    setGuarantorStep(0);
-  };
-  
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
@@ -252,24 +109,6 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
           hasFatca: false,
           isPep: false,
           agentComments: "",
-          guarantors: [
-            {
-              id: 'guarantor-1',
-              name: 'Juan Pérez',
-              identification: '1234-5678-9012',
-              coveragePercentage: 50,
-              status: 'complete' as const,
-              type: 'salaried' as GuarantorType
-            },
-            {
-              id: 'guarantor-2',
-              name: 'Ana López',
-              identification: '9876-5432-1098',
-              coveragePercentage: 50,
-              status: 'pending' as const,
-              type: 'non-salaried' as GuarantorType
-            }
-          ],
           creditAmount: 50000
         };
         
@@ -478,16 +317,6 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     setIsPep,
     agentComments,
     setAgentComments,
-    showNonSalariedGuarantorForm,
-    setShowNonSalariedGuarantorForm,
-    currentGuarantor,
-    setCurrentGuarantor,
-    guarantorStep,
-    setGuarantorStep,
-    saveGuarantor,
-    cancelGuarantorForm,
-    requiredCoveragePercentage,
-    calculateCoveragePercentage,
     subStep,
     setSubStep,
     handleSubNext,

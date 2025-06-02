@@ -7,21 +7,10 @@ import BusinessEconomicProfile from './BusinessEconomicProfile';
 import GuarantorsSection from './GuarantorsSection';
 import PhotoDocumentUpload from './PhotoDocumentUpload';
 import ReviewSection from './ReviewSection';
-import NonSalariedGuarantorForm from './guarantorFlow/NonSalariedGuarantorForm';
 import FormTypeBanner from '../forms/FormTypeBanner';
 
 const StepContent: React.FC = () => {
-  const { activeStep, formData, updateFormData, showNonSalariedGuarantorForm } = useFormContext();
-
-  // Si el formulario de fiador no asalariado está activo, mostrar ese en su lugar
-  if (showNonSalariedGuarantorForm) {
-    return (
-      <>
-        <FormTypeBanner type="guarantor" />
-        <NonSalariedGuarantorForm />
-      </>
-    );
-  }
+  const { activeStep, formData, updateFormData } = useFormContext();
 
   const renderStepContent = () => {
     switch (activeStep) {
