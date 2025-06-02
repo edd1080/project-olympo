@@ -8,6 +8,31 @@ const generateRandomId = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// New simplified guarantor interface
+interface GuarantorData {
+  id: string;
+  // Basic Info
+  fullName: string;
+  cui: string;
+  email: string;
+  phone: string;
+  address: string;
+  
+  // Financial Info
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  hasProperty: boolean;
+  propertyValue?: number;
+  hasVehicle: boolean;
+  vehicleValue?: number;
+  bankAccounts: string;
+  otherIncome: number;
+  
+  // Form completion status
+  basicInfoCompleted: boolean;
+  financialInfoCompleted: boolean;
+}
+
 interface FormContextType {
   activeStep: number;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -37,6 +62,19 @@ interface FormContextType {
   handleSubPrevious: () => void;
   isLastSubStep: boolean;
   getSubStepsForSection: (sectionIndex: number) => number;
+  
+  // New guarantor-related context
+  guarantors: GuarantorData[];
+  setGuarantors: React.Dispatch<React.SetStateAction<GuarantorData[]>>;
+  currentGuarantorIndex: number;
+  setCurrentGuarantorIndex: React.Dispatch<React.SetStateAction<number>>;
+  guarantorFormStep: number;
+  setGuarantorFormStep: React.Dispatch<React.SetStateAction<number>>;
+  addGuarantor: () => void;
+  updateGuarantor: (index: number, field: string, value: any) => void;
+  removeGuarantor: (index: number) => void;
+  isInGuarantorForm: boolean;
+  setIsInGuarantorForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const FormContext = createContext<FormContextType | undefined>(undefined);
@@ -57,6 +95,25 @@ export const useFormContext = () => {
   }
   return context;
 };
+
+const createEmptyGuarantor = (): GuarantorData => ({
+  id: generateRandomId(),
+  fullName: '',
+  cui: '',
+  email: '',
+  phone: '',
+  address: '',
+  monthlyIncome: 0,
+  monthlyExpenses: 0,
+  hasProperty: false,
+  propertyValue: 0,
+  hasVehicle: false,
+  vehicleValue: 0,
+  bankAccounts: '',
+  otherIncome: 0,
+  basicInfoCompleted: false,
+  financialInfoCompleted: false,
+});
 
 export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const navigate = useNavigate();
@@ -79,6 +136,12 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [hasFatca, setHasFatca] = useState(false);
   const [isPep, setIsPep] = useState(false);
   const [agentComments, setAgentComments] = useState("");
+  
+  // New guarantor states
+  const [guarantors, setGuarantors] = useState<GuarantorData[]>([createEmptyGuarantor(), createEmptyGuarantor()]);
+  const [currentGuarantorIndex, setCurrentGuarantorIndex] = useState(0);
+  const [guarantorFormStep, setGuarantorFormStep] = useState(0); // 0: basic info, 1: financial info
+  const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -147,7 +210,8 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
       case 'business':
         return !!(formData.businessType || formData.businessDescription);
       case 'guarantors':
-        return !!(formData.guarantors && formData.guarantors.length > 0);
+        // Check if we have at least 2 guarantors and all are completed
+        return guarantors.length >= 2 && guarantors.every(g => g.basicInfoCompleted && g.financialInfoCompleted);
       case 'documents':
         return !!(formData.documentsUploaded);
       case 'review':
@@ -292,6 +356,26 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     navigate('/applications');
   };
   
+  // New guarantor functions
+  const addGuarantor = () => {
+    setGuarantors(prev => [...prev, createEmptyGuarantor()]);
+  };
+  
+  const updateGuarantor = (index: number, field: string, value: any) => {
+    setGuarantors(prev => prev.map((guarantor, i) => 
+      i === index ? { ...guarantor, [field]: value } : guarantor
+    ));
+  };
+  
+  const removeGuarantor = (index: number) => {
+    if (guarantors.length > 2) { // Minimum 2 guarantors required
+      setGuarantors(prev => prev.filter((_, i) => i !== index));
+      if (currentGuarantorIndex >= guarantors.length - 1) {
+        setCurrentGuarantorIndex(0);
+      }
+    }
+  };
+  
   const isLastStep = activeStep === steps.length - 1;
   
   const value = {
@@ -322,7 +406,20 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     handleSubNext,
     handleSubPrevious,
     isLastSubStep,
-    getSubStepsForSection
+    getSubStepsForSection,
+    
+    // New guarantor context values
+    guarantors,
+    setGuarantors,
+    currentGuarantorIndex,
+    setCurrentGuarantorIndex,
+    guarantorFormStep,
+    setGuarantorFormStep,
+    addGuarantor,
+    updateGuarantor,
+    removeGuarantor,
+    isInGuarantorForm,
+    setIsInGuarantorForm
   };
 
   return (

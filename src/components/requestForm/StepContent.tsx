@@ -10,7 +10,7 @@ import ReviewSection from './ReviewSection';
 import FormTypeBanner from '../forms/FormTypeBanner';
 
 const StepContent: React.FC = () => {
-  const { activeStep, formData, updateFormData } = useFormContext();
+  const { activeStep, formData, updateFormData, isInGuarantorForm } = useFormContext();
 
   const renderStepContent = () => {
     switch (activeStep) {
@@ -31,9 +31,17 @@ const StepContent: React.FC = () => {
     }
   };
 
+  // Determine form type based on current section and state
+  const getFormType = () => {
+    if (activeStep === 3 && isInGuarantorForm) {
+      return 'guarantor';
+    }
+    return 'applicant';
+  };
+
   return (
     <div className="mb-24">
-      <FormTypeBanner type="applicant" />
+      <FormTypeBanner type={getFormType()} />
       {renderStepContent()}
     </div>
   );
