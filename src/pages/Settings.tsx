@@ -1,20 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ChevronRight, LogOut, User, HelpCircle } from 'lucide-react';
+import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import DeviceInfo from '@/components/settings/DeviceInfo';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import AppPreferences from '@/components/settings/AppPreferences';
 import SecuritySettings from '@/components/settings/SecuritySettings';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const deviceInfo = {
     ram: {
@@ -50,6 +61,11 @@ const Settings = () => {
       description: "Has salido de tu cuenta",
     });
     navigate('/login');
+    setShowLogoutDialog(false);
+  };
+  
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
   };
   
   return (
@@ -136,7 +152,7 @@ const Settings = () => {
           <Button 
             variant="destructive" 
             className="w-full flex items-center justify-center gap-2"
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
           >
             <LogOut className="h-5 w-5" />
             Cerrar sesión
@@ -145,6 +161,26 @@ const Settings = () => {
       </main>
       
       <BottomNavigation />
+
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <AlertDialogTitle>Cerrar sesión</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription>
+              ¿Estás seguro que quieres cerrar sesión? Tendrás que iniciar sesión nuevamente para acceder a tu cuenta.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Cerrar sesión
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
