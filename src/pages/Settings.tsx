@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -13,20 +12,12 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import AppPreferences from '@/components/settings/AppPreferences';
 import SecuritySettings from '@/components/settings/SecuritySettings';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 const Settings = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // DeviceInfo data commented out but preserved for future use
@@ -51,39 +42,32 @@ const Settings = () => {
     }
   };
   */
-  
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
     }
   }, [navigate]);
-  
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     toast({
       title: "Sesión cerrada",
-      description: "Has salido de tu cuenta",
+      description: "Has salido de tu cuenta"
     });
     navigate('/login');
     setShowLogoutDialog(false);
   };
-  
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
   };
-  
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 px-4 pb-20">
-        <div className="space-y-0.5 py-6">
-          <h2 className="text-2xl font-bold">Ajustes</h2>
-          <p className="text-muted-foreground">Gestiona tu cuenta y preferencias</p>
-        </div>
+      <main className="flex-1 px-4 pb-20 my-[20px]">
         
-        <Separator className="my-6" />
+        
+        
         
         <div className="space-y-6">
           <Card>
@@ -97,20 +81,14 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div 
-                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
-                onClick={() => navigate('/settings/personal-info')}
-              >
+              <div className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2" onClick={() => navigate('/settings/personal-info')}>
                 <div>
                   <p className="font-medium">Información personal</p>
                   <p className="text-sm text-muted-foreground">Nombre, correo, teléfono</p>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div 
-                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
-                onClick={() => navigate('/settings/change-password')}
-              >
+              <div className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2" onClick={() => navigate('/settings/change-password')}>
                 <div>
                   <p className="font-medium">Cambiar contraseña</p>
                   <p className="text-sm text-muted-foreground">Actualiza tu contraseña</p>
@@ -121,8 +99,8 @@ const Settings = () => {
           </Card>
           
           {/* DeviceInfo component commented out but preserved for future use
-          <DeviceInfo deviceInfo={deviceInfo} />
-          */}
+           <DeviceInfo deviceInfo={deviceInfo} />
+           */}
           <NotificationSettings />
           <AppPreferences />
           <SecuritySettings />
@@ -138,10 +116,7 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div 
-                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
-                onClick={() => navigate('/settings/report-problem')}
-              >
+              <div className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2" onClick={() => navigate('/settings/report-problem')}>
                 <div>
                   <p className="font-medium">Reportar problema</p>
                   <p className="text-sm text-muted-foreground">Informa sobre errores o fallos</p>
@@ -151,11 +126,7 @@ const Settings = () => {
             </CardContent>
           </Card>
           
-          <Button 
-            variant="destructive" 
-            className="w-full flex items-center justify-center gap-2"
-            onClick={handleLogoutClick}
-          >
+          <Button variant="destructive" className="w-full flex items-center justify-center gap-2" onClick={handleLogoutClick}>
             <LogOut className="h-5 w-5" />
             Cerrar sesión
           </Button>
@@ -183,8 +154,6 @@ const Settings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  );
+    </div>;
 };
-
 export default Settings;
