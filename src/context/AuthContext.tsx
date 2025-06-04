@@ -31,48 +31,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [initialized, setInitialized] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    let mounted = true;
+    console.log('AuthProvider: Setting up auth listener');
+    
+    // Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting initial session:', error);
+        }
+        console.log('Initial session:', session?.user?.id);
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Error in getInitialSession:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Set up auth state listener first
+    getInitialSession();
+
+    // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.id);
-      
-      if (!mounted) return;
-      
-      // Only update state if component is still mounted
       setSession(session);
       setUser(session?.user ?? null);
-      
-      // Mark as initialized after first auth state change
-      if (!initialized) {
-        setInitialized(true);
-        setLoading(false);
-      }
+      setLoading(false);
     });
 
-    // Get initial session only if not initialized
-    if (!initialized) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!mounted) return;
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        setInitialized(true);
-        setLoading(false);
-      });
-    }
-
     return () => {
-      mounted = false;
+      console.log('AuthProvider: Cleaning up auth listener');
       subscription.unsubscribe();
     };
-  }, [initialized]);
+  }, []); // Empty dependency array to prevent re-running
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -98,9 +95,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         variant: "destructive",
       });
       throw error;
-    } finally {
-      // Don't set loading to false here - let the auth state change handle it
     }
+    // Don't set loading to false here - let the auth state change handle it
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -176,9 +172,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      // Don't set loading to false here - let the auth state change handle it
     }
+    // Don't set loading to false here - let the auth state change handle it
   };
 
   const value = {
