@@ -102,14 +102,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (data.user) {
-        // Create user profile
+        // Create user profile - handle potential conflicts gracefully
         const { error: profileError } = await supabase
           .from('users')
-          .insert({
+          .upsert({
             id: data.user.id,
             email: data.user.email!,
             full_name: fullName,
             role: 'agent',
+          }, {
+            onConflict: 'id'
           });
 
         if (profileError) {

@@ -67,14 +67,18 @@ export const useApplications = () => {
         throw error;
       }
 
-      setApplications(prev => [data, ...prev]);
-      
-      toast({
-        title: "Solicitud creada",
-        description: "La solicitud ha sido creada correctamente",
-      });
+      if (data) {
+        setApplications(prev => [data, ...prev]);
+        
+        toast({
+          title: "Solicitud creada",
+          description: "La solicitud ha sido creada correctamente",
+        });
 
-      return data;
+        return data;
+      }
+      
+      throw new Error('No se pudo crear la solicitud');
     } catch (error: any) {
       console.error('Error creating application:', error);
       toast({
@@ -102,11 +106,15 @@ export const useApplications = () => {
         throw error;
       }
 
-      setApplications(prev => 
-        prev.map(app => app.id === id ? data : app)
-      );
+      if (data) {
+        setApplications(prev => 
+          prev.map(app => app.id === id ? data : app)
+        );
 
-      return data;
+        return data;
+      }
+
+      throw new Error('No se pudo actualizar la solicitud');
     } catch (error: any) {
       console.error('Error updating application:', error);
       toast({
@@ -157,12 +165,16 @@ export const useApplications = () => {
         throw error;
       }
 
-      toast({
-        title: "Fiador agregado",
-        description: "El fiador ha sido agregado correctamente",
-      });
+      if (data) {
+        toast({
+          title: "Fiador agregado",
+          description: "El fiador ha sido agregado correctamente",
+        });
 
-      return data;
+        return data;
+      }
+
+      throw new Error('No se pudo crear el fiador');
     } catch (error: any) {
       console.error('Error creating guarantor:', error);
       toast({

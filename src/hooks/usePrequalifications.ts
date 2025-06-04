@@ -47,9 +47,9 @@ export const usePrequalifications = () => {
 
       const formattedData: StoredPrequalification[] = (data || []).map(item => ({
         id: item.id,
-        data: item.data,
-        result: item.result,
-        timestamp: item.created_at,
+        data: item.data as PrequalificationData,
+        result: item.result as PrequalificationResult,
+        timestamp: item.created_at || '',
         location: item.location_lat && item.location_lng ? {
           lat: item.location_lat,
           lng: item.location_lng
@@ -79,8 +79,8 @@ export const usePrequalifications = () => {
 
       const insertData: PrequalificationInsert = {
         user_id: user.id,
-        data,
-        result,
+        data: data as any,
+        result: result as any,
         location_lat: location?.lat,
         location_lng: location?.lng,
       };
@@ -95,22 +95,26 @@ export const usePrequalifications = () => {
         throw error;
       }
 
-      const newPrequalification: StoredPrequalification = {
-        id: savedData.id,
-        data: savedData.data,
-        result: savedData.result,
-        timestamp: savedData.created_at,
-        location: location
-      };
+      if (savedData) {
+        const newPrequalification: StoredPrequalification = {
+          id: savedData.id,
+          data: savedData.data as PrequalificationData,
+          result: savedData.result as PrequalificationResult,
+          timestamp: savedData.created_at || '',
+          location: location
+        };
 
-      setPrequalifications(prev => [newPrequalification, ...prev]);
+        setPrequalifications(prev => [newPrequalification, ...prev]);
 
-      toast({
-        title: "Precalificación guardada",
-        description: "La precalificación ha sido guardada correctamente",
-      });
+        toast({
+          title: "Precalificación guardada",
+          description: "La precalificación ha sido guardada correctamente",
+        });
 
-      return savedData.id;
+        return savedData.id;
+      }
+      
+      throw new Error('No se pudo guardar la precalificación');
     } catch (error: any) {
       console.error('Error saving prequalification:', error);
       toast({

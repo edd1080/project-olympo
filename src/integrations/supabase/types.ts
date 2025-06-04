@@ -9,7 +9,160 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          applicant_email: string | null
+          applicant_name: string | null
+          applicant_phone: string | null
+          created_at: string | null
+          id: string
+          loan_amount: number | null
+          loan_purpose: string | null
+          prequalification_id: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          applicant_email?: string | null
+          applicant_name?: string | null
+          applicant_phone?: string | null
+          created_at?: string | null
+          id?: string
+          loan_amount?: number | null
+          loan_purpose?: string | null
+          prequalification_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          applicant_email?: string | null
+          applicant_name?: string | null
+          applicant_phone?: string | null
+          created_at?: string | null
+          id?: string
+          loan_amount?: number | null
+          loan_purpose?: string | null
+          prequalification_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_prequalification_id_fkey"
+            columns: ["prequalification_id"]
+            isOneToOne: false
+            referencedRelation: "prequalifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guarantors: {
+        Row: {
+          application_id: string
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          income: number | null
+          phone: string | null
+          relationship: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          income?: number | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          income?: number | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guarantors_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prequalifications: {
+        Row: {
+          created_at: string | null
+          data: Json
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          result: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data: Json
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          result: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          result?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
