@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
@@ -21,6 +20,8 @@ export const useApplications = () => {
   useEffect(() => {
     if (user) {
       fetchApplications();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
