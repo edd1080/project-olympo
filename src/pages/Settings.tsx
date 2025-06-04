@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -7,7 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import DeviceInfo from '@/components/settings/DeviceInfo';
+// DeviceInfo commented out but preserved for future use
+// import DeviceInfo from '@/components/settings/DeviceInfo';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import AppPreferences from '@/components/settings/AppPreferences';
 import SecuritySettings from '@/components/settings/SecuritySettings';
@@ -27,6 +29,8 @@ const Settings = () => {
   const { toast } = useToast();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
+  // DeviceInfo data commented out but preserved for future use
+  /*
   const deviceInfo = {
     ram: {
       total: '4GB',
@@ -46,6 +50,7 @@ const Settings = () => {
       name: 'Pixel-Device'
     }
   };
+  */
   
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -92,14 +97,20 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between py-2">
+              <div 
+                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
+                onClick={() => navigate('/settings/personal-info')}
+              >
                 <div>
                   <p className="font-medium">Información personal</p>
                   <p className="text-sm text-muted-foreground">Nombre, correo, teléfono</p>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div className="flex items-center justify-between py-2">
+              <div 
+                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
+                onClick={() => navigate('/settings/change-password')}
+              >
                 <div>
                   <p className="font-medium">Cambiar contraseña</p>
                   <p className="text-sm text-muted-foreground">Actualiza tu contraseña</p>
@@ -109,7 +120,9 @@ const Settings = () => {
             </CardContent>
           </Card>
           
+          {/* DeviceInfo component commented out but preserved for future use
           <DeviceInfo deviceInfo={deviceInfo} />
+          */}
           <NotificationSettings />
           <AppPreferences />
           <SecuritySettings />
@@ -125,21 +138,10 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="font-medium">Centro de ayuda</p>
-                  <p className="text-sm text-muted-foreground">Preguntas frecuentes</p>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="font-medium">Contactar soporte</p>
-                  <p className="text-sm text-muted-foreground">Obtén asistencia personalizada</p>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="flex items-center justify-between py-2">
+              <div 
+                className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2"
+                onClick={() => navigate('/settings/report-problem')}
+              >
                 <div>
                   <p className="font-medium">Reportar problema</p>
                   <p className="text-sm text-muted-foreground">Informa sobre errores o fallos</p>

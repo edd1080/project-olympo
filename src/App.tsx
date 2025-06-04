@@ -13,12 +13,16 @@ import Login from "./pages/Login";
 // import Prospects from "./pages/Prospects";
 import Applications from "./pages/Applications";
 import Settings from "./pages/Settings";
-import Alerts from "./pages/Alerts";
+// Alerts route commented out but preserved for future use
+// import Alerts from "./pages/Alerts";
 import NotFound from "./pages/NotFound";
 // import ProspectDetails from "./pages/ProspectDetails";
 import RequestForm from "./pages/RequestForm";
 import ApplicationDetails from "./pages/ApplicationDetails";
 import Prequalifications from "./pages/Prequalifications";
+import PersonalInfo from "./pages/PersonalInfo";
+import ChangePassword from "./pages/ChangePassword";
+import ReportProblem from "./pages/ReportProblem";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -45,7 +49,12 @@ const App = () => {
               <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
               <Route path="/prequalifications" element={<Prequalifications />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/personal-info" element={<PersonalInfo />} />
+              <Route path="/settings/change-password" element={<ChangePassword />} />
+              <Route path="/settings/report-problem" element={<ReportProblem />} />
+              {/* Alerts route commented out but preserved for future use
               <Route path="/alerts" element={<Alerts />} />
+              */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

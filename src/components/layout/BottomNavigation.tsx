@@ -15,23 +15,15 @@ const BottomNavigation = () => {
       <div className="flex justify-around items-center h-16">
         <Link 
           to="/" 
-          className={`flex flex-col items-center justify-center w-1/5 py-1 ${isActive('/') && !isActive('/applications') && !isActive('/prequalifications') && !isActive('/alerts') && !isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/') && !isActive('/applications') && !isActive('/prequalifications') && !isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <Home className="h-6 w-6" />
           <span className="text-xs mt-1">Inicio</span>
         </Link>
 
-        {/* <Link 
-          to="/prospects" 
-          className={`flex flex-col items-center justify-center w-1/6 py-1 ${isActive('/prospects') ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <User className="h-6 w-6" />
-          <span className="text-xs mt-1">Prospectos</span>
-        </Link> */}
-
         <Link 
           to="/applications" 
-          className={`flex flex-col items-center justify-center w-1/5 py-1 ${isActive('/applications') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/applications') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <FileSpreadsheet className="h-6 w-6" />
           <span className="text-xs mt-1">Solicitudes</span>
@@ -39,12 +31,13 @@ const BottomNavigation = () => {
 
         <Link 
           to="/prequalifications" 
-          className={`flex flex-col items-center justify-center w-1/5 py-1 ${isActive('/prequalifications') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/prequalifications') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <CheckSquare className="h-6 w-6" />
           <span className="text-xs mt-1">Precalif.</span>
         </Link>
 
+        {/* Alertas section commented out but preserved for future use
         <Link 
           to="/alerts" 
           className={`flex flex-col items-center justify-center w-1/5 py-1 ${isActive('/alerts') ? 'text-primary' : 'text-muted-foreground'}`}
@@ -52,10 +45,11 @@ const BottomNavigation = () => {
           <AlertCircle className="h-6 w-6" />
           <span className="text-xs mt-1">Alertas</span>
         </Link>
+        */}
 
         <Link 
           to="/settings" 
-          className={`flex flex-col items-center justify-center w-1/5 py-1 ${isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <Settings className="h-6 w-6" />
           <span className="text-xs mt-1">Ajustes</span>

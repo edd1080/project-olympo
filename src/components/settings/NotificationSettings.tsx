@@ -26,13 +26,6 @@ const NotificationSettings = () => {
         </div>
         <div className="flex items-center justify-between py-2">
           <div>
-            <p className="font-medium">Correos electrónicos</p>
-            <p className="text-sm text-muted-foreground">Recibe actualizaciones por correo</p>
-          </div>
-          <Switch defaultChecked />
-        </div>
-        <div className="flex items-center justify-between py-2">
-          <div>
             <p className="font-medium">Alertas de sistema</p>
             <p className="text-sm text-muted-foreground">Cambios de estado en solicitudes</p>
           </div>

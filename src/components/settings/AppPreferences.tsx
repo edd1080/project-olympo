@@ -13,7 +13,7 @@ const AppPreferences = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Smartphone className="h-5 w-5 text-primary" />
-          Preferencias de aplicación
+          Preferencias del app
         </CardTitle>
         <CardDescription>
           Personaliza tu experiencia en la aplicación
@@ -36,13 +36,6 @@ const AppPreferences = () => {
             <p className="text-sm text-muted-foreground">Mejora la calidad visual</p>
           </div>
           <Switch defaultChecked />
-        </div>
-        <div className="flex items-center justify-between py-2">
-          <div>
-            <p className="font-medium">Datos móviles</p>
-            <p className="text-sm text-muted-foreground">Sincroniza solo con WiFi</p>
-          </div>
-          <Switch />
         </div>
       </CardContent>
     </Card>
