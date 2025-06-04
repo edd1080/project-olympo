@@ -2,21 +2,19 @@
 import React from 'react';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import SectionHeader from '@/components/requestForm/SectionHeader';
+import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
+import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
 
 // Refactored components
 import RequestFormProvider, { useFormContext } from '@/components/requestForm/RequestFormProvider';
 import StepContent from '@/components/requestForm/StepContent';
-import NavigationHeader from '@/components/requestForm/NavigationHeader';
 import ExitDialog from '@/components/requestForm/ExitDialog';
 import FormActionBar from '@/components/requestForm/FormActionBar';
 import { steps } from '@/components/requestForm/formSteps';
 
 const RequestFormContent = () => {
   const { 
-    personName, 
-    activeStep, 
-    sectionStatus,
+    personName,
     showExitDialog,
     setShowExitDialog,
     handleExit
@@ -27,22 +25,21 @@ const RequestFormContent = () => {
       <Header personName={personName?.split(' ')[0] || ''} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20 max-w-5xl">
-        <NavigationHeader steps={steps} />
+        {/* Breadcrumb Navigation */}
+        <div className="mb-3 mt-4">
+          <BreadcrumbNavigation />
+        </div>
         
-        {/* Section Header */}
-        <SectionHeader 
-          sectionId={steps[activeStep].id} 
-          currentStep={activeStep + 1} 
-          totalSteps={steps.length}
-          status={sectionStatus[steps[activeStep].id]}
-        />
+        {/* Dynamic Form Header - replaces NavigationHeader and SectionHeader */}
+        <DynamicFormHeader />
         
-        <StepContent />
+        {/* Step Content */}
+        <div className="mt-6">
+          <StepContent />
+        </div>
         
         {/* Action Bar */}
-        <FormActionBar
-          steps={steps}
-        />
+        <FormActionBar steps={steps} />
       </main>
       
       <BottomNavigation />

@@ -41,7 +41,12 @@ const StepContent: React.FC = () => {
 
   return (
     <div className="mb-24">
-      <FormTypeBanner type={getFormType()} />
+      {/* Only show banner for guarantor forms */}
+      {activeStep === 3 && isInGuarantorForm && (
+        <div className="mb-6">
+          <FormTypeBanner type={getFormType()} />
+        </div>
+      )}
       {renderStepContent()}
     </div>
   );
