@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { supabase, Database } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
