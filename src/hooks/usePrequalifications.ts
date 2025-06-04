@@ -47,8 +47,8 @@ export const usePrequalifications = () => {
 
       const formattedData: StoredPrequalification[] = (data || []).map(item => ({
         id: item.id,
-        data: item.data as PrequalificationData,
-        result: item.result as PrequalificationResult,
+        data: item.data as unknown as PrequalificationData,
+        result: item.result as unknown as PrequalificationResult,
         timestamp: item.created_at || '',
         location: item.location_lat && item.location_lng ? {
           lat: item.location_lat,
@@ -79,8 +79,8 @@ export const usePrequalifications = () => {
 
       const insertData: PrequalificationInsert = {
         user_id: user.id,
-        data: data as any,
-        result: result as any,
+        data: data as unknown as Database['public']['Tables']['prequalifications']['Insert']['data'],
+        result: result as unknown as Database['public']['Tables']['prequalifications']['Insert']['result'],
         location_lat: location?.lat,
         location_lng: location?.lng,
       };
@@ -98,8 +98,8 @@ export const usePrequalifications = () => {
       if (savedData) {
         const newPrequalification: StoredPrequalification = {
           id: savedData.id,
-          data: savedData.data as PrequalificationData,
-          result: savedData.result as PrequalificationResult,
+          data: savedData.data as unknown as PrequalificationData,
+          result: savedData.result as unknown as PrequalificationResult,
           timestamp: savedData.created_at || '',
           location: location
         };
