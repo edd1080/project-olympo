@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -12,14 +12,6 @@ import { Button } from '@/components/ui/button';
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
-  
-  useEffect(() => {
-    // Check if user is authenticated
-    const authToken = localStorage.getItem('authToken');
-    if (!authToken) {
-      navigate('/login');
-    }
-  }, [navigate]);
   
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -98,22 +90,6 @@ const Index = () => {
               </Button>
             </CardContent>
           </Card>
-          
-          {/* <Card className="card-hover" onClick={() => navigate('/prospects')}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                Nuevo Prospecto
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Registrar un nuevo prospecto en el sistema</p>
-              <Button className="mt-4 w-full" variant="outline">
-                <Users className="mr-2 h-4 w-4" />
-                Crear prospecto
-              </Button>
-            </CardContent>
-          </Card> */}
         </div>
       </main>
       
