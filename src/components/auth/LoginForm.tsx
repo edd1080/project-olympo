@@ -1,28 +1,60 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, loading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!username || !password) {
+      toast({
+        title: "Error de validación",
+        description: "Por favor ingresa usuario y contraseña",
+        variant: "destructive",
+      });
       return;
     }
     
     try {
-      await signIn(username, password);
+      setIsLoading(true);
+      
+      // Simulating API call with a timeout
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // For demo purposes, accept any non-empty credentials
+      console.log('Login successful:', { username });
+      
+      // Store auth token (in a real app, this would come from the server)
+      localStorage.setItem('authToken', 'demo-token-12345');
+      
+      toast({
+        title: "¡Inicio de sesión exitoso!",
+        description: "Bienvenido/a a Coopsama App",
+      });
+      
+      // Redirect to main app
+      navigate('/');
+      
     } catch (error) {
-      // Error handling is done in the AuthContext
-      console.error('Login failed:', error);
+      console.error('Login error:', error);
+      toast({
+        title: "Error de inicio de sesión",
+        description: "Credenciales incorrectas o problema de conexión",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -35,14 +67,13 @@ const LoginForm = () => {
           </div>
           <Input
             id="username"
-            type="email"
-            placeholder="Correo electrónico"
+            type="text"
+            placeholder="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="pl-10"
-            autoComplete="email"
-            disabled={loading}
-            required
+            autoComplete="username"
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -60,8 +91,7 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="pl-10 pr-10"
             autoComplete="current-password"
-            disabled={loading}
-            required
+            disabled={isLoading}
           />
           <button
             type="button"
@@ -78,12 +108,12 @@ const LoginForm = () => {
         </div>
       </div>
       
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
       </Button>
       
       <div className="text-center text-sm text-muted-foreground">
-        <p>Usa tu cuenta de Coopsama para acceder</p>
+        <p>Demo: Ingresa cualquier usuario/contraseña</p>
       </div>
     </form>
   );
