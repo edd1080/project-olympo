@@ -31,28 +31,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    let mounted = true;
 
-    // Listen for auth changes
+    // Set up auth state listener first
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session);
+      console.log('Auth state changed:', event, session?.user?.id);
+      
+      if (!mounted) return;
+      
+      // Only update state if component is still mounted
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
+      
+      // Mark as initialized after first auth state change
+      if (!initialized) {
+        setInitialized(true);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // Get initial session only if not initialized
+    if (!initialized) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!mounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        setInitialized(true);
+        setLoading(false);
+      });
+    }
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [initialized]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -79,7 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       throw error;
     } finally {
-      setLoading(false);
+      // Don't set loading to false here - let the auth state change handle it
     }
   };
 
@@ -157,7 +177,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      // Don't set loading to false here - let the auth state change handle it
     }
   };
 

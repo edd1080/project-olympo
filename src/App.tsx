@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Pages
 import Index from "./pages/Index";
@@ -25,6 +25,13 @@ const queryClient = new QueryClient();
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user && !isRedirecting) {
+      setIsRedirecting(true);
+    }
+  }, [user, loading, isRedirecting]);
 
   if (loading) {
     return (
@@ -44,6 +51,13 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // Public Route Component (only accessible when not logged in)
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user && !isRedirecting) {
+      setIsRedirecting(true);
+    }
+  }, [user, loading, isRedirecting]);
 
   if (loading) {
     return (
