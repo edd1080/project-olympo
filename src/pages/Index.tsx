@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -8,11 +7,9 @@ import PrequalificationModal from '@/components/prequalification/Prequalificatio
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
-  
   useEffect(() => {
     // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
@@ -20,15 +17,13 @@ const Index = () => {
       navigate('/login');
     }
   }, [navigate]);
-  
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
+  return <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-1 px-4 py-8 pb-20">
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-2">¡Bienvenido, Carlos!</h1>
-          <p className="text-muted-foreground">Asesor de créditos | Sucursal Central</p>
+          <p className="text-muted-foreground">Asesor de créditos | Agencia Central</p>
         </div>
         
         {/* Metrics Summary */}
@@ -113,22 +108,15 @@ const Index = () => {
                 Crear prospecto
               </Button>
             </CardContent>
-          </Card> */}
+           </Card> */}
         </div>
       </main>
       
       <BottomNavigation />
       
-      <FloatingPrequalificationButton 
-        onClick={() => setShowPrequalificationModal(true)} 
-      />
+      <FloatingPrequalificationButton onClick={() => setShowPrequalificationModal(true)} />
       
-      <PrequalificationModal
-        open={showPrequalificationModal}
-        onOpenChange={setShowPrequalificationModal}
-      />
-    </div>
-  );
+      <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
+    </div>;
 };
-
 export default Index;
