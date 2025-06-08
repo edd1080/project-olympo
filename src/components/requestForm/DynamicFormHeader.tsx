@@ -41,7 +41,7 @@ const DynamicFormHeader: React.FC = () => {
     setIsExpanded(!isExpanded);
   };
   return <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/50 shadow-sm">
-      <div className="px-4 py-4 rounded-md">
+      <div className="px-4 py-4 rounded-lg">
         <div className="flex items-center">
           {/* Full width clickable title and step info */}
           <div className="w-full relative">
