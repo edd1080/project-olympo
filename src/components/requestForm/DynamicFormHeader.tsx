@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, CheckCircle } from 'lucide-react';
 import { useFormContext } from './RequestFormProvider';
-import CircularProgress from './CircularProgress';
 import { steps } from './formSteps';
 
 const DynamicFormHeader: React.FC = () => {
@@ -45,10 +44,10 @@ const DynamicFormHeader: React.FC = () => {
 
   return (
     <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/50 shadow-sm">
-      <div className="container mx-auto px-4 py-4 max-w-5xl">
-        <div className="flex items-center justify-between">
-          {/* Left side: Clickable title and step info */}
-          <div className="flex-1 min-w-0 relative">
+      <div className="px-4 py-4">
+        <div className="flex items-center">
+          {/* Full width clickable title and step info */}
+          <div className="w-full relative">
             <button
               onClick={toggleExpanded}
               className="flex items-center gap-2 text-left w-full group hover:bg-accent/50 rounded-lg p-2 -m-2 transition-colors"
@@ -109,18 +108,9 @@ const DynamicFormHeader: React.FC = () => {
               </div>
             )}
           </div>
-          
-          {/* Right side: Circular progress */}
-          <div className="flex-shrink-0 ml-4">
-            <CircularProgress 
-              progress={progress} 
-              size={48} 
-              strokeWidth={4}
-            />
-          </div>
         </div>
         
-        {/* Progress bar for mobile - optional linear indicator */}
+        {/* Progress bar for mobile - linear indicator without percentage */}
         <div className="mt-3 md:hidden">
           <div className="w-full bg-muted/30 rounded-full h-1.5">
             <div 
