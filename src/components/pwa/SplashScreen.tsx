@@ -41,11 +41,8 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
       {/* App Name */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          CreditFlow
+          Coopsama App
         </h1>
-        <p className="text-lg text-muted-foreground font-medium">
-          Mobile Agent
-        </p>
       </div>
 
       {/* Animated Loader */}
@@ -57,13 +54,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
         </div>
         <p className="text-sm text-muted-foreground animate-pulse">
           Cargando aplicación...
-        </p>
-      </div>
-
-      {/* Bottom branding */}
-      <div className="absolute bottom-8 text-center">
-        <p className="text-xs text-muted-foreground">
-          Powered by CreditFlow
         </p>
       </div>
     </div>
