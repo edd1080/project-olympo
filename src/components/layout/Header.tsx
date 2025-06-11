@@ -1,7 +1,12 @@
+
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, X, User, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+// Import the form context to access exit dialog functionality
+import { useFormContext } from '@/components/requestForm/RequestFormProvider';
+
 const Header = ({
   personName
 }: {
@@ -9,6 +14,15 @@ const Header = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Try to get form context if available (only in request form routes)
+  let formContext;
+  try {
+    formContext = useFormContext();
+  } catch {
+    // Not in a form context, continue with normal behavior
+    formContext = null;
+  }
 
   // Determine if we're in a guarantor form
   const isGuarantorForm = location.pathname.includes('/guarantors');
@@ -34,6 +48,7 @@ const Header = ({
         return 'Coopsama App';
     }
   };
+
   const handleGoBack = () => {
     if (location.pathname.includes('/edit')) {
       navigate('/applications');
@@ -41,13 +56,21 @@ const Header = ({
       navigate(-1);
     }
   };
+
   const handleExit = () => {
-    if (location.pathname.includes('/edit')) {
-      navigate('/applications');
+    // If we're in a form context (request form), use the form's exit handler
+    if (formContext && location.pathname.includes('/edit')) {
+      formContext.handleShowExitDialog();
     } else {
-      navigate(-1);
+      // Default behavior for other routes
+      if (location.pathname.includes('/edit')) {
+        navigate('/applications');
+      } else {
+        navigate(-1);
+      }
     }
   };
+
   return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
@@ -72,4 +95,5 @@ const Header = ({
       </div>
     </header>;
 };
+
 export default Header;
