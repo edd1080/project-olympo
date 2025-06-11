@@ -17,7 +17,8 @@ const RequestFormContent = () => {
     personName,
     showExitDialog,
     setShowExitDialog,
-    handleExit
+    handleExit,
+    hasUnsavedChanges
   } = useFormContext();
 
   return (
@@ -49,6 +50,7 @@ const RequestFormContent = () => {
         open={showExitDialog} 
         onOpenChange={setShowExitDialog}
         onExit={handleExit}
+        hasUnsavedChanges={hasUnsavedChanges}
       />
     </div>
   );

@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { DatePicker } from '@/components/ui/date-picker';
 import { cn } from '@/lib/utils';
 import { 
   Select,
@@ -65,29 +61,11 @@ const BasicDataForm: React.FC<BasicDataFormProps> = ({ formData, updateFormData 
 
           <div className="space-y-2">
             <Label>Fecha Solicitud *</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !formData.applicationDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.applicationDate ? format(formData.applicationDate, "PPP") : "Seleccionar fecha"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={formData.applicationDate}
-                  onSelect={(date) => updateFormData('applicationDate', date)}
-                  initialFocus
-                  className="p-3 pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
+            <DatePicker
+              date={formData.applicationDate}
+              onSelect={(date) => updateFormData('applicationDate', date)}
+              placeholder="Seleccionar fecha"
+            />
           </div>
         </div>
 
@@ -150,29 +128,11 @@ const BasicDataForm: React.FC<BasicDataFormProps> = ({ formData, updateFormData 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Fecha Nacimiento *</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !formData.birthDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.birthDate ? format(formData.birthDate, "PPP") : "Seleccionar fecha"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={formData.birthDate}
-                  onSelect={(date) => updateFormData('birthDate', date)}
-                  initialFocus
-                  className="p-3 pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
+            <DatePicker
+              date={formData.birthDate}
+              onSelect={(date) => updateFormData('birthDate', date)}
+              placeholder="Seleccionar fecha de nacimiento"
+            />
           </div>
 
           <div className="space-y-2">

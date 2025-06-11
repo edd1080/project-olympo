@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { XCircle, Save } from 'lucide-react';
+import { XCircle, Save, AlertTriangle } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent, 
@@ -15,16 +15,29 @@ interface ExitDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onExit: (save: boolean) => void;
+  hasUnsavedChanges?: boolean;
 }
 
-const ExitDialog: React.FC<ExitDialogProps> = ({ open, onOpenChange, onExit }) => {
+const ExitDialog: React.FC<ExitDialogProps> = ({ 
+  open, 
+  onOpenChange, 
+  onExit, 
+  hasUnsavedChanges = false 
+}) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>¿Desea salir de la solicitud?</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            {hasUnsavedChanges && <AlertTriangle className="h-5 w-5 text-amber-500" />}
+            ¿Desea salir de la solicitud?
+          </DialogTitle>
           <DialogDescription>
-            Puede guardar su progreso actual para continuar más tarde o salir sin guardar.
+            {hasUnsavedChanges ? (
+              "Tienes cambios sin guardar. Puedes guardar tu progreso para continuar más tarde o salir sin guardar."
+            ) : (
+              "Puede guardar su progreso actual para continuar más tarde o salir sin guardar."
+            )}
           </DialogDescription>
         </DialogHeader>
         

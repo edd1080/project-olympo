@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
@@ -62,6 +61,7 @@ interface FormContextType {
   handleSubPrevious: () => void;
   isLastSubStep: boolean;
   getSubStepsForSection: (sectionIndex: number) => number;
+  hasUnsavedChanges: boolean;
   
   // New guarantor-related context
   guarantors: GuarantorData[];
@@ -122,6 +122,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [subStep, setSubStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const [initialFormData, setInitialFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
     identification: 'pending',
@@ -136,6 +137,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [hasFatca, setHasFatca] = useState(false);
   const [isPep, setIsPep] = useState(false);
   const [agentComments, setAgentComments] = useState("");
+  const [lastSavedData, setLastSavedData] = useState<Record<string, any>>({});
   
   // New guarantor states
   const [guarantors, setGuarantors] = useState<GuarantorData[]>([createEmptyGuarantor(), createEmptyGuarantor()]);
@@ -143,6 +145,9 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const [guarantorFormStep, setGuarantorFormStep] = useState(0); // 0: basic info, 1: financial info
   const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = JSON.stringify(formData) !== JSON.stringify(lastSavedData);
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
@@ -176,6 +181,8 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
         };
         
         setFormData(mockData);
+        setInitialFormData(mockData);
+        setLastSavedData(mockData);
         setPersonName(`${mockData.personalInfo.firstName} ${mockData.personalInfo.lastName}`);
         
         // Set sections that have data as complete
@@ -302,6 +309,9 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const handleSaveDraft = () => {
     console.log('Saving draft:', formData);
     
+    // Update last saved data
+    setLastSavedData(formData);
+    
     // Mark current section as complete if it has sufficient data
     if (checkSectionCompletion()) {
       setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
@@ -407,6 +417,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     handleSubPrevious,
     isLastSubStep,
     getSubStepsForSection,
+    hasUnsavedChanges,
     
     // New guarantor context values
     guarantors,
@@ -430,3 +441,5 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
 };
 
 export default RequestFormProvider;
+
+}

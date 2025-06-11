@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Save, Check } from 'lucide-react';
+import { ArrowRight, Save, Check } from 'lucide-react';
 import { useFormContext } from './RequestFormProvider';
 
 interface FormActionBarProps {
@@ -21,32 +21,17 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
     formData,
     handleSaveDraft,
     handleSubNext,
-    handleSubPrevious,
     handleSubmit
   } = useFormContext();
 
-  const canGoBack = activeStep > 0 || subStep > 0;
   const showNext = !(isLastStep && isLastSubStep);
 
   return (
     <div className="fixed bottom-16 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t z-40">
       <div className="container max-w-5xl mx-auto">
         <div className="flex justify-between items-center">
-          {/* Left: Anterior button */}
-          <div className="flex-1">
-            {canGoBack ? (
-              <Button 
-                variant="outline" 
-                onClick={handleSubPrevious}
-                className="mr-auto"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Anterior
-              </Button>
-            ) : (
-              <div></div>
-            )}
-          </div>
+          {/* Left: Empty space (removed back button) */}
+          <div className="flex-1"></div>
           
           {/* Center: Save draft button (icon only) */}
           <div className="flex-1 flex justify-center">
