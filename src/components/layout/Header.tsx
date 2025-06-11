@@ -2,22 +2,23 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, X, User, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const Header = ({ personName }: { personName?: string }) => {
+const Header = ({
+  personName
+}: {
+  personName?: string;
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Determine if we're in a guarantor form
   const isGuarantorForm = location.pathname.includes('/guarantors');
-  
+
   // Get page title based on current path
   const getPageTitle = () => {
     const isEditRoute = location.pathname.includes('/edit');
-    
     if (personName && isEditRoute) {
       return personName;
     }
-    
     switch (location.pathname) {
       case '/prospects':
         return 'Prospectos';
@@ -33,7 +34,6 @@ const Header = ({ personName }: { personName?: string }) => {
         return 'Coopsama App';
     }
   };
-
   const handleGoBack = () => {
     if (location.pathname.includes('/edit')) {
       navigate('/applications');
@@ -41,7 +41,6 @@ const Header = ({ personName }: { personName?: string }) => {
       navigate(-1);
     }
   };
-
   const handleExit = () => {
     if (location.pathname.includes('/edit')) {
       navigate('/applications');
@@ -49,23 +48,11 @@ const Header = ({ personName }: { personName?: string }) => {
       navigate(-1);
     }
   };
-
-  return (
-    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
+  return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
         <div className="absolute left-4">
-          {location.pathname.includes('/edit') && (
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={handleGoBack}
-              className="rounded-full w-8 h-8"
-              aria-label="Volver"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          )}
+          {location.pathname.includes('/edit')}
         </div>
         
         {/* Centered title with form type indicator */}
@@ -73,32 +60,16 @@ const Header = ({ personName }: { personName?: string }) => {
           <h1 className="text-lg font-bold text-primary">
             {getPageTitle()}
           </h1>
-          {isGuarantorForm ? (
-            <Users className="h-4 w-4 text-accent" />
-          ) : (
-            location.pathname.includes('/applications') && (
-              <User className="h-4 w-4 text-primary" />
-            )
-          )}
+          {isGuarantorForm ? <Users className="h-4 w-4 text-accent" /> : location.pathname.includes('/applications')}
         </div>
         
         {/* Right button area */}
         <div className="absolute right-4">
-          {location.pathname.includes('/edit') && (
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="rounded-full w-8 h-8"
-              onClick={handleExit}
-              aria-label="Cerrar"
-            >
+          {location.pathname.includes('/edit') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
               <X className="h-5 w-5" />
-            </Button>
-          )}
+            </Button>}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
