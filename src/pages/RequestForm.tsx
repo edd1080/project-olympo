@@ -1,9 +1,9 @@
-
 import React from 'react';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
+import { getFirstNameAndLastName } from '@/lib/nameUtils';
 
 // Refactored components
 import RequestFormProvider, { useFormContext } from '@/components/requestForm/RequestFormProvider';
@@ -23,7 +23,7 @@ const RequestFormContent = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header personName={personName?.split(' ')[0] || ''} />
+      <Header personName={getFirstNameAndLastName(personName)} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20 max-w-5xl">
         {/* Breadcrumb Navigation */}
