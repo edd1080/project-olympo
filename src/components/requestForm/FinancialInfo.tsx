@@ -1,14 +1,15 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PlusCircle, MinusCircle, Upload, DollarSign, Calendar, Store, Package, TrendingUp } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PlusCircle, MinusCircle, Upload, DollarSign, Calendar, Store, Package, TrendingUp, Calculator, PieChart } from 'lucide-react';
+
+// Import the new components
+import FinancialAnalysis from './FinancialAnalysis';
+import PatrimonialStatement from './PatrimonialStatement';
 
 interface FinancialInfoProps {
   formData: any;
@@ -21,7 +22,7 @@ const months = [
 ];
 
 const FinancialInfo: React.FC<FinancialInfoProps> = ({ formData, updateFormData }) => {
-  const [activeScreen, setActiveScreen] = useState('business-info');
+  const [activeScreen, setActiveScreen] = useState('financial-analysis');
   const [products, setProducts] = useState<any[]>(formData.products || [{ 
     name: '', 
     unit: '', 
@@ -102,7 +103,10 @@ const FinancialInfo: React.FC<FinancialInfoProps> = ({ formData, updateFormData 
     }
   };
   
+  // Updated screens array with new tabs at the beginning
   const screens = [
+    { id: 'financial-analysis', name: 'Análisis Financiero', icon: <Calculator className="w-4 h-4 mr-2" /> },
+    { id: 'patrimonial-statement', name: 'Estado Patrimonial', icon: <PieChart className="w-4 h-4 mr-2" /> },
     { id: 'business-info', name: 'Información del Negocio', icon: <Store className="w-4 h-4 mr-2" /> },
     { id: 'products', name: 'Productos', icon: <Package className="w-4 h-4 mr-2" /> },
     { id: 'seasonality', name: 'Estacionalidad', icon: <Calendar className="w-4 h-4 mr-2" /> },
@@ -138,6 +142,16 @@ const FinancialInfo: React.FC<FinancialInfoProps> = ({ formData, updateFormData 
       </div>
       
       <Separator />
+      
+      {/* Financial Analysis Screen */}
+      {activeScreen === 'financial-analysis' && (
+        <FinancialAnalysis formData={formData} updateFormData={updateFormData} />
+      )}
+      
+      {/* Patrimonial Statement Screen */}
+      {activeScreen === 'patrimonial-statement' && (
+        <PatrimonialStatement formData={formData} updateFormData={updateFormData} />
+      )}
       
       {/* Business Information Screen */}
       {activeScreen === 'business-info' && (
