@@ -151,7 +151,7 @@ const Applications = () => {
       
       <main className="flex-1 px-4 py-4 pb-20 space-y-6">
         <div>
-          <h1 className="text-title mb-1">Solicitudes asignadas a ti</h1>
+          <h1 className="text-title mb-1">Tus solicitudes asignadas</h1>
           <p className="text-muted-foreground">Gestiona y administra en tiempo real</p>
         </div>
         
