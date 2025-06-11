@@ -13,20 +13,22 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { usePrequalifications } from '@/hooks/usePrequalifications';
 import { formatCurrency } from '@/utils/prequalificationEngine';
 import { useToast } from '@/hooks/use-toast';
-
 const Prequalifications = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
-  const { prequalifications, deletePrequalification } = usePrequalifications();
-
+  const {
+    prequalifications,
+    deletePrequalification
+  } = usePrequalifications();
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
     }
   }, [navigate]);
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'green':
@@ -48,7 +50,6 @@ const Prequalifications = () => {
         return null;
     }
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('es-GT', {
@@ -59,7 +60,6 @@ const Prequalifications = () => {
       minute: '2-digit'
     }).format(date);
   };
-
   const handleStartApplication = (id: string) => {
     // TODO: Integrar con formulario principal pasando datos de precalificación
     toast({
@@ -69,7 +69,6 @@ const Prequalifications = () => {
     });
     navigate('/applications/new');
   };
-
   const handleEdit = (id: string) => {
     // TODO: Implementar edición de precalificación
     toast({
@@ -78,7 +77,6 @@ const Prequalifications = () => {
       duration: 3000
     });
   };
-
   const handleDelete = (id: string, clientName: string) => {
     deletePrequalification(id);
     toast({
@@ -87,9 +85,7 @@ const Prequalifications = () => {
       duration: 3000
     });
   };
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1 px-4 py-4 pb-20 space-y-6">
@@ -103,27 +99,20 @@ const Prequalifications = () => {
           <Input placeholder="Buscar precalificaciones..." className="pl-10" />
         </div>
 
-        {prequalifications.length === 0 ? (
-          <Card>
+        {prequalifications.length === 0 ? <Card>
             <CardContent className="p-8 text-center space-y-4">
               <div className="text-muted-foreground">
                 <FileSpreadsheet className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p className="font-medium">No hay precalificaciones registradas</p>
-                <p className="text-sm">Puedes crear una nueva precalificación usando el botón de abajo o el botón + flotante</p>
+                <p className="font-bold text-base text-gray-800 mx-0 px-0">No hay precalificaciones registradas</p>
+                <p className="text-sm font-thin">Puedes crear una nueva precalificación usando el botón de abajo o el botón + flotante</p>
               </div>
-              <Button 
-                className="w-full" 
-                onClick={() => setShowPrequalificationModal(true)}
-              >
+              <Button className="w-full" onClick={() => setShowPrequalificationModal(true)}>
                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                 Iniciar Pre-Calificación
               </Button>
             </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {prequalifications.map(prequalification => (
-              <Card key={prequalification.id} className="card-hover group">
+          </Card> : <div className="space-y-4">
+            {prequalifications.map(prequalification => <Card key={prequalification.id} className="card-hover group">
                 <CardContent className="p-4">
                   <div className="flex flex-col space-y-3">
                     {/* Header con nombre, fecha y monto */}
@@ -155,23 +144,16 @@ const Prequalifications = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-48">
-                              {prequalification.result.canProceed && (
-                                <DropdownMenuItem onClick={() => handleStartApplication(prequalification.id)}>
+                              {prequalification.result.canProceed && <DropdownMenuItem onClick={() => handleStartApplication(prequalification.id)}>
                                   <FileSpreadsheet className="mr-2 h-4 w-4" />
                                   <span>Iniciar solicitud</span>
-                                </DropdownMenuItem>
-                              )}
-                              {prequalification.result.status === 'yellow' && (
-                                <DropdownMenuItem onClick={() => handleEdit(prequalification.id)}>
+                                </DropdownMenuItem>}
+                              {prequalification.result.status === 'yellow' && <DropdownMenuItem onClick={() => handleEdit(prequalification.id)}>
                                   <Edit className="mr-2 h-4 w-4" />
                                   <span>Editar/Completar</span>
-                                </DropdownMenuItem>
-                              )}
+                                </DropdownMenuItem>}
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem 
-                                className="text-destructive focus:text-destructive" 
-                                onClick={() => handleDelete(prequalification.id, prequalification.data.nombre_completo)}
-                              >
+                              <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(prequalification.id, prequalification.data.nombre_completo)}>
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 <span>Eliminar</span>
                               </DropdownMenuItem>
@@ -200,22 +182,15 @@ const Prequalifications = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+              </Card>)}
+          </div>}
       </main>
 
       <BottomNavigation />
       
       <FloatingPrequalificationButton onClick={() => setShowPrequalificationModal(true)} />
       
-      <PrequalificationModal 
-        open={showPrequalificationModal} 
-        onOpenChange={setShowPrequalificationModal} 
-      />
-    </div>
-  );
+      <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
+    </div>;
 };
-
 export default Prequalifications;
