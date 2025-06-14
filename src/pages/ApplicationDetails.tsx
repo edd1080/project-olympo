@@ -388,7 +388,7 @@ const ApplicationDetails = () => {
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
                   </div>
-                  <span className="text-center leading-tight min-h-[2rem] flex items-center justify-center">{section.name}</span>
+                  <span className="text-center leading-tight px-1">{section.name}</span>
                 </Button>)}
             </div>
           </CardContent>
