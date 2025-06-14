@@ -52,12 +52,12 @@ const formSections = [
   {
     id: 'guarantors',
     icon: <Users size={18} />,
-    name: 'Garantías, Fiadores y Referencias'
+    name: 'Fiadores y Referencias'
   },
   {
     id: 'documents',
     icon: <FileCheck size={18} />,
-    name: 'Documentos y Cierre'
+    name: 'Documentos'
   },
   {
     id: 'review',
@@ -432,12 +432,21 @@ const ApplicationDetails = () => {
           </CardHeader>
           <CardContent className="py-3">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-              {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
+              {formSections.map(section => 
+                <Button 
+                  key={section.id} 
+                  variant="outline" 
+                  className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" 
+                  onClick={() => navigateToFormSection(section.id)}
+                >
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
                   </div>
-                  <span className="text-center leading-tight px-1">{section.name}</span>
-                </Button>)}
+                  <span className="text-center leading-tight px-1 whitespace-normal sm:whitespace-nowrap overflow-hidden">
+                    {section.name}
+                  </span>
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
