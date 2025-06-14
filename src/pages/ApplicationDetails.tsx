@@ -87,7 +87,7 @@ const ApplicationDetails = () => {
     const fetchApplicationData = () => {
       setTimeout(() => {
         const mockApplication = {
-          id: id,
+          id: 'SCO_459034',
           status: 'reviewing',
           progress: 4,
           createdAt: '2025-04-05',
@@ -274,6 +274,21 @@ const ApplicationDetails = () => {
   };
 
   const handleSubmitApplication = async () => {
+    // Check if application is ready first
+    if (!isApplicationReadyToSubmit()) {
+      toast({
+        title: "Solicitud incompleta",
+        description: "Para enviar la solicitud, completa todas las secciones, sube los documentos requeridos y registra al menos un fiador.",
+        variant: "destructive",
+        duration: 5000
+      });
+      return;
+    }
+
+    setShowConfirmDialog(true);
+  };
+
+  const confirmSubmitApplication = async () => {
     setIsSubmitting(true);
     try {
       // Simulate API call
@@ -370,33 +385,25 @@ const ApplicationDetails = () => {
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
         <BreadcrumbNavigation />
         
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/applications')}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-xl font-medium">{application.identification.fullName}</h1>
-              <div className="flex items-center text-sm text-muted-foreground">
-                <span>{application.id}</span>
-              </div>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+          <div className="flex-1">
+            <h1 className="text-xl font-medium">{application.identification.fullName}</h1>
+            <div className="flex items-center text-sm text-muted-foreground">
+              <span>{application.id}</span>
             </div>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <div className={`px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium ${getStatusClass()}`}>
               {getStatusIcon()}
               <span>{applicationStatuses[application.status as keyof typeof applicationStatuses]?.label}</span>
             </div>
             <Button size="sm" variant="outline" onClick={handleEditApplication}>
-              <Edit className="mr-2 h-4 w-4" />
-              Editar
+              <Edit className="h-4 w-4" />
             </Button>
             <Button 
               size="sm" 
-              onClick={() => setShowConfirmDialog(true)}
-              disabled={!isApplicationReadyToSubmit()}
-              className={isApplicationReadyToSubmit() ? '' : 'opacity-50 cursor-not-allowed'}
+              onClick={handleSubmitApplication}
             >
               <Send className="mr-2 h-4 w-4" />
               Enviar Solicitud
@@ -1039,7 +1046,7 @@ const ApplicationDetails = () => {
             <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleSubmitApplication} disabled={isSubmitting}>
+            <Button onClick={confirmSubmitApplication} disabled={isSubmitting}>
               {isSubmitting ? 'Enviando...' : 'Confirmar Envío'}
             </Button>
           </DialogFooter>

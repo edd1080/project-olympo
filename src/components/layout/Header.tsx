@@ -71,19 +71,24 @@ const Header = ({
     }
   };
 
+  // Show back button for application details and edit routes (but not main pages)
+  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login'].includes(location.pathname);
+
   return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
-        <div className="absolute left-4">
-          {location.pathname.includes('/edit')}
-        </div>
-        
-        {/* Centered title with form type indicator */}
-        <div className="flex-1 flex justify-center items-center gap-2">
+        <div className="flex items-center gap-3">
+          {showBackButton && (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Regresar">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
+          
+          {/* Title */}
           <h1 className="text-lg font-bold text-primary">
             {getPageTitle()}
           </h1>
-          {isGuarantorForm ? <Users className="h-4 w-4 text-accent" /> : location.pathname.includes('/applications')}
+          {isGuarantorForm && <Users className="h-4 w-4 text-accent" />}
         </div>
         
         {/* Right button area */}

@@ -15,8 +15,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
-const generateRandomId = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+const generateRandomSCOId = () => {
+  return `SCO_${Math.floor(100000 + Math.random() * 900000)}`;
 };
 
 const Applications = () => {
@@ -78,7 +78,7 @@ const Applications = () => {
   };
 
   const applications = [{
-    id: `BVM_${generateRandomId()}`,
+    id: generateRandomSCOId(),
     clientName: 'Ana García Méndez',
     product: 'Crédito Personal',
     amount: '$25,000',
@@ -87,7 +87,7 @@ const Applications = () => {
     progress: 2,
     stage: 'Información Financiera'
   }, {
-    id: `BVM_${generateRandomId()}`,
+    id: generateRandomSCOId(),
     clientName: 'Carlos López Ramírez',
     product: 'Hipoteca',
     amount: '$1,200,000',
@@ -96,7 +96,7 @@ const Applications = () => {
     progress: 4,
     stage: 'Firma de Acta'
   }, {
-    id: `BVM_${generateRandomId()}`,
+    id: generateRandomSCOId(),
     clientName: 'María Rodríguez Sánchez',
     product: 'Crédito Auto',
     amount: '$350,000',
@@ -105,7 +105,7 @@ const Applications = () => {
     progress: 3,
     stage: 'Análisis de Carácter'
   }, {
-    id: `BVM_${generateRandomId()}`,
+    id: generateRandomSCOId(),
     clientName: 'José Hernández Torres',
     product: 'Crédito PYME',
     amount: '$500,000',
@@ -114,7 +114,7 @@ const Applications = () => {
     progress: 3,
     stage: 'Documentos e Imágenes'
   }, {
-    id: `BVM_${generateRandomId()}`,
+    id: generateRandomSCOId(),
     clientName: 'Laura Sánchez Vega',
     product: 'Crédito Personal',
     amount: '$30,000',
