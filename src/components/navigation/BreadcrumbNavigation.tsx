@@ -122,7 +122,7 @@ const BreadcrumbNavigation = () => {
   if (breadcrumbPaths.length <= 1) {
     return null; // Don't show breadcrumbs on home page
   }
-  return <div className="px-4 py-[12px]">
+  return <div className="py-[12px] px-[4px]">
       <Breadcrumb>
         <BreadcrumbList>
           {breadcrumbPaths.map((item, index) => <React.Fragment key={item.path}>
