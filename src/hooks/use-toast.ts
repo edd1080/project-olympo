@@ -7,7 +7,15 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 1000
+
+// Duraciones por defecto según el tipo de toast
+const DEFAULT_DURATIONS = {
+  success: 3000,    // 3 segundos
+  default: 4000,    // 4 segundos  
+  warning: 5000,    // 5 segundos
+  destructive: 6000 // 6 segundos
+} as const
 
 type ToasterToast = ToastProps & {
   id: string
@@ -55,6 +63,7 @@ interface State {
 }
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
+const autoDismissTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
@@ -70,6 +79,22 @@ const addToRemoveQueue = (toastId: string) => {
   }, TOAST_REMOVE_DELAY)
 
   toastTimeouts.set(toastId, timeout)
+}
+
+const clearTimeouts = (toastId: string) => {
+  // Limpiar timeout de auto-dismiss
+  const autoDismissTimeout = autoDismissTimeouts.get(toastId)
+  if (autoDismissTimeout) {
+    clearTimeout(autoDismissTimeout)
+    autoDismissTimeouts.delete(toastId)
+  }
+  
+  // Limpiar timeout de remove
+  const removeTimeout = toastTimeouts.get(toastId)
+  if (removeTimeout) {
+    clearTimeout(removeTimeout)
+    toastTimeouts.delete(toastId)
+  }
 }
 
 export const reducer = (state: State, action: Action): State => {
@@ -91,12 +116,13 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
+      // Limpiar timeouts cuando se cierra manualmente
       if (toastId) {
+        clearTimeouts(toastId)
         addToRemoveQueue(toastId)
       } else {
         state.toasts.forEach((toast) => {
+          clearTimeouts(toast.id)
           addToRemoveQueue(toast.id)
         })
       }
@@ -148,8 +174,11 @@ interface ToastOptions {
 
 type Toast = Omit<ToasterToast, "id"> & ToastOptions
 
-function toast({ variant = "default", className, ...props }: Toast) {
+function toast({ variant = "default", duration, className, ...props }: Toast) {
   const id = genId()
+
+  // Determinar la duración apropiada
+  const finalDuration = duration ?? DEFAULT_DURATIONS[variant] ?? DEFAULT_DURATIONS.default
 
   // Add appropriate styling based on variant
   let finalClassName = className || "";
@@ -169,7 +198,11 @@ function toast({ variant = "default", className, ...props }: Toast) {
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     })
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
+  
+  const dismiss = () => {
+    clearTimeouts(id)
+    dispatch({ type: "DISMISS_TOAST", toastId: id })
+  }
 
   dispatch({
     type: "ADD_TOAST",
@@ -184,6 +217,16 @@ function toast({ variant = "default", className, ...props }: Toast) {
       },
     },
   })
+
+  // Configurar auto-dismiss
+  if (finalDuration > 0) {
+    const autoDismissTimeout = setTimeout(() => {
+      autoDismissTimeouts.delete(id)
+      dismiss()
+    }, finalDuration)
+    
+    autoDismissTimeouts.set(id, autoDismissTimeout)
+  }
 
   return {
     id: id,
