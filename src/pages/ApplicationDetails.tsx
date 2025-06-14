@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -10,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin } from 'lucide-react';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const applicationStatuses = {
@@ -102,62 +103,68 @@ const ApplicationDetails = () => {
             nacionalidad: 'Guatemalteca',
             genero: 'Femenino',
             profesion: 'Comerciante',
+            educationLevel: 'Diversificado',
+            housingType: 'Propia',
+            housingYears: 5,
+            dependents: 2,
             conyuge: {
               nombre: 'Carlos Martínez',
               dpi: '2345 67890 1234',
-              telefono: '502-5555-5678'
+              telefono: '502-5555-5678',
+              trabajo: 'Albañil'
             }
+          },
+          work: {
+            employmentStatus: 'Independiente',
+            companyName: 'Abarrotes María (Negocio Propio)',
+            position: 'Propietaria',
+            yearsEmployed: 8,
+            monthsEmployed: 0,
+            workAddress: 'Mercado Central, Local 45, Zona 1',
+            workPhone: '502-2222-5678',
+            workType: 'Comercio',
+            incomeStability: 'Estable'
           },
           finances: {
-            ingresosMensuales: 25000,
-            gastosMensuales: 18000,
-            ventasContado: 15000,
-            ventasCredito: 10000,
-            activos: {
-              inventario: 50000,
-              cuentasPorCobrar: 25000,
-              equipos: 30000,
-              inmuebles: 200000,
-              total: 305000
+            primaryIncome: 20000,
+            secondaryIncome: 5000,
+            incomeSource: 'Ventas del negocio',
+            rent: 3500,
+            utilities: 800,
+            food: 2500,
+            transportation: 1200,
+            otherExpenses: 2000,
+            totalExpenses: 10000,
+            currentLoans: 15000,
+            creditCards: 5000,
+            totalDebts: 20000,
+            // Evaluación financiera
+            netIncome: 15000,
+            debtToIncomeRatio: 0.8,
+            paymentCapacity: 12000,
+            // Estado patrimonial
+            assets: {
+              cash: 5000,
+              inventory: 50000,
+              equipment: 30000,
+              realEstate: 200000,
+              vehicles: 45000,
+              total: 330000
             },
-            pasivos: {
-              proveedores: 15000,
-              prestamos: 45000,
-              total: 60000
+            liabilities: {
+              loans: 45000,
+              creditCards: 5000,
+              suppliers: 15000,
+              total: 65000
             },
-            patrimonio: 245000
+            netWorth: 265000
           },
-          business: {
-            tipoActividad: 'Comercio al por menor',
-            codigoCNAE: '47.11.01',
-            nombreNegocio: 'Abarrotes María',
-            direccionNegocio: 'Mercado Central, Local 45, Zona 1',
-            telefonoNegocio: '502-2222-5678',
-            antiguedadNegocio: '8 años',
-            productos: [
-              {
-                nombre: 'Granos básicos',
-                unidadMedida: 'Quintal',
-                cantidadVendida: 10,
-                precioUnitario: 500,
-                totalVentas: 5000,
-                utilidad: 1500
-              },
-              {
-                nombre: 'Productos enlatados',
-                unidadMedida: 'Caja',
-                cantidadVendida: 20,
-                precioUnitario: 300,
-                totalVentas: 6000,
-                utilidad: 1800
-              }
-            ],
-            estacionalidad: {
-              mejoresMeses: ['Noviembre', 'Diciembre'],
-              peoresMeses: ['Febrero', 'Septiembre'],
-              ventasMejoresMeses: 35000,
-              ventasPeoresMeses: 18000
-            }
+          creditRequest: {
+            loanAmount: 25000,
+            termMonths: 18,
+            creditType: 'Crédito Comercial',
+            purpose: 'Ampliación de inventario',
+            collateral: 'Inventario del negocio'
           },
           guarantors: [
             {
@@ -172,19 +179,6 @@ const ApplicationDetails = () => {
               porcentajeCobertura: 50,
               status: 'in-progress',
               progress: 80
-            },
-            {
-              id: 'G002',
-              nombre: 'Ana Patricia López',
-              dpi: '2345 67890 1234',
-              telefono: '502-5555-4321',
-              parentesco: 'Hermana',
-              salario: 6500,
-              tipoEmpleo: 'Independiente',
-              empresa: 'Negocio propio',
-              porcentajeCobertura: 50,
-              status: 'complete',
-              progress: 100
             }
           ],
           documents: {
@@ -208,31 +202,7 @@ const ApplicationDetails = () => {
               status: 'pending',
               url: null
             }
-          },
-          creditEvaluation: {
-            montoSolicitado: 10000,
-            montoAprobado: 8500,
-            plazoMeses: 18,
-            cuotaMensual: 630,
-            tasaInteres: 15
-          },
-          notes: [
-            {
-              date: '2025-04-05',
-              author: 'Juan Pérez',
-              content: 'Solicitud creada y documentos básicos cargados.'
-            },
-            {
-              date: '2025-04-06',
-              author: 'Ana López',
-              content: 'Se requiere verificación adicional de ingresos.'
-            },
-            {
-              date: '2025-04-07',
-              author: 'Carlos Gómez',
-              content: 'Evaluación crediticia completada. Pendiente de aprobación final.'
-            }
-          ]
+          }
         };
         setApplication(mockApplication);
         setLoading(false);
@@ -265,6 +235,19 @@ const ApplicationDetails = () => {
     toast({
       title: "Navegación a sección",
       description: `Navegando a la sección: ${sectionId}`,
+      duration: 2000
+    });
+  };
+
+  const handleAddGuarantor = () => {
+    navigate(`/applications/${id}/edit`, {
+      state: {
+        sectionId: 'guarantors'
+      }
+    });
+    toast({
+      title: "Agregar Fiador",
+      description: "Navegando al formulario de fiadores",
       duration: 2000
     });
   };
@@ -405,7 +388,6 @@ const ApplicationDetails = () => {
               </div>
             </TabsTrigger>
             <TabsTrigger value="docs">Documentos</TabsTrigger>
-            <TabsTrigger value="notes">Notas</TabsTrigger>
           </TabsList>
           
           <TabsContent value="summary">
@@ -449,16 +431,16 @@ const ApplicationDetails = () => {
                 <CardContent>
                   <dl className="space-y-2 text-sm">
                     <div>
-                      <dt className="text-muted-foreground">Ingresos Mensuales</dt>
-                      <dd className="font-medium">Q{application.finances.ingresosMensuales.toLocaleString()}</dd>
+                      <dt className="text-muted-foreground">Ingresos Principales</dt>
+                      <dd className="font-medium">Q{application.finances.primaryIncome.toLocaleString()}</dd>
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Gastos Mensuales</dt>
-                      <dd className="font-medium">Q{application.finances.gastosMensuales.toLocaleString()}</dd>
+                      <dd className="font-medium">Q{application.finances.totalExpenses.toLocaleString()}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Patrimonio</dt>
-                      <dd className="font-medium">Q{application.finances.patrimonio.toLocaleString()}</dd>
+                      <dt className="text-muted-foreground">Patrimonio Neto</dt>
+                      <dd className="font-medium">Q{application.finances.netWorth.toLocaleString()}</dd>
                     </div>
                   </dl>
                 </CardContent>
@@ -467,23 +449,23 @@ const ApplicationDetails = () => {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-primary" />
-                    Negocio
+                    <Briefcase className="h-4 w-4 mr-2 text-primary" />
+                    Trabajo
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <dl className="space-y-2 text-sm">
                     <div>
-                      <dt className="text-muted-foreground">Nombre</dt>
-                      <dd className="font-medium">{application.business.nombreNegocio}</dd>
+                      <dt className="text-muted-foreground">Situación Laboral</dt>
+                      <dd className="font-medium">{application.work.employmentStatus}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Actividad</dt>
-                      <dd className="font-medium">{application.business.tipoActividad}</dd>
+                      <dt className="text-muted-foreground">Empresa/Negocio</dt>
+                      <dd className="font-medium">{application.work.companyName}</dd>
                     </div>
                     <div>
-                      <dt className="text-muted-foreground">Antigüedad</dt>
-                      <dd className="font-medium">{application.business.antiguedadNegocio}</dd>
+                      <dt className="text-muted-foreground">Experiencia</dt>
+                      <dd className="font-medium">{application.work.yearsEmployed} años</dd>
                     </div>
                   </dl>
                 </CardContent>
@@ -493,23 +475,27 @@ const ApplicationDetails = () => {
             <Card className="mb-4 border-primary/20 bg-primary/5">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center">
-                  <CheckCircle className="h-4 w-4 mr-2 text-primary" />
-                  Evaluación Crediticia
+                  <FileText className="h-4 w-4 mr-2 text-primary" />
+                  Solicitud de Crédito
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Monto Aprobado</p>
-                    <p className="font-bold text-lg">Q{application.creditEvaluation.montoAprobado.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Monto Solicitado</p>
+                    <p className="font-bold text-lg">Q{application.creditRequest.loanAmount.toLocaleString()}</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
                     <p className="text-xs text-muted-foreground mb-1">Plazo</p>
-                    <p className="font-bold text-lg">{application.creditEvaluation.plazoMeses} meses</p>
+                    <p className="font-bold text-lg">{application.creditRequest.termMonths} meses</p>
                   </div>
                   <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Cuota Mensual</p>
-                    <p className="font-bold text-lg">Q{application.creditEvaluation.cuotaMensual.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Tipo de Crédito</p>
+                    <p className="font-bold text-sm">{application.creditRequest.creditType}</p>
+                  </div>
+                  <div className="text-center p-3 bg-background rounded-md">
+                    <p className="text-xs text-muted-foreground mb-1">Propósito</p>
+                    <p className="font-bold text-sm">{application.creditRequest.purpose}</p>
                   </div>
                 </div>
               </CardContent>
@@ -550,7 +536,7 @@ const ApplicationDetails = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
                     <User className="h-5 w-5 mr-2 text-primary" />
-                    Identificación y Contacto
+                    Información Personal Detallada
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -580,6 +566,38 @@ const ApplicationDetails = () => {
                       <p className="font-medium">{application.identification.estadoCivil}</p>
                     </div>
                     <div>
+                      <p className="text-sm text-muted-foreground">Fecha de Nacimiento</p>
+                      <p className="font-medium">{application.identification.birthDate}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Nacionalidad</p>
+                      <p className="font-medium">{application.identification.nacionalidad}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Género</p>
+                      <p className="font-medium">{application.identification.genero}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Profesión</p>
+                      <p className="font-medium">{application.identification.profesion}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Nivel Educativo</p>
+                      <p className="font-medium">{application.identification.educationLevel}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Tipo de Vivienda</p>
+                      <p className="font-medium">{application.identification.housingType}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Años en Vivienda</p>
+                      <p className="font-medium">{application.identification.housingYears} años</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Dependientes</p>
+                      <p className="font-medium">{application.identification.dependents}</p>
+                    </div>
+                    <div>
                       <p className="text-sm text-muted-foreground">Correo Electrónico</p>
                       <p className="font-medium">{application.identification.email}</p>
                     </div>
@@ -587,13 +605,9 @@ const ApplicationDetails = () => {
                       <p className="text-sm text-muted-foreground">Teléfono</p>
                       <p className="font-medium">{application.identification.phone}</p>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2">
                       <p className="text-sm text-muted-foreground">Dirección</p>
                       <p className="font-medium">{application.identification.address}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Fecha de Nacimiento</p>
-                      <p className="font-medium">{application.identification.birthDate}</p>
                     </div>
                   </div>
                   
@@ -613,6 +627,10 @@ const ApplicationDetails = () => {
                           <p className="text-sm text-muted-foreground">Teléfono</p>
                           <p className="font-medium">{application.identification.conyuge.telefono}</p>
                         </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Trabajo</p>
+                          <p className="font-medium">{application.identification.conyuge.trabajo}</p>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -622,81 +640,43 @@ const ApplicationDetails = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
-                    <DollarSign className="h-5 w-5 mr-2 text-primary" />
-                    Finanzas y Patrimonio
+                    <Briefcase className="h-5 w-5 mr-2 text-primary" />
+                    Información Laboral Detallada
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Ingresos Mensuales</p>
-                      <p className="font-medium">Q{application.finances.ingresosMensuales.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Situación Laboral</p>
+                      <p className="font-medium">{application.work.employmentStatus}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Gastos Mensuales</p>
-                      <p className="font-medium">Q{application.finances.gastosMensuales.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Empresa/Negocio</p>
+                      <p className="font-medium">{application.work.companyName}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Ventas al Contado</p>
-                      <p className="font-medium">Q{application.finances.ventasContado.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Puesto/Posición</p>
+                      <p className="font-medium">{application.work.position}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Ventas al Crédito</p>
-                      <p className="font-medium">Q{application.finances.ventasCredito.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Años de Experiencia</p>
+                      <p className="font-medium">{application.work.yearsEmployed} años</p>
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="text-sm font-medium mb-3">Activos</h4>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Inventario</TableCell>
-                            <TableCell className="text-right">Q{application.finances.activos.inventario.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Cuentas por Cobrar</TableCell>
-                            <TableCell className="text-right">Q{application.finances.activos.cuentasPorCobrar.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Equipos</TableCell>
-                            <TableCell className="text-right">Q{application.finances.activos.equipos.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Inmuebles</TableCell>
-                            <TableCell className="text-right">Q{application.finances.activos.inmuebles.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Total Activos</TableCell>
-                            <TableCell className="text-right font-bold">Q{application.finances.activos.total.toLocaleString()}</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      <p className="text-sm text-muted-foreground">Tipo de Trabajo</p>
+                      <p className="font-medium">{application.work.workType}</p>
                     </div>
-                    
                     <div>
-                      <h4 className="text-sm font-medium mb-3">Pasivos</h4>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Proveedores</TableCell>
-                            <TableCell className="text-right">Q{application.finances.pasivos.proveedores.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="text-muted-foreground">Préstamos</TableCell>
-                            <TableCell className="text-right">Q{application.finances.pasivos.prestamos.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Total Pasivos</TableCell>
-                            <TableCell className="text-right font-bold">Q{application.finances.pasivos.total.toLocaleString()}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium text-primary">Patrimonio</TableCell>
-                            <TableCell className="text-right font-bold text-primary">Q{application.finances.patrimonio.toLocaleString()}</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      <p className="text-sm text-muted-foreground">Estabilidad de Ingresos</p>
+                      <p className="font-medium">{application.work.incomeStability}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Teléfono del Trabajo</p>
+                      <p className="font-medium">{application.work.workPhone}</p>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <p className="text-sm text-muted-foreground">Dirección del Trabajo</p>
+                      <p className="font-medium">{application.work.workAddress}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -705,86 +685,150 @@ const ApplicationDetails = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg">
-                    <MapPin className="h-5 w-5 mr-2 text-primary" />
-                    Negocio y Perfil Económico
+                    <DollarSign className="h-5 w-5 mr-2 text-primary" />
+                    Análisis Financiero Detallado
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Tipo de Actividad</p>
-                      <p className="font-medium">{application.business.tipoActividad}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Código CNAE</p>
-                      <p className="font-medium">{application.business.codigoCNAE}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Nombre del Negocio</p>
-                      <p className="font-medium">{application.business.nombreNegocio}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Antigüedad</p>
-                      <p className="font-medium">{application.business.antiguedadNegocio}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Dirección</p>
-                      <p className="font-medium">{application.business.direccionNegocio}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Teléfono</p>
-                      <p className="font-medium">{application.business.telefonoNegocio}</p>
-                    </div>
-                  </div>
-                  
                   <div>
-                    <h4 className="text-sm font-medium mb-3">Productos Principales</h4>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Producto</TableHead>
-                          <TableHead>Unidad</TableHead>
-                          <TableHead className="text-right">Cantidad</TableHead>
-                          <TableHead className="text-right">Precio</TableHead>
-                          <TableHead className="text-right">Ventas</TableHead>
-                          <TableHead className="text-right">Utilidad</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {application.business.productos.map((product: any, index: number) => <TableRow key={index}>
-                            <TableCell>{product.nombre}</TableCell>
-                            <TableCell>{product.unidadMedida}</TableCell>
-                            <TableCell className="text-right">{product.cantidadVendida}</TableCell>
-                            <TableCell className="text-right">Q{product.precioUnitario.toLocaleString()}</TableCell>
-                            <TableCell className="text-right">Q{product.totalVentas.toLocaleString()}</TableCell>
-                            <TableCell className="text-right">Q{product.utilidad.toLocaleString()}</TableCell>
-                          </TableRow>)}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium mb-3">Estacionalidad</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <h4 className="text-sm font-medium mb-3">Ingresos</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground mb-2">Mejores Meses</p>
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {application.business.estacionalidad.mejoresMeses.map((month: string) => <Badge key={month} variant="outline" className="bg-green-50">{month}</Badge>)}
-                        </div>
-                        <p className="text-sm">
-                          <span className="text-muted-foreground">Ventas: </span>
-                          <span className="font-medium">Q{application.business.estacionalidad.ventasMejoresMeses.toLocaleString()}</span>
-                        </p>
+                        <p className="text-sm text-muted-foreground">Ingresos Principales</p>
+                        <p className="font-medium">Q{application.finances.primaryIncome.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground mb-2">Peores Meses</p>
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {application.business.estacionalidad.peoresMeses.map((month: string) => <Badge key={month} variant="outline" className="bg-red-50">{month}</Badge>)}
+                        <p className="text-sm text-muted-foreground">Ingresos Secundarios</p>
+                        <p className="font-medium">Q{application.finances.secondaryIncome.toLocaleString()}</p>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <p className="text-sm text-muted-foreground">Fuente de Ingresos</p>
+                        <p className="font-medium">{application.finances.incomeSource}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Gastos Mensuales</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Renta/Vivienda</p>
+                        <p className="font-medium">Q{application.finances.rent.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Servicios</p>
+                        <p className="font-medium">Q{application.finances.utilities.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Alimentación</p>
+                        <p className="font-medium">Q{application.finances.food.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Transporte</p>
+                        <p className="font-medium">Q{application.finances.transportation.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Otros Gastos</p>
+                        <p className="font-medium">Q{application.finances.otherExpenses.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground font-bold">Total Gastos</p>
+                        <p className="font-bold">Q{application.finances.totalExpenses.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Deudas Actuales</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Préstamos Actuales</p>
+                        <p className="font-medium">Q{application.finances.currentLoans.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Tarjetas de Crédito</p>
+                        <p className="font-medium">Q{application.finances.creditCards.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-md">
+                    <h4 className="text-sm font-medium mb-3">Evaluación Financiera</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Ingreso Neto</p>
+                        <p className="font-bold text-green-600">Q{application.finances.netIncome.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Ratio Deuda/Ingreso</p>
+                        <p className="font-bold">{(application.finances.debtToIncomeRatio * 100).toFixed(1)}%</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Capacidad de Pago</p>
+                        <p className="font-bold text-blue-600">Q{application.finances.paymentCapacity.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Estado Patrimonial</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h5 className="text-sm font-medium mb-2">Activos</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Efectivo</span>
+                            <span className="text-sm">Q{application.finances.assets.cash.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Inventario</span>
+                            <span className="text-sm">Q{application.finances.assets.inventory.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Equipos</span>
+                            <span className="text-sm">Q{application.finances.assets.equipment.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Bienes Inmuebles</span>
+                            <span className="text-sm">Q{application.finances.assets.realEstate.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Vehículos</span>
+                            <span className="text-sm">Q{application.finances.assets.vehicles.toLocaleString()}</span>
+                          </div>
+                          <Separator />
+                          <div className="flex justify-between font-bold">
+                            <span className="text-sm">Total Activos</span>
+                            <span className="text-sm">Q{application.finances.assets.total.toLocaleString()}</span>
+                          </div>
                         </div>
-                        <p className="text-sm">
-                          <span className="text-muted-foreground">Ventas: </span>
-                          <span className="font-medium">Q{application.business.estacionalidad.ventasPeoresMeses.toLocaleString()}</span>
-                        </p>
+                      </div>
+                      
+                      <div>
+                        <h5 className="text-sm font-medium mb-2">Pasivos</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Préstamos</span>
+                            <span className="text-sm">Q{application.finances.liabilities.loans.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Tarjetas de Crédito</span>
+                            <span className="text-sm">Q{application.finances.liabilities.creditCards.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-muted-foreground">Proveedores</span>
+                            <span className="text-sm">Q{application.finances.liabilities.suppliers.toLocaleString()}</span>
+                          </div>
+                          <Separator />
+                          <div className="flex justify-between font-bold">
+                            <span className="text-sm">Total Pasivos</span>
+                            <span className="text-sm">Q{application.finances.liabilities.total.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between font-bold text-primary">
+                            <span className="text-sm">Patrimonio Neto</span>
+                            <span className="text-sm">Q{application.finances.netWorth.toLocaleString()}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -803,9 +847,16 @@ const ApplicationDetails = () => {
               </CardHeader>
               <CardContent>
                 {application.guarantors.length === 0 ? (
-                  <div className="text-center p-6">
-                    <Users className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">Pendiente - No hay fiadores registrados</p>
+                  <div className="text-center p-12">
+                    <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No hay fiadores registrados</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Para procesar la solicitud de crédito se requieren mínimo 2 fiadores
+                    </p>
+                    <Button onClick={handleAddGuarantor} className="bg-primary hover:bg-primary/90">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Fiador
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -854,6 +905,13 @@ const ApplicationDetails = () => {
                         </div>
                       </Card>
                     ))}
+                    
+                    <div className="text-center pt-4">
+                      <Button onClick={handleAddGuarantor} variant="outline">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Agregar Otro Fiador
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -895,31 +953,6 @@ const ApplicationDetails = () => {
                   </CardContent>
                 </Card>)}
             </div>
-          </TabsContent>
-          
-          <TabsContent value="notes">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-4">
-                  {application.notes.map((note: any, index: number) => <div key={index} className="flex gap-4">
-                      <div className="min-w-8 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <ClipboardList className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-1">
-                          <p className="font-medium">{note.author}</p>
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {note.date}
-                          </div>
-                        </div>
-                        <p className="text-sm">{note.content}</p>
-                        {index < application.notes.length - 1 && <Separator className="mt-3" />}
-                      </div>
-                    </div>)}
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </main>
