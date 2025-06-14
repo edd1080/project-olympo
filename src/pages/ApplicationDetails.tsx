@@ -312,7 +312,8 @@ const ApplicationDetails = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex flex-col">
+    return (
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -334,11 +335,13 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>;
+      </div>
+    );
   }
 
   if (!application) {
-    return <div className="min-h-screen flex flex-col">
+    return (
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -356,7 +359,8 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>;
+      </div>
+    );
   }
 
   const getStatusIcon = () => {
@@ -380,7 +384,10 @@ const ApplicationDetails = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header personName={application?.identification?.fullName?.split(' ')[0] || ''} />
+      <Header 
+        personName={application?.identification?.fullName?.split(' ')[0] || ''} 
+        applicationStatus={application?.status}
+      />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
         <BreadcrumbNavigation />
@@ -388,18 +395,12 @@ const ApplicationDetails = () => {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
           <div className="flex-1">
             <h1 className="text-xl font-medium">{application.identification.fullName}</h1>
-            <div className="flex items-center text-sm text-muted-foreground">
-              <span>{application.id}</span>
-            </div>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className={`px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium ${getStatusClass()}`}>
-              {getStatusIcon()}
-              <span>{applicationStatuses[application.status as keyof typeof applicationStatuses]?.label}</span>
-            </div>
             <Button size="sm" variant="outline" onClick={handleEditApplication}>
-              <Edit className="h-4 w-4" />
+              <Edit className="h-4 w-4 mr-1" />
+              Editar
             </Button>
             <Button 
               size="sm" 

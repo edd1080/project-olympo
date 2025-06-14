@@ -1,16 +1,38 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, X, User, Users } from 'lucide-react';
+import { ArrowLeft, X, User, Users, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 // Import the form context to access exit dialog functionality
 import { useFormContext } from '@/components/requestForm/RequestFormProvider';
 
+const applicationStatuses = {
+  'pending': {
+    label: 'Pendiente',
+    color: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+  },
+  'reviewing': {
+    label: 'En revisión',
+    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+  },
+  'approved': {
+    label: 'Aprobado',
+    color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+  },
+  'rejected': {
+    label: 'Rechazado',
+    color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  }
+};
+
 const Header = ({
-  personName
+  personName,
+  applicationStatus
 }: {
   personName?: string;
+  applicationStatus?: string;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,11 +49,18 @@ const Header = ({
   // Determine if we're in a guarantor form
   const isGuarantorForm = location.pathname.includes('/guarantors');
 
+  // Check if we're on application details page
+  const isApplicationDetailsPage = location.pathname.match(/^\/applications\/[^\/]+(?:\/edit)?$/);
+  const applicationId = isApplicationDetailsPage ? location.pathname.split('/')[2] : null;
+
   // Get page title based on current path
   const getPageTitle = () => {
     const isEditRoute = location.pathname.includes('/edit');
     if (personName && isEditRoute) {
       return personName;
+    }
+    if (isApplicationDetailsPage && applicationId) {
+      return applicationId;
     }
     switch (location.pathname) {
       case '/prospects':
@@ -74,10 +103,24 @@ const Header = ({
   // Show back button for application details and edit routes (but not main pages)
   const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login'].includes(location.pathname);
 
-  return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
+  const getStatusBadge = () => {
+    if (!applicationStatus || !isApplicationDetailsPage) return null;
+    
+    const statusConfig = applicationStatuses[applicationStatus as keyof typeof applicationStatuses];
+    if (!statusConfig) return null;
+
+    return (
+      <Badge className={`text-xs px-2 py-1 ${statusConfig.color}`}>
+        {statusConfig.label}
+      </Badge>
+    );
+  };
+
+  return (
+    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-1">
           {showBackButton && (
             <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Regresar">
               <ArrowLeft className="h-5 w-5" />
@@ -91,14 +134,18 @@ const Header = ({
           {isGuarantorForm && <Users className="h-4 w-4 text-accent" />}
         </div>
         
-        {/* Right button area */}
-        <div className="absolute right-4">
-          {location.pathname.includes('/edit') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
+        {/* Right area - Status badge for application details */}
+        <div className="flex items-center gap-2">
+          {getStatusBadge()}
+          {location.pathname.includes('/edit') && (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
               <X className="h-5 w-5" />
-            </Button>}
+            </Button>
+          )}
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };
 
 export default Header;
