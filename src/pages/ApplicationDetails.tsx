@@ -419,19 +419,6 @@ const ApplicationDetails = () => {
           <Progress value={application.progress / 6 * 100} className="h-2" />
         </div>
 
-        {!isApplicationReadyToSubmit() && (
-          <Card className="mb-6 border-amber-200 bg-amber-50">
-            <CardContent className="py-3">
-              <div className="flex items-center gap-2 text-amber-800">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm">
-                  Para enviar la solicitud, completa todas las secciones, sube los documentos requeridos y registra al menos un fiador.
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
