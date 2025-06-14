@@ -387,6 +387,7 @@ const ApplicationDetails = () => {
       <Header 
         personName={application?.identification?.fullName?.split(' ')[0] || ''} 
         applicationStatus={application?.status}
+        applicationId={application?.id}
       />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
@@ -405,6 +406,8 @@ const ApplicationDetails = () => {
             <Button 
               size="sm" 
               onClick={handleSubmitApplication}
+              disabled={!isApplicationReadyToSubmit()}
+              className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}
             >
               <Send className="mr-2 h-4 w-4" />
               Enviar Solicitud

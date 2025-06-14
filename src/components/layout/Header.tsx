@@ -29,10 +29,12 @@ const applicationStatuses = {
 
 const Header = ({
   personName,
-  applicationStatus
+  applicationStatus,
+  applicationId
 }: {
   personName?: string;
   applicationStatus?: string;
+  applicationId?: string;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,17 +53,20 @@ const Header = ({
 
   // Check if we're on application details page
   const isApplicationDetailsPage = location.pathname.match(/^\/applications\/[^\/]+(?:\/edit)?$/);
-  const applicationId = isApplicationDetailsPage ? location.pathname.split('/')[2] : null;
 
   // Get page title based on current path
   const getPageTitle = () => {
     const isEditRoute = location.pathname.includes('/edit');
+    
+    // If we have an applicationId, show it (for application details pages)
+    if (applicationId && isApplicationDetailsPage) {
+      return applicationId;
+    }
+    
     if (personName && isEditRoute) {
       return personName;
     }
-    if (isApplicationDetailsPage && applicationId) {
-      return applicationId;
-    }
+    
     switch (location.pathname) {
       case '/prospects':
         return 'Prospectos';
@@ -79,9 +84,21 @@ const Header = ({
   };
 
   const handleGoBack = () => {
+    // Special handling for edit routes
     if (location.pathname.includes('/edit')) {
+      // Extract application ID from path like "/applications/SCO_884214/edit"
+      const pathParts = location.pathname.split('/');
+      const appId = pathParts[2];
+      if (appId) {
+        navigate(`/applications/${appId}`);
+      } else {
+        navigate('/applications');
+      }
+    } else if (location.pathname.match(/^\/applications\/[^\/]+$/)) {
+      // From application details to applications list
       navigate('/applications');
     } else {
+      // Default back behavior
       navigate(-1);
     }
   };
