@@ -430,7 +430,7 @@ const ApplicationDetails = () => {
               Acceso Rápido
             </CardTitle>
           </CardHeader>
-          <CardContent className="py-3">
+          <CardContent className="pt-3 pb-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
               {formSections.map(section => 
                 <Button 
