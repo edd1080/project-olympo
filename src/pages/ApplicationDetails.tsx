@@ -11,8 +11,9 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper } from 'lucide-react';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -56,6 +57,7 @@ const formSections = [{
   icon: <CheckCircle size={18} />,
   name: 'Revisión Final'
 }];
+
 const ApplicationDetails = () => {
   const {
     id
@@ -72,6 +74,7 @@ const ApplicationDetails = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -210,9 +213,11 @@ const ApplicationDetails = () => {
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
+  
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
+  
   const navigateToFormSection = (sectionId: string) => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -225,6 +230,20 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
+
+  const navigateToDocuments = () => {
+    navigate(`/applications/${id}/edit`, {
+      state: {
+        sectionId: 'documents'
+      }
+    });
+    toast({
+      title: "Agregar Documentos",
+      description: "Navegando a la sección de documentos",
+      duration: 2000
+    });
+  };
+
   const handleAddGuarantor = () => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -237,6 +256,7 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
+
   const isApplicationReadyToSubmit = () => {
     if (!application) return false;
 
@@ -251,6 +271,7 @@ const ApplicationDetails = () => {
     const hasGuarantors = application.guarantors && application.guarantors.length > 0;
     return allSectionsComplete && requiredDocsComplete && hasGuarantors;
   };
+
   const handleSubmitApplication = async () => {
     // Check if application is ready first
     if (!isApplicationReadyToSubmit()) {
@@ -264,6 +285,7 @@ const ApplicationDetails = () => {
     }
     setShowConfirmDialog(true);
   };
+
   const confirmSubmitApplication = async () => {
     setIsSubmitting(true);
     try {
@@ -281,10 +303,12 @@ const ApplicationDetails = () => {
       setIsSubmitting(false);
     }
   };
+
   const handleSuccessClose = () => {
     setShowSuccessDialog(false);
     navigate('/applications');
   };
+
   if (loading) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -331,6 +355,7 @@ const ApplicationDetails = () => {
         <BottomNavigation />
       </div>;
   }
+
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -345,9 +370,11 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
+
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
+
   return <div className="min-h-screen flex flex-col">
       <Header personName={application?.identification?.fullName?.split(' ')[0] || ''} applicationStatus={application?.status} applicationId={application?.id} />
       
@@ -524,11 +551,14 @@ const ApplicationDetails = () => {
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200" onClick={navigateToDocuments}>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center">
-                  <FileCheck className="h-4 w-4 mr-2 text-primary" />
-                  Estado de Documentos
+                <CardTitle className="text-base flex items-center justify-between">
+                  <div className="flex items-center">
+                    <FileCheck className="h-4 w-4 mr-2 text-primary" />
+                    Estado de Documentos
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </CardTitle>
               </CardHeader>
               <CardContent>

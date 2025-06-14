@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 
 // Generate a random 6-digit number for application IDs
@@ -118,6 +118,7 @@ const createEmptyGuarantor = (): GuarantorData => ({
 export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const { toast } = useToast();
   const [activeStep, setActiveStep] = useState(0);
   const [subStep, setSubStep] = useState(0);
@@ -148,6 +149,26 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
   // Check if there are unsaved changes
   const hasUnsavedChanges = JSON.stringify(formData) !== JSON.stringify(lastSavedData);
 
+  // Mapping from sectionId to step index
+  const sectionIdToStepIndex = {
+    'identification': 0,
+    'finances': 1,
+    'business': 2,
+    'guarantors': 3,
+    'documents': 4,
+    'review': 5
+  };
+
+  // Section names for toast messages
+  const sectionNames = {
+    'identification': 'Identificación y Contacto',
+    'finances': 'Finanzas y Patrimonio',
+    'business': 'Negocio y Perfil Económico',
+    'guarantors': 'Fiadores y Referencias',
+    'documents': 'Documentos',
+    'review': 'Revisión Final'
+  };
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
@@ -156,6 +177,27 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     }
     
     console.log(`RequestForm initialized, active step: ${steps[activeStep].id}`);
+    
+    // Check if there's a sectionId in the navigation state
+    const navigationState = location.state as { sectionId?: string } | null;
+    if (navigationState?.sectionId) {
+      const targetStepIndex = sectionIdToStepIndex[navigationState.sectionId as keyof typeof sectionIdToStepIndex];
+      if (targetStepIndex !== undefined) {
+        setActiveStep(targetStepIndex);
+        setSubStep(0); // Reset to beginning of section
+        
+        // Show toast notification
+        const sectionName = sectionNames[navigationState.sectionId as keyof typeof sectionNames];
+        toast({
+          title: "Navegación exitosa",
+          description: `Navegando a: ${sectionName}`,
+          duration: 3000,
+          className: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
+        });
+        
+        console.log(`Navigated to section: ${navigationState.sectionId}, step index: ${targetStepIndex}`);
+      }
+    }
     
     // If we're editing an existing application, fetch its data
     if (id) {
@@ -190,8 +232,8 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
           setSectionStatus(prev => ({ ...prev, identification: 'complete' }));
         }
         
-        // Only show toast once
-        if (!toastShown) {
+        // Only show toast once if not navigating to specific section
+        if (!toastShown && !navigationState?.sectionId) {
           toast({
             title: "Datos cargados",
             description: `Se ha cargado la solicitud ${mockData.applicationCode || id} para edición`,
@@ -202,7 +244,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
         }
       }, 500);
     }
-  }, [navigate, activeStep, id, toast, toastShown, steps]);
+  }, [navigate, activeStep, id, toast, toastShown, steps, location.state]);
   
   // Check if current section has sufficient data to be marked as complete
   const checkSectionCompletion = () => {
