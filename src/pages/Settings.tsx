@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -11,13 +12,13 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 // import DeviceInfo from '@/components/settings/DeviceInfo';
 import NotificationSettings from '@/components/settings/NotificationSettings';
 import AppPreferences from '@/components/settings/AppPreferences';
-import SecuritySettings from '@/components/settings/SecuritySettings';
+// SecuritySettings commented out but preserved for future use
+// import SecuritySettings from '@/components/settings/SecuritySettings';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+
 const Settings = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // DeviceInfo data commented out but preserved for future use
@@ -49,6 +50,7 @@ const Settings = () => {
       navigate('/login');
     }
   }, [navigate]);
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     toast({
@@ -58,17 +60,16 @@ const Settings = () => {
     navigate('/login');
     setShowLogoutDialog(false);
   };
+
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
   };
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 px-4 pb-20 my-[20px]">
-        
-        
-        
-        
         <div className="space-y-6">
           <Card>
             <CardHeader>
@@ -88,10 +89,10 @@ const Settings = () => {
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div className="flex items-center justify-between py-2 cursor-pointer hover:bg-accent/50 rounded-md px-2" onClick={() => navigate('/settings/change-password')}>
+              <div className="flex items-center justify-between py-2 rounded-md px-2 opacity-50 cursor-not-allowed">
                 <div>
-                  <p className="font-medium">Cambiar contraseña</p>
-                  <p className="text-sm text-muted-foreground">Actualiza tu contraseña</p>
+                  <p className="font-medium text-muted-foreground">Cambiar contraseña</p>
+                  <p className="text-sm text-muted-foreground">No disponible en esta versión</p>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </div>
@@ -103,7 +104,10 @@ const Settings = () => {
            */}
           <NotificationSettings />
           <AppPreferences />
-          <SecuritySettings />
+          
+          {/* SecuritySettings component commented out but preserved for future use
+           <SecuritySettings />
+           */}
           
           <Card>
             <CardHeader>
@@ -154,6 +158,8 @@ const Settings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>;
+    </div>
+  );
 };
+
 export default Settings;

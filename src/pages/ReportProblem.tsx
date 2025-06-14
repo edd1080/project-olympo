@@ -58,21 +58,15 @@ const ReportProblem = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 bg-background border-b border-border px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => navigate('/settings')}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="text-lg font-semibold">Reportar Problema</h1>
-          </div>
-          <Button onClick={handleSubmit} disabled={isLoading}>
-            <Send className="h-4 w-4 mr-2" />
-            {isLoading ? 'Enviando...' : 'Enviar'}
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => navigate('/settings')}
+          >
+            <ArrowLeft className="h-5 w-5" />
           </Button>
+          <h1 className="text-lg font-semibold">Reportar Problema</h1>
         </div>
       </div>
 
@@ -144,6 +138,11 @@ const ReportProblem = () => {
                 Recibirás una respuesta dentro de 24-48 horas hábiles.
               </p>
             </div>
+
+            <Button onClick={handleSubmit} disabled={isLoading} className="w-full">
+              <Send className="h-4 w-4 mr-2" />
+              {isLoading ? 'Enviando...' : 'Enviar'}
+            </Button>
           </CardContent>
         </Card>
       </main>
