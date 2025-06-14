@@ -13,7 +13,6 @@ import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -32,40 +31,31 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
-
-const formSections = [
-  {
-    id: 'identification',
-    icon: <User size={18} />,
-    name: 'Identificación y Contacto'
-  },
-  {
-    id: 'finances',
-    icon: <DollarSign size={18} />,
-    name: 'Finanzas y Patrimonio'
-  },
-  {
-    id: 'business',
-    icon: <MapPin size={18} />,
-    name: 'Negocio y Perfil Económico'
-  },
-  {
-    id: 'guarantors',
-    icon: <Users size={18} />,
-    name: 'Fiadores y Referencias'
-  },
-  {
-    id: 'documents',
-    icon: <FileCheck size={18} />,
-    name: 'Documentos'
-  },
-  {
-    id: 'review',
-    icon: <CheckCircle size={18} />,
-    name: 'Revisión Final'
-  }
-];
-
+const formSections = [{
+  id: 'identification',
+  icon: <User size={18} />,
+  name: 'Identificación y Contacto'
+}, {
+  id: 'finances',
+  icon: <DollarSign size={18} />,
+  name: 'Finanzas y Patrimonio'
+}, {
+  id: 'business',
+  icon: <MapPin size={18} />,
+  name: 'Negocio y Perfil Económico'
+}, {
+  id: 'guarantors',
+  icon: <Users size={18} />,
+  name: 'Fiadores y Referencias'
+}, {
+  id: 'documents',
+  icon: <FileCheck size={18} />,
+  name: 'Documentos'
+}, {
+  id: 'review',
+  icon: <CheckCircle size={18} />,
+  name: 'Revisión Final'
+}];
 const ApplicationDetails = () => {
   const {
     id
@@ -82,7 +72,6 @@ const ApplicationDetails = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
@@ -169,21 +158,19 @@ const ApplicationDetails = () => {
             purpose: 'Ampliación de inventario',
             collateral: 'Inventario del negocio'
           },
-          guarantors: [
-            {
-              id: 'G001',
-              nombre: 'Carlos Alberto Martínez',
-              dpi: '1234 56789 0123',
-              telefono: '502-5555-9876',
-              parentesco: 'Esposo',
-              salario: 8000,
-              tipoEmpleo: 'Asalariado',
-              empresa: 'Constructora ABC',
-              porcentajeCobertura: 50,
-              status: 'in-progress',
-              progress: 80
-            }
-          ],
+          guarantors: [{
+            id: 'G001',
+            nombre: 'Carlos Alberto Martínez',
+            dpi: '1234 56789 0123',
+            telefono: '502-5555-9876',
+            parentesco: 'Esposo',
+            salario: 8000,
+            tipoEmpleo: 'Asalariado',
+            empresa: 'Constructora ABC',
+            porcentajeCobertura: 50,
+            status: 'in-progress',
+            progress: 80
+          }],
           documents: {
             dpiFrontal: {
               status: 'complete',
@@ -213,7 +200,6 @@ const ApplicationDetails = () => {
     };
     fetchApplicationData();
   }, [id]);
-
   useEffect(() => {
     if (application && !toastShown) {
       toast({
@@ -224,11 +210,9 @@ const ApplicationDetails = () => {
       setToastShown(true);
     }
   }, [application, toast, id, toastShown]);
-
   const handleEditApplication = () => {
     navigate(`/applications/${id}/edit`);
   };
-
   const navigateToFormSection = (sectionId: string) => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -241,7 +225,6 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
-
   const handleAddGuarantor = () => {
     navigate(`/applications/${id}/edit`, {
       state: {
@@ -254,25 +237,20 @@ const ApplicationDetails = () => {
       duration: 2000
     });
   };
-
   const isApplicationReadyToSubmit = () => {
     if (!application) return false;
-    
+
     // Check if all 6 sections are completed
     const allSectionsComplete = application.progress >= 6;
-    
+
     // Check if required documents are uploaded
     const requiredDocs = ['dpiFrontal', 'dpiTrasero', 'fotoSolicitante'];
-    const requiredDocsComplete = requiredDocs.every(doc => 
-      application.documents[doc]?.status === 'complete'
-    );
-    
+    const requiredDocsComplete = requiredDocs.every(doc => application.documents[doc]?.status === 'complete');
+
     // Check if at least one guarantor is registered
     const hasGuarantors = application.guarantors && application.guarantors.length > 0;
-    
     return allSectionsComplete && requiredDocsComplete && hasGuarantors;
   };
-
   const handleSubmitApplication = async () => {
     // Check if application is ready first
     if (!isApplicationReadyToSubmit()) {
@@ -284,10 +262,8 @@ const ApplicationDetails = () => {
       });
       return;
     }
-
     setShowConfirmDialog(true);
   };
-
   const confirmSubmitApplication = async () => {
     setIsSubmitting(true);
     try {
@@ -299,21 +275,18 @@ const ApplicationDetails = () => {
       toast({
         title: "Error",
         description: "No se pudo enviar la solicitud. Intenta nuevamente.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const handleSuccessClose = () => {
     setShowSuccessDialog(false);
     navigate('/applications');
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -335,13 +308,10 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>
-    );
+      </div>;
   }
-
   if (!application) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 pb-20">
           <div className="flex items-center space-x-4">
@@ -359,10 +329,8 @@ const ApplicationDetails = () => {
           </div>
         </main>
         <BottomNavigation />
-      </div>
-    );
+      </div>;
   }
-
   const getStatusIcon = () => {
     switch (application.status) {
       case 'pending':
@@ -377,18 +345,11 @@ const ApplicationDetails = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
-
   const getStatusClass = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Header 
-        personName={application?.identification?.fullName?.split(' ')[0] || ''} 
-        applicationStatus={application?.status}
-        applicationId={application?.id}
-      />
+  return <div className="min-h-screen flex flex-col">
+      <Header personName={application?.identification?.fullName?.split(' ')[0] || ''} applicationStatus={application?.status} applicationId={application?.id} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
         <BreadcrumbNavigation />
@@ -403,12 +364,7 @@ const ApplicationDetails = () => {
               <Edit className="h-4 w-4 mr-1" />
               Editar
             </Button>
-            <Button 
-              size="sm" 
-              onClick={handleSubmitApplication}
-              disabled={!isApplicationReadyToSubmit()}
-              className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}
-            >
+            <Button size="sm" onClick={handleSubmitApplication} disabled={!isApplicationReadyToSubmit()} className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}>
               <Send className="mr-2 h-4 w-4" />
               Enviar Solicitud
             </Button>
@@ -432,21 +388,14 @@ const ApplicationDetails = () => {
           </CardHeader>
           <CardContent className="pt-3 pb-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-              {formSections.map(section => 
-                <Button 
-                  key={section.id} 
-                  variant="outline" 
-                  className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" 
-                  onClick={() => navigateToFormSection(section.id)}
-                >
+              {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
                   </div>
                   <span className="text-center leading-tight px-1 whitespace-normal sm:whitespace-nowrap overflow-hidden">
                     {section.name}
                   </span>
-                </Button>
-              )}
+                </Button>)}
             </div>
           </CardContent>
         </Card>
@@ -457,7 +406,7 @@ const ApplicationDetails = () => {
             <TabsTrigger value="details">Detalles</TabsTrigger>
             <TabsTrigger value="guarantors">
               <div className="flex items-center gap-1">
-                <UserCheck className="h-4 w-4" />
+                
                 <span>Fiadores</span>
               </div>
             </TabsTrigger>
@@ -685,8 +634,7 @@ const ApplicationDetails = () => {
                     </div>
                   </div>
                   
-                  {application.identification.conyuge && (
-                    <div className="mt-6">
+                  {application.identification.conyuge && <div className="mt-6">
                       <h4 className="text-sm font-medium mb-3">Información del Cónyuge</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -706,8 +654,7 @@ const ApplicationDetails = () => {
                           <p className="font-medium">{application.identification.conyuge.trabajo}</p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                 </CardContent>
               </Card>
 
@@ -920,8 +867,7 @@ const ApplicationDetails = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {application.guarantors.length === 0 ? (
-                  <div className="text-center p-12">
+                {application.guarantors.length === 0 ? <div className="text-center p-12">
                     <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium mb-2">No hay fiadores registrados</h3>
                     <p className="text-muted-foreground mb-6">
@@ -931,11 +877,8 @@ const ApplicationDetails = () => {
                       <Plus className="h-4 w-4 mr-2" />
                       Agregar Fiador
                     </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {application.guarantors.map((guarantor: any) => (
-                      <Card key={guarantor.id} className="p-4">
+                  </div> : <div className="space-y-4">
+                    {application.guarantors.map((guarantor: any) => <Card key={guarantor.id} className="p-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <p className="text-sm text-muted-foreground">Nombre</p>
@@ -977,8 +920,7 @@ const ApplicationDetails = () => {
                           </div>
                           <Progress value={guarantor.progress} className="h-2" />
                         </div>
-                      </Card>
-                    ))}
+                      </Card>)}
                     
                     <div className="text-center pt-4">
                       <Button onClick={handleAddGuarantor} variant="outline">
@@ -986,8 +928,7 @@ const ApplicationDetails = () => {
                         Agregar Otro Fiador
                       </Button>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </CardContent>
             </Card>
           </TabsContent>
@@ -1074,8 +1015,6 @@ const ApplicationDetails = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
-
 export default ApplicationDetails;
