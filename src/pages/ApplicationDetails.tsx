@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -11,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const applicationStatuses = {
@@ -79,6 +79,9 @@ const ApplicationDetails = () => {
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchApplicationData = () => {
@@ -252,6 +255,47 @@ const ApplicationDetails = () => {
     });
   };
 
+  const isApplicationReadyToSubmit = () => {
+    if (!application) return false;
+    
+    // Check if all 6 sections are completed
+    const allSectionsComplete = application.progress >= 6;
+    
+    // Check if required documents are uploaded
+    const requiredDocs = ['dpiFrontal', 'dpiTrasero', 'fotoSolicitante'];
+    const requiredDocsComplete = requiredDocs.every(doc => 
+      application.documents[doc]?.status === 'complete'
+    );
+    
+    // Check if at least one guarantor is registered
+    const hasGuarantors = application.guarantors && application.guarantors.length > 0;
+    
+    return allSectionsComplete && requiredDocsComplete && hasGuarantors;
+  };
+
+  const handleSubmitApplication = async () => {
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setShowConfirmDialog(false);
+      setShowSuccessDialog(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo enviar la solicitud. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessDialog(false);
+    navigate('/applications');
+  };
+
   if (loading) {
     return <div className="min-h-screen flex flex-col">
         <Header />
@@ -319,7 +363,8 @@ const ApplicationDetails = () => {
     return applicationStatuses[application.status as keyof typeof applicationStatuses]?.color || '';
   };
 
-  return <div className="min-h-screen flex flex-col">
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header personName={application?.identification?.fullName?.split(' ')[0] || ''} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20">
@@ -347,6 +392,15 @@ const ApplicationDetails = () => {
               <Edit className="mr-2 h-4 w-4" />
               Editar
             </Button>
+            <Button 
+              size="sm" 
+              onClick={() => setShowConfirmDialog(true)}
+              disabled={!isApplicationReadyToSubmit()}
+              className={isApplicationReadyToSubmit() ? '' : 'opacity-50 cursor-not-allowed'}
+            >
+              <Send className="mr-2 h-4 w-4" />
+              Enviar Solicitud
+            </Button>
           </div>
         </div>
 
@@ -357,6 +411,19 @@ const ApplicationDetails = () => {
           </div>
           <Progress value={application.progress / 6 * 100} className="h-2" />
         </div>
+
+        {!isApplicationReadyToSubmit() && (
+          <Card className="mb-6 border-amber-200 bg-amber-50">
+            <CardContent className="py-3">
+              <div className="flex items-center gap-2 text-amber-800">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm">
+                  Para enviar la solicitud, completa todas las secciones, sube los documentos requeridos y registra al menos un fiador.
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
@@ -958,7 +1025,50 @@ const ApplicationDetails = () => {
       </main>
       
       <BottomNavigation />
-    </div>;
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Envío</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas enviar esta solicitud? Una vez enviada no podrás realizar cambios.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSubmitApplication} disabled={isSubmitting}>
+              {isSubmitting ? 'Enviando...' : 'Confirmar Envío'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <PartyPopper className="h-8 w-8 text-green-600" />
+              </div>
+              <DialogTitle className="text-xl">¡Solicitud Enviada!</DialogTitle>
+              <DialogDescription className="text-center">
+                Tu solicitud ha sido enviada exitosamente. Recibirás una notificación cuando sea revisada.
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleSuccessClose} className="w-full">
+              Continuar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 };
 
 export default ApplicationDetails;
