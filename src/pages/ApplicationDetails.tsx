@@ -384,11 +384,11 @@ const ApplicationDetails = () => {
           </CardHeader>
           <CardContent className="py-3">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-              {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1" onClick={() => navigateToFormSection(section.id)}>
+              {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
                   </div>
-                  <span className="text-center">{section.name}</span>
+                  <span className="text-center leading-tight min-h-[2rem] flex items-center justify-center">{section.name}</span>
                 </Button>)}
             </div>
           </CardContent>
