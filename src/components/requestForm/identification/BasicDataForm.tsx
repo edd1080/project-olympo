@@ -5,6 +5,7 @@ import PersonalInfoForm from './PersonalInfoForm';
 import DocumentsForm from './DocumentsForm';
 import BirthDemographicsForm from './BirthDemographicsForm';
 import SpouseInfoForm from './SpouseInfoForm';
+import DisabilityForm from './DisabilityForm';
 
 interface BasicDataFormProps {
   formData: any;
@@ -44,6 +45,9 @@ const BasicDataForm: React.FC<BasicDataFormProps> = ({ formData, updateFormData 
         {isMarried && (
           <SpouseInfoForm formData={formData} updateFormData={updateFormData} />
         )}
+
+        {/* Campo de Incapacidad */}
+        <DisabilityForm formData={formData} updateFormData={updateFormData} />
       </div>
     </div>
   );
