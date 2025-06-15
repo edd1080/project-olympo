@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { 
   Select,
   SelectContent,
@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface ContactHousingFormProps {
   formData: any;
@@ -19,11 +18,54 @@ interface ContactHousingFormProps {
 }
 
 const ContactHousingForm: React.FC<ContactHousingFormProps> = ({ formData, updateFormData }) => {
-  const [hasDisability, setHasDisability] = useState(formData.hasDisability || false);
+  const [selectedDepartment, setSelectedDepartment] = useState(formData.residenceDepartment || '');
 
   useEffect(() => {
-    updateFormData('hasDisability', hasDisability);
-  }, [hasDisability, updateFormData]);
+    // Reset municipality when department changes
+    if (selectedDepartment !== formData.residenceDepartment) {
+      updateFormData('residenceMunicipality', '');
+    }
+  }, [selectedDepartment, formData.residenceDepartment, updateFormData]);
+
+  // Guatemala departments and municipalities
+  const departmentsMunicipalities = {
+    'guatemala': ['Guatemala', 'Mixco', 'Villa Nueva', 'San José Pinula', 'Santa Catarina Pinula', 'Fraijanes', 'Amatitlán', 'Villa Canales', 'Palencia', 'Chinautla', 'San Pedro Ayampuc', 'San Juan Sacatepéquez', 'San Raymundo', 'Chuarrancho', 'San Pedro Sacatepéquez', 'San José del Golfo', 'Petapa'],
+    'alta_verapaz': ['Cobán', 'Santa Cruz Verapaz', 'San Cristóbal Verapaz', 'Tactic', 'Tamahú', 'Tucurú', 'Panzós', 'Senahú', 'San Pedro Carchá', 'San Juan Chamelco', 'Lanquín', 'Santa María Cahabón', 'Chisec', 'Chahal', 'Fray Bartolomé de las Casas', 'La Tinta'],
+    'baja_verapaz': ['Salamá', 'San Miguel Chicaj', 'Rabinal', 'Cubulco', 'Granados', 'Santa Cruz el Chol', 'San Jerónimo', 'Purulhá'],
+    'chimaltenango': ['Chimaltenango', 'San José Poaquil', 'San Martín Jilotepeque', 'Comalapa', 'Santa Apolonia', 'Tecpán', 'Patzún', 'Pochuta', 'Patzicía', 'Santa Cruz Balanyá', 'Acatenango', 'Yepocapa', 'San Andrés Itzapa', 'Parramos', 'Zaragoza', 'El Tejar'],
+    'chiquimula': ['Chiquimula', 'San José la Arada', 'San Juan Ermita', 'Jocotán', 'Camotán', 'Olopa', 'Esquipulas', 'Concepción Las Minas', 'Quezaltepeque', 'San Jacinto', 'Ipala'],
+    'el_progreso': ['Guastatoya', 'Morazán', 'San Agustín Acasaguastlán', 'San Cristóbal Acasaguastlán', 'El Jícaro', 'Sansare', 'Sanarate', 'San Antonio La Paz'],
+    'escuintla': ['Escuintla', 'Santa Lucía Cotzumalguapa', 'La Democracia', 'Siquinalá', 'Masagua', 'Tiquisate', 'La Gomera', 'Guanagazapa', 'San José', 'Iztapa', 'Palín', 'San Vicente Pacaya', 'Nueva Concepción'],
+    'huehuetenango': ['Huehuetenango', 'Chiantla', 'Malacatancito', 'Cuilco', 'Nentón', 'San Pedro Necta', 'Jacaltenango', 'San Pedro Soloma', 'San Ildefonso Ixtahuacán', 'Santa Bárbara', 'La Libertad', 'La Democracia', 'San Miguel Acatán', 'San Rafael La Independencia', 'Todos Santos Cuchumatán', 'San Juan Atitán', 'Santa Eulalia', 'San Mateo Ixtatán', 'Colotenango', 'San Sebastián Huehuetenango', 'Tectitán', 'Concepción Huista', 'San Juan Ixcoy', 'San Antonio Huista', 'San Sebastián Coatán', 'Barillas', 'Aguacatán', 'San Rafael Petzal', 'San Gaspar Ixchil', 'Santiago Chimaltenango', 'Santa Ana Huista'],
+    'izabal': ['Puerto Barrios', 'Livingston', 'El Estor', 'Morales', 'Los Amates'],
+    'jalapa': ['Jalapa', 'San Pedro Pinula', 'San Luis Jilotepeque', 'San Manuel Chaparrón', 'San Carlos Alzatate', 'Monjas', 'Mataquescuintla'],
+    'jutiapa': ['Jutiapa', 'El Progreso', 'Santa Catarina Mita', 'Agua Blanca', 'Asunción Mita', 'Yupiltepeque', 'Atescatempa', 'Jerez', 'El Adelanto', 'Zapotitlán', 'Comapa', 'Jalpatagua', 'Conguaco', 'Moyuta', 'Pasaco', 'San José Acatempa', 'Quesada'],
+    'peten': ['Flores', 'San José', 'San Benito', 'San Andrés', 'La Libertad', 'San Francisco', 'Santa Ana', 'Dolores', 'San Luis', 'Sayaxché', 'Melchor de Mencos', 'Poptún'],
+    'quetzaltenango': ['Quetzaltenango', 'Salcajá', 'Olintepeque', 'San Carlos Sija', 'Sibilia', 'Cabricán', 'Cajolá', 'San Miguel Sigüilá', 'Ostuncalco', 'San Mateo', 'Concepción Chiquirichapa', 'San Martín Sacatepéquez', 'Almolonga', 'Cantel', 'Huitán', 'Zunil', 'Colomba Costa Cuca', 'San Francisco La Unión', 'El Palmar', 'Coatepeque', 'Génova', 'Flores Costa Cuca', 'La Esperanza', 'Palestina de Los Altos'],
+    'quiche': ['Santa Cruz del Quiché', 'Chiché', 'Chinique', 'Zacualpa', 'Chajul', 'Chichicastenango', 'Patzité', 'San Antonio Ilotenango', 'San Pedro Jocopilas', 'Cunén', 'San Juan Cotzal', 'Joyabaj', 'Nebaj', 'San Andrés Sajcabajá', 'Uspantán', 'Sacapulas', 'San Bartolomé Jocotenango', 'Canillá', 'Playa Grande Ixcán', 'Pachalum', 'San Miguel Uspantán'],
+    'retalhuleu': ['Retalhuleu', 'San Sebastián', 'Santa Cruz Muluá', 'San Martín Zapotitlán', 'San Felipe', 'San Andrés Villa Seca', 'Champerico', 'Nuevo San Carlos', 'El Asintal'],
+    'sacatepequez': ['Antigua Guatemala', 'Jocotenango', 'Pastores', 'Sumpango', 'Santo Domingo Xenacoj', 'Santiago Sacatepéquez', 'San Bartolomé Milpas Altas', 'San Lucas Sacatepéquez', 'Santa Lucía Milpas Altas', 'Magdalena Milpas Altas', 'Santa María de Jesús', 'Ciudad Vieja', 'San Miguel Dueñas', 'Alotenango', 'San Antonio Aguas Calientes', 'Santa Catarina Barahona'],
+    'san_marcos': ['San Marcos', 'San Pedro Sacatepéquez', 'San Antonio Sacatepéquez', 'Comitancillo', 'San Miguel Ixtahuacán', 'Concepción Tutuapa', 'Tacaná', 'Sibinal', 'Tajumulco', 'Tejutla', 'San Rafael Pie de la Cuesta', 'Nuevo Progreso', 'El Tumbador', 'El Rodeo', 'Malacatán', 'Catarina', 'Ayutla', 'Ocós', 'San Pablo', 'El Quetzal', 'La Reforma', 'Pajapita', 'Ixchiguán', 'San José Ojetenam', 'San Cristóbal Cucho', 'Sipacapa', 'Esquipulas Palo Gordo', 'Río Blanco', 'San Lorenzo'],
+    'santa_rosa': ['Cuilapa', 'Barberena', 'Santa Rosa de Lima', 'Casillas', 'San Rafael Las Flores', 'Oratorio', 'San Juan Tecuaco', 'Chiquimulilla', 'Taxisco', 'Santa María Ixhuatán', 'Guazacapán', 'Santa Cruz Naranjo', 'Pueblo Nuevo Viñas', 'Nueva Santa Rosa'],
+    'solola': ['Sololá', 'San José Chacayá', 'Santa María Visitación', 'Santa Lucía Utatlán', 'Nahualá', 'Santa Catarina Ixtahuacán', 'Santa Clara La Laguna', 'Concepción', 'San Andrés Semetabaj', 'Panajachel', 'Santa Catarina Palopó', 'San Antonio Palopó', 'San Lucas Tolimán', 'Santa Cruz La Laguna', 'San Pablo La Laguna', 'San Marcos La Laguna', 'San Juan La Laguna', 'San Pedro La Laguna', 'Santiago Atitlán'],
+    'suchitepequez': ['Mazatenango', 'Cuyotenango', 'San Francisco Zapotitlán', 'San Bernardino', 'San José El Ídolo', 'Santo Domingo Suchitepéquez', 'San Lorenzo', 'Samayac', 'San Pablo Jocopilas', 'San Antonio Suchitepéquez', 'San Miguel Panán', 'San Gabriel', 'Chicacao', 'Patulul', 'Santa Bárbara', 'San Juan Bautista', 'Santo Tomás La Unión', 'Zunilito', 'Pueblo Nuevo', 'Río Bravo'],
+    'totonicapan': ['Totonicapán', 'San Cristóbal Totonicapán', 'San Francisco El Alto', 'San Andrés Xecul', 'Momostenango', 'Santa María Chiquimula', 'Santa Lucía La Reforma', 'San Bartolo'],
+    'zacapa': ['Zacapa', 'Estanzuela', 'Río Hondo', 'Gualán', 'Teculután', 'Usumatlán', 'Cabañas', 'San Diego', 'La Unión', 'Huité']
+  };
+
+  const getStabilityBadge = (stability: string) => {
+    switch (stability) {
+      case 'more5years':
+      case '5years':
+        return <Badge variant="default" className="bg-green-100 text-green-800 ml-2">Excelente</Badge>;
+      case '2years':
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 ml-2">Buena</Badge>;
+      case '1year':
+        return <Badge variant="outline" className="bg-orange-100 text-orange-800 ml-2">Regular</Badge>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -35,8 +77,8 @@ const ContactHousingForm: React.FC<ContactHousingFormProps> = ({ formData, updat
       </div>
       
       <div className="space-y-6">
-        {/* Contacto */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Teléfonos y Email */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="mobilePhone">Teléfono Móvil *</Label>
             <Input 
@@ -52,7 +94,21 @@ const ContactHousingForm: React.FC<ContactHousingFormProps> = ({ formData, updat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Correo Electrónico *</Label>
+            <Label htmlFor="homePhone">Teléfono de Casa</Label>
+            <Input 
+              id="homePhone"
+              value={formData.homePhone || ''} 
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 8);
+                updateFormData('homePhone', value);
+              }}
+              placeholder="12345678"
+              maxLength={8}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">E-mail</Label>
             <Input 
               id="email"
               type="email"
@@ -63,41 +119,10 @@ const ContactHousingForm: React.FC<ContactHousingFormProps> = ({ formData, updat
           </div>
         </div>
 
-        {/* Tipo Vivienda */}
-        <div className="space-y-3">
-          <Label>Tipo Vivienda *</Label>
-          <RadioGroup 
-            value={formData.housingType || ''} 
-            onValueChange={(value) => updateFormData('housingType', value)}
-            className="grid grid-cols-2 md:grid-cols-3 gap-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="own" id="own" />
-              <Label htmlFor="own">Propia</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="rent" id="rent" />
-              <Label htmlFor="rent">Alquilada</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="family" id="family" />
-              <Label htmlFor="family">Familiar</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="mortgage" id="mortgage" />
-              <Label htmlFor="mortgage">Hipotecada</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="other" id="other" />
-              <Label htmlFor="other">Otra</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        {/* Dirección y Estabilidad */}
+        {/* Dirección y Referencia */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="address">Dirección Completa *</Label>
+            <Label htmlFor="address">Dirección *</Label>
             <Textarea 
               id="address"
               value={formData.address || ''} 
@@ -109,63 +134,131 @@ const ContactHousingForm: React.FC<ContactHousingFormProps> = ({ formData, updat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="residenceStability">Estabilidad Domiciliar *</Label>
-            <Select value={formData.residenceStability || ''} onValueChange={(value) => updateFormData('residenceStability', value)}>
+            <Label htmlFor="addressReference">Referencia para la Dirección *</Label>
+            <Input 
+              id="addressReference"
+              value={formData.addressReference || ''} 
+              onChange={(e) => updateFormData('addressReference', e.target.value)}
+              placeholder="Punto de referencia para ubicar la dirección"
+            />
+          </div>
+        </div>
+
+        {/* Departamento y Municipio */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="residenceDepartment">Departamento de Residencia *</Label>
+            <Select 
+              value={formData.residenceDepartment || ''} 
+              onValueChange={(value) => {
+                updateFormData('residenceDepartment', value);
+                setSelectedDepartment(value);
+              }}
+            >
               <SelectTrigger>
-                <SelectValue placeholder="Tiempo en la dirección actual" />
+                <SelectValue placeholder="Seleccionar departamento" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1year">1 año</SelectItem>
-                <SelectItem value="2years">2 años</SelectItem>
-                <SelectItem value="3years">3 años</SelectItem>
-                <SelectItem value="5years">5 años</SelectItem>
-                <SelectItem value="more5years">Más de 5 años</SelectItem>
+                <SelectItem value="guatemala">Guatemala</SelectItem>
+                <SelectItem value="alta_verapaz">Alta Verapaz</SelectItem>
+                <SelectItem value="baja_verapaz">Baja Verapaz</SelectItem>
+                <SelectItem value="chimaltenango">Chimaltenango</SelectItem>
+                <SelectItem value="chiquimula">Chiquimula</SelectItem>
+                <SelectItem value="el_progreso">El Progreso</SelectItem>
+                <SelectItem value="escuintla">Escuintla</SelectItem>
+                <SelectItem value="huehuetenango">Huehuetenango</SelectItem>
+                <SelectItem value="izabal">Izabal</SelectItem>
+                <SelectItem value="jalapa">Jalapa</SelectItem>
+                <SelectItem value="jutiapa">Jutiapa</SelectItem>
+                <SelectItem value="peten">Petén</SelectItem>
+                <SelectItem value="quetzaltenango">Quetzaltenango</SelectItem>
+                <SelectItem value="quiche">Quiché</SelectItem>
+                <SelectItem value="retalhuleu">Retalhuleu</SelectItem>
+                <SelectItem value="sacatepequez">Sacatepéquez</SelectItem>
+                <SelectItem value="san_marcos">San Marcos</SelectItem>
+                <SelectItem value="santa_rosa">Santa Rosa</SelectItem>
+                <SelectItem value="solola">Sololá</SelectItem>
+                <SelectItem value="suchitepequez">Suchitepéquez</SelectItem>
+                <SelectItem value="totonicapan">Totonicapán</SelectItem>
+                <SelectItem value="zacapa">Zacapa</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="residenceMunicipality">Municipio de Residencia *</Label>
+            <Select 
+              value={formData.residenceMunicipality || ''} 
+              onValueChange={(value) => updateFormData('residenceMunicipality', value)}
+              disabled={!selectedDepartment}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar municipio" />
+              </SelectTrigger>
+              <SelectContent>
+                {selectedDepartment && departmentsMunicipalities[selectedDepartment as keyof typeof departmentsMunicipalities]?.map((municipality) => (
+                  <SelectItem key={municipality} value={municipality.toLowerCase().replace(/ /g, '_')}>
+                    {municipality}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Profesión */}
-        <div className="space-y-2">
-          <Label htmlFor="profession">Profesión/Oficio *</Label>
-          <Select value={formData.profession || ''} onValueChange={(value) => updateFormData('profession', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar profesión" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="commerce">Comercio</SelectItem>
-              <SelectItem value="agriculture">Agricultura</SelectItem>
-              <SelectItem value="services">Servicios</SelectItem>
-              <SelectItem value="manufacturing">Manufactura</SelectItem>
-              <SelectItem value="transport">Transporte</SelectItem>
-              <SelectItem value="construction">Construcción</SelectItem>
-              <SelectItem value="other">Otro</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Toggle Incapacidad */}
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch 
-              id="hasDisability"
-              checked={hasDisability}
-              onCheckedChange={setHasDisability}
-            />
-            <Label htmlFor="hasDisability">¿Tiene alguna incapacidad?</Label>
+        {/* Vivienda y Estabilidad */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="housingType">Vivienda *</Label>
+            <Select value={formData.housingType || ''} onValueChange={(value) => updateFormData('housingType', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Tipo de vivienda" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="own">Propia</SelectItem>
+                <SelectItem value="rent">Alquilada</SelectItem>
+                <SelectItem value="family">Familiar</SelectItem>
+                <SelectItem value="mortgage">Hipotecada</SelectItem>
+                <SelectItem value="other">Otra</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {hasDisability && (
-            <div className="space-y-2">
-              <Label htmlFor="disabilityDescription">Descripción de la Incapacidad *</Label>
-              <Input 
-                id="disabilityDescription"
-                value={formData.disabilityDescription || ''} 
-                onChange={(e) => updateFormData('disabilityDescription', e.target.value)}
-                placeholder="Describir la incapacidad"
-              />
+          <div className="space-y-2">
+            <Label htmlFor="residenceStability">Estabilidad Domiciliar *</Label>
+            <div className="flex items-center">
+              <Select 
+                value={formData.residenceStability || ''} 
+                onValueChange={(value) => updateFormData('residenceStability', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Tiempo en la dirección actual" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1year">1 año</SelectItem>
+                  <SelectItem value="2years">2 años</SelectItem>
+                  <SelectItem value="3years">3 años</SelectItem>
+                  <SelectItem value="5years">5 años</SelectItem>
+                  <SelectItem value="more5years">Más de 5 años</SelectItem>
+                </SelectContent>
+              </Select>
+              {formData.residenceStability && getStabilityBadge(formData.residenceStability)}
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Geolocalización */}
+        <div className="space-y-2">
+          <Label htmlFor="geolocation">Geolocalización *</Label>
+          <Select value={formData.geolocation || ''} onValueChange={(value) => updateFormData('geolocation', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Activar geotagging" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="enabled">Activar geolocalización</SelectItem>
+              <SelectItem value="disabled">No activar geolocalización</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>
