@@ -2,254 +2,86 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
-import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search, Phone, Mail, UserPlus, ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, User, Phone, MapPin, Calendar, Plus } from 'lucide-react';
 
 const Prospects = () => {
   const navigate = useNavigate();
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [prospects, setProspects] = useState([
-    { 
-      id: 1, 
-      name: 'Juan Pérez', 
-      phone: '+52 5512345678', 
-      email: 'juan.perez@mail.com', 
-      source: 'Sitio Web',
-      status: 'new',
-      date: '2025-04-05'
-    },
-    { 
-      id: 2, 
-      name: 'Laura Martínez', 
-      phone: '+52 5587654321', 
-      email: 'laura.martinez@mail.com', 
-      source: 'Sucursal',
-      status: 'contacted',
-      date: '2025-04-03'
-    },
-    { 
-      id: 3, 
-      name: 'Roberto Díaz', 
-      phone: '+52 5598761234', 
-      email: 'roberto.diaz@mail.com', 
-      source: 'Referencia',
-      status: 'interested',
-      date: '2025-04-02'
-    },
-    { 
-      id: 4, 
-      name: 'Ana García', 
-      phone: '+52 5543219876', 
-      email: 'ana.garcia@mail.com', 
-      source: 'Campaña',
-      status: 'not_interested',
-      date: '2025-03-28'
-    },
-    { 
-      id: 5, 
-      name: 'Carlos López', 
-      phone: '+52 5567891234', 
-      email: 'carlos.lopez@mail.com', 
-      source: 'Sitio Web',
-      status: 'new',
-      date: '2025-03-25'
-    },
+    { id: 1, name: 'Juan Pérez', phone: '5555-5555', location: 'Guatemala', lastContact: '2024-01-20', status: 'Nuevo' },
+    { id: 2, name: 'María López', phone: '5555-5555', location: 'Mixco', lastContact: '2024-01-15', status: 'En Proceso' },
+    { id: 3, name: 'Carlos Gómez', phone: '5555-5555', location: 'Villa Nueva', lastContact: '2024-01-10', status: 'Completado' },
   ]);
-  
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
     }
-    
-    console.log('ProspectsScreen mounted');
   }, [navigate]);
 
-  const getStatusBadge = (status: string) => {
-    switch(status) {
-      case 'new':
-        return (
-          <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-sm px-3 py-1">
-            Nuevo
-          </Badge>
-        );
-      case 'contacted':
-        return (
-          <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-sm px-3 py-1">
-            Contactado
-          </Badge>
-        );
-      case 'interested':
-        return (
-          <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-sm px-3 py-1">
-            Interesado
-          </Badge>
-        );
-      case 'not_interested':
-        return (
-          <Badge variant="outline" className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-sm px-3 py-1">
-            No interesado
-          </Badge>
-        );
-      default:
-        return null;
-    }
-  };
+  const filteredProspects = prospects.filter(prospect =>
+    prospect.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    prospect.phone.includes(searchTerm) ||
+    prospect.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleViewDetails = (prospectId: number) => {
-    console.log(`Navigating to details for prospect ${prospectId}`);
-    setShowAddForm(false);
-  };
-
-  const handleAddProspect = () => {
-    console.log('Opening add prospect form');
-    setShowAddForm(true);
-  };
-
-  const handleSaveProspect = (prospect: any) => {
-    console.log('Saving new prospect:', prospect);
-    setShowAddForm(false);
-  };
-  
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      
-      <main className="flex-1 px-4 py-4 pb-20">
-        {showAddForm ? (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setShowAddForm(false)}
-                className="h-9 w-9"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <h2 className="text-lg font-medium">Agregar Prospecto</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium">
-                  Nombre
-                </label>
-                <Input id="name" placeholder="Nombre completo" />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="id" className="text-sm font-medium">
-                  Identificación
-                </label>
-                <Input id="id" placeholder="Ej: DNI, RFC, CURP" />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium">
-                  Teléfono
-                </label>
-                <Input id="phone" placeholder="+52 5512345678" />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Correo (opcional)
-                </label>
-                <Input id="email" placeholder="correo@ejemplo.com" />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="source" className="text-sm font-medium">
-                  Fuente
-                </label>
-                <Input id="source" placeholder="¿Cómo llegó el prospecto?" />
-              </div>
-              
-              <Button className="w-full" onClick={() => handleSaveProspect({})}>
-                Guardar Prospecto
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-              <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar prospectos..."
-                  className="pl-10"
-                />
-              </div>
-              
-              <Button className="flex-1 sm:flex-none" onClick={handleAddProspect}>
-                <UserPlus className="mr-2 h-4 w-4" />
-                Nuevo Prospecto
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              {prospects.map((prospect) => (
-                <Card key={prospect.id} className="card-hover cursor-pointer">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h3 className="font-medium text-lg">{prospect.name}</h3>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Phone className="mr-1 h-3 w-3" />
-                            {prospect.phone}
-                          </div>
-                          <div className="flex items-center">
-                            <Mail className="mr-1 h-3 w-3" />
-                            {prospect.email}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 pt-1">
-                          <span className="text-sm text-muted-foreground">
-                            Fuente: {prospect.source}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            Fecha: {prospect.date}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        {getStatusBadge(prospect.status)}
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => handleViewDetails(prospect.id)}
-                        >
-                          Ver más
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+
+      <main className="flex-1 px-4 py-8 pb-20">
+        <div className="mb-6 flex items-center">
+          <h1 className="text-2xl font-bold mr-4">Prospectos</h1>
+          <Button size="sm" onClick={() => navigate('/applications/new')}><Plus className="mr-2 h-4 w-4" /> Nuevo Prospecto</Button>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <Input
+            type="text"
+            placeholder="Buscar prospecto..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+          <Search className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
+        </div>
+
+        {/* Prospects List */}
+        <div className="grid grid-cols-1 gap-4">
+          {filteredProspects.map(prospect => (
+            <Card key={prospect.id} className="card-hover">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  {prospect.name}
+                  <Badge variant="secondary">{prospect.status}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground grid gap-2">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  {prospect.phone}
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  {prospect.location}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Último contacto: {prospect.lastContact}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </main>
-      
+
       <BottomNavigation />
-      
-      <FloatingPrequalificationButton 
-        onClick={() => setShowPrequalificationModal(true)} 
-      />
-      
-      <PrequalificationModal
-        open={showPrequalificationModal}
-        onOpenChange={setShowPrequalificationModal}
-      />
     </div>
   );
 };
