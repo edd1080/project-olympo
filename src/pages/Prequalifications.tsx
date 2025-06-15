@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,22 +12,20 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { usePrequalifications } from '@/hooks/usePrequalifications';
 import { formatCurrency } from '@/utils/prequalificationEngine';
 import { useToast } from '@/hooks/use-toast';
+
 const Prequalifications = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
-  const {
-    prequalifications,
-    deletePrequalification
-  } = usePrequalifications();
+  const { prequalifications, deletePrequalification } = usePrequalifications();
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login');
     }
   }, [navigate]);
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'green':
@@ -50,6 +47,7 @@ const Prequalifications = () => {
         return null;
     }
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('es-GT', {
@@ -60,6 +58,7 @@ const Prequalifications = () => {
       minute: '2-digit'
     }).format(date);
   };
+
   const handleStartApplication = (id: string) => {
     // TODO: Integrar con formulario principal pasando datos de precalificación
     toast({
@@ -69,6 +68,7 @@ const Prequalifications = () => {
     });
     navigate('/applications/new');
   };
+
   const handleEdit = (id: string) => {
     // TODO: Implementar edición de precalificación
     toast({
@@ -77,6 +77,7 @@ const Prequalifications = () => {
       duration: 3000
     });
   };
+
   const handleDelete = (id: string, clientName: string) => {
     deletePrequalification(id);
     toast({
@@ -85,7 +86,9 @@ const Prequalifications = () => {
       duration: 3000
     });
   };
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1 px-4 py-4 pb-20 space-y-6">
@@ -188,9 +191,9 @@ const Prequalifications = () => {
 
       <BottomNavigation />
       
-      <FloatingPrequalificationButton onClick={() => setShowPrequalificationModal(true)} />
-      
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
-    </div>;
+    </div>
+  );
 };
+
 export default Prequalifications;

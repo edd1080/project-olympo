@@ -1,15 +1,17 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import FloatingPrequalificationButton from '@/components/prequalification/FloatingPrequalificationButton';
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
+
   useEffect(() => {
     // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
@@ -17,7 +19,9 @@ const Index = () => {
       navigate('/login');
     }
   }, [navigate]);
-  return <div className="min-h-screen flex flex-col bg-background">
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-1 px-4 py-8 pb-20">
@@ -93,30 +97,14 @@ const Index = () => {
               </Button>
             </CardContent>
           </Card>
-          
-          {/* <Card className="card-hover" onClick={() => navigate('/prospects')}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                Nuevo Prospecto
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Registrar un nuevo prospecto en el sistema</p>
-              <Button className="mt-4 w-full" variant="outline">
-                <Users className="mr-2 h-4 w-4" />
-                Crear prospecto
-              </Button>
-            </CardContent>
-           </Card> */}
         </div>
       </main>
       
       <BottomNavigation />
       
-      <FloatingPrequalificationButton onClick={() => setShowPrequalificationModal(true)} />
-      
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
