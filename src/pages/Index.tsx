@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
@@ -31,7 +31,7 @@ const Index = () => {
         </div>
         
         {/* Metrics Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex flex-col items-center text-center">
@@ -40,6 +40,18 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">Solicitudes Activas</p>
                 <h2 className="text-2xl font-bold">24</h2>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 mb-2">
+                  <Edit className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-sm text-muted-foreground">Solicitudes en Borrador</p>
+                <h2 className="text-2xl font-bold">6</h2>
               </div>
             </CardContent>
           </Card>
