@@ -17,8 +17,8 @@
     --popover: 0 0% 100%; /* Blanco puro */
     --popover-foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
-    /* Primary: Verde menta #75CC7C */
-    --primary: 142 41% 63%;
+    /* Primary: Verde #56B15D */
+    --primary: 123 35% 52%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary: Gris claro más definido #E5E7EB */
@@ -37,7 +37,7 @@
 
     --border: 210 20% 88%;
     --input: 210 20% 88%;
-    --ring: 142 41% 63%;
+    --ring: 123 35% 52%;
 
     /* Success, Warning, Error actualizados */
     --success: 69 45% 50%; /* Verde lima más alineado con terciario */
@@ -58,9 +58,9 @@
     --popover: 210 22% 22%; /* Gris oscuro #1F2937 */
     --popover-foreground: 210 18% 87%; /* Gris claro más brillante #E5E7EB */
 
-    /* Primary: Verde menta más brillante para dark mode */
-    --primary: 142 45% 70%;
-    --primary-foreground: 142 41% 10%;
+    /* Primary: Verde más brillante para dark mode */
+    --primary: 123 40% 58%;
+    --primary-foreground: 123 35% 10%;
 
     /* Secondary: Gris medio más definido #4B5563 */
     --secondary: 212 22% 30%;
@@ -78,7 +78,7 @@
 
     --border: 212 22% 35%;
     --input: 212 22% 35%;
-    --ring: 142 45% 70%;
+    --ring: 123 40% 58%;
 
     /* Success, Warning, Error actualizados */
     --success: 69 50% 55%; /* Verde lima más brillante para dark */
