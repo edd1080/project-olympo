@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    /* Light theme - Colores más vibrantes */
+    /* Light theme - Nueva paleta verde-naranja */
     --background: 0 0% 100%; /* Blanco puro */
     --foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
@@ -17,17 +17,17 @@
     --popover: 0 0% 100%; /* Blanco puro */
     --popover-foreground: 210 22% 22%; /* Gris oscuro #1F2937 */
 
-    /* Primary: Púrpura vibrante #7142C5 */
-    --primary: 257 56% 52%;
+    /* Primary: Verde menta #75CC7C */
+    --primary: 142 41% 63%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary: Gris claro más definido #E5E7EB */
     --secondary: 210 16% 90%;
     --secondary-foreground: 210 22% 22%;
 
-    /* Accent: Lavanda suave #EDE9FE */
-    --accent: 256 100% 96%;
-    --accent-foreground: 257 56% 52%;
+    /* Accent: Verde lima suave basado en #C6D444 */
+    --accent: 69 59% 95%;
+    --accent-foreground: 69 59% 25%;
 
     --muted: 210 16% 93%; /* Gris claro #F0F0F0 */
     --muted-foreground: 220 14% 42%; /* Gris medio #6B7280 */
@@ -37,18 +37,18 @@
 
     --border: 210 20% 88%;
     --input: 210 20% 88%;
-    --ring: 257 56% 52%;
+    --ring: 142 41% 63%;
 
-    /* Success, Warning, Error más vibrantes */
-    --success: 142 71% 45%; /* Verde vibrante #10B981 */
-    --warning: 45 93% 47%; /* Amarillo vibrante #F59E0B */
+    /* Success, Warning, Error actualizados */
+    --success: 69 45% 50%; /* Verde lima más alineado con terciario */
+    --warning: 30 100% 64%; /* Naranja cálido #FF9E44 */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
 
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Dark theme - Colores más vibrantes */
+    /* Dark theme - Nueva paleta verde-naranja adaptada */
     --background: 210 22% 22%; /* Gris oscuro #1F2937 */
     --foreground: 210 18% 87%; /* Gris claro más brillante #E5E7EB */
 
@@ -58,17 +58,17 @@
     --popover: 210 22% 22%; /* Gris oscuro #1F2937 */
     --popover-foreground: 210 18% 87%; /* Gris claro más brillante #E5E7EB */
 
-    /* Primary: Púrpura vibrante #8B5CF6 */
-    --primary: 258 90% 66%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Verde menta más brillante para dark mode */
+    --primary: 142 45% 70%;
+    --primary-foreground: 142 41% 10%;
 
     /* Secondary: Gris medio más definido #4B5563 */
     --secondary: 212 22% 30%;
     --secondary-foreground: 210 18% 87%;
 
-    /* Accent: Lavanda oscura más suave #C4B5FD */
-    --accent: 256 87% 85%;
-    --accent-foreground: 210 22% 22%;
+    /* Accent: Verde lima adaptado para dark mode */
+    --accent: 69 45% 75%;
+    --accent-foreground: 69 59% 15%;
 
     --muted: 212 22% 30%; /* Gris medio más definido #4B5563 */
     --muted-foreground: 220 13% 68%; /* Gris claro suave más brillante #A1A1AA */
@@ -78,11 +78,11 @@
 
     --border: 212 22% 35%;
     --input: 212 22% 35%;
-    --ring: 258 90% 66%;
+    --ring: 142 45% 70%;
 
-    /* Success, Warning, Error más vibrantes */
-    --success: 142 71% 45%; /* Verde vibrante #10B981 */
-    --warning: 45 93% 47%; /* Amarillo vibrante #F59E0B */
+    /* Success, Warning, Error actualizados */
+    --success: 69 50% 55%; /* Verde lima más brillante para dark */
+    --warning: 30 100% 70%; /* Naranja más brillante para dark */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
   }
 }
