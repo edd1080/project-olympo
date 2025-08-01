@@ -13,7 +13,7 @@ const PersonalInfo = () => {
   const [formData, setFormData] = useState({
     firstName: 'Carlos',
     lastName: 'López',
-    email: 'carlos.lopez@coopsama.com',
+    email: 'carlos.lopez@creditoproductivo.com',
     phone: '+502 1234-5678',
     position: 'Asesor de créditos',
     branch: 'Sucursal Central'

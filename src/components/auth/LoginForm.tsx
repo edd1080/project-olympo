@@ -38,7 +38,7 @@ const LoginForm = () => {
       localStorage.setItem('authToken', 'demo-token-12345');
       toast({
         title: "¡Inicio de sesión exitoso!",
-        description: "Bienvenido/a a Coopsama App"
+        description: "Bienvenido/a a Crédito Productivo"
       });
 
       // Redirect to main app

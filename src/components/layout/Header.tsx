@@ -79,7 +79,7 @@ const Header = ({
       case '/login':
         return 'Iniciar Sesión';
       default:
-        return 'Coopsama App';
+        return 'Crédito Productivo';
     }
   };
 

@@ -12,7 +12,7 @@ const Login = () => {
       
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">Coopsama App</h1>
+          <h1 className="text-3xl font-bold text-primary">Crédito Productivo</h1>
           <p className="mt-1 text-muted-foreground">Portal de Agentes</p>
         </div>
         
@@ -22,7 +22,7 @@ const Login = () => {
         </div>
         
         <div className="text-center text-xs text-muted-foreground">
-          <p>© 2025 Coopsama App. Todos los derechos reservados.</p>
+          <p>© 2025 Crédito Productivo. Todos los derechos reservados.</p>
         </div>
       </div>
     </div>

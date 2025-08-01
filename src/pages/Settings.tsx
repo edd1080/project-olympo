@@ -116,7 +116,7 @@ const Settings = () => {
                 Ayuda y soporte
               </CardTitle>
               <CardDescription>
-                Encuentra ayuda y recursos para usar Coopsama App
+                Encuentra ayuda y recursos para usar Crédito Productivo
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

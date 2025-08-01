@@ -41,7 +41,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
       {/* App Name */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          Coopsama App
+          Crédito Productivo
         </h1>
       </div>
 
