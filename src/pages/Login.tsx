@@ -15,7 +15,7 @@ const Login = () => {
           <img 
             src="https://i.ibb.co/mrQWTRNN/creditoproductivo.png" 
             alt="Crédito Productivo" 
-            className="h-16 mx-auto"
+            className="h-28 mx-auto"
           />
           <p className="text-muted-foreground">Portal de Agentes</p>
         </div>
