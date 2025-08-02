@@ -13,7 +13,7 @@ const Login = () => {
       <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center space-y-4">
           <img 
-            src="/lovable-uploads/77ad4690-d26d-4704-867a-62ef0db86acf.png" 
+            src="/lovable-uploads/8dd34d0c-75f4-4a26-8704-4969a578b0b4.png" 
             alt="Crédito Productivo" 
             className="h-16 mx-auto"
           />
