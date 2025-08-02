@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar, Edit, FileText, Copy, Trash2, Share2, MoreVertical, CheckCircle, AlertCircle, BarChart3, Banknote, FileSignature, UserCheck, FileImage, Users } from 'lucide-react';
+import { Search, SlidersHorizontal, FileSpreadsheet, Clock, Calendar, Edit, FileText, Copy, Trash2, Share2, MoreVertical, CheckCircle, AlertCircle, BarChart3, Banknote, FileSignature, UserCheck, FileImage, Users, Plus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator } from "@/components/ui/context-menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -186,16 +186,9 @@ const Applications = () => {
           <p className="text-muted-foreground">Gestiona y administra en tiempo real</p>
         </div>
         
-        <div className="flex flex-col gap-4">
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Buscar solicitudes..." className="pl-10" />
-          </div>
-          
-          <Button className="w-full" onClick={() => navigate('/applications/new')}>
-            <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Nueva Solicitud
-          </Button>
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Buscar solicitudes..." className="pl-10" />
         </div>
 
         <Tabs value={activeStatusFilter} onValueChange={setActiveStatusFilter} className="w-full">
@@ -343,6 +336,15 @@ const Applications = () => {
       </main>
       
       <BottomNavigation />
+      
+      {/* Floating Action Button */}
+      <Button 
+        className="fixed bottom-20 right-4 z-50 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+        onClick={() => navigate('/applications/new')}
+        aria-label="Nueva Solicitud"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
     </div>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, X, User, Users, Edit } from 'lucide-react';
+import { ArrowLeft, X, User, Users, Edit, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -154,6 +154,20 @@ const Header = ({
         {/* Right area - Status badge for application details */}
         <div className="flex items-center gap-2">
           {getStatusBadge()}
+          
+          {/* Add button for applications page */}
+          {location.pathname === '/applications' && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" 
+              onClick={() => navigate('/applications/new')}
+              aria-label="Nueva Solicitud"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
+          
           {location.pathname.includes('/edit') && (
             <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
               <X className="h-5 w-5" />
