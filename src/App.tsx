@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { AppStateProvider } from "@/context/AppStateContext";
 import React, { useState } from "react";
 
 // PWA Components
@@ -54,24 +55,25 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          
-          {/* PWA Splash Screen */}
-          <SplashScreen isVisible={isLoading} />
-          
-          {/* PWA Update Prompt */}
-          <UpdatePrompt 
-            isVisible={showUpdatePrompt}
-            onUpdate={handleUpdate}
-            onDismiss={handleDismissUpdate}
-          />
-          
-          {/* Main App Content */}
-          {!isLoading && (
-            <BrowserRouter>
-              <Routes>
+        <AppStateProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            
+            {/* PWA Splash Screen */}
+            <SplashScreen isVisible={isLoading} />
+            
+            {/* PWA Update Prompt */}
+            <UpdatePrompt 
+              isVisible={showUpdatePrompt}
+              onUpdate={handleUpdate}
+              onDismiss={handleDismissUpdate}
+            />
+            
+            {/* Main App Content */}
+            {!isLoading && (
+              <BrowserRouter>
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/prospects" element={<Prospects />} />
@@ -93,10 +95,11 @@ const App = () => {
                 <Route path="/settings/change-password" element={<ChangePassword />} />
                 <Route path="/settings/report-problem" element={<ReportProblem />} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          )}
-        </TooltipProvider>
+                </Routes>
+              </BrowserRouter>
+            )}
+          </TooltipProvider>
+        </AppStateProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
