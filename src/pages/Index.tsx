@@ -31,7 +31,7 @@ const Index = () => {
         </div>
         
         {/* Metrics Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex flex-col items-center text-center">
@@ -80,35 +80,22 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex flex-col items-center text-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 mb-2">
-                  <AlertCircle className="h-5 w-5 text-red-500" />
-                </div>
-                <p className="text-sm text-muted-foreground">Rechazadas</p>
-                <h2 className="text-2xl font-bold">4</h2>
-              </div>
-            </CardContent>
-          </Card>
         </div>
         
-        <div className="grid grid-cols-1 gap-6 mb-6">
-          <Card className="card-hover" onClick={() => navigate('/applications/new')}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileSpreadsheet className="h-5 w-5 text-primary" />
-                Nueva Solicitud
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Crear una nueva solicitud de crédito</p>
-              <Button className="mt-4 w-full">
-                <FileSpreadsheet className="mr-2 h-4 w-4" />
-                Comenzar solicitud
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="bg-background rounded-lg p-6 hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => navigate('/applications/new')}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <FileSpreadsheet className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold">Nueva Solicitud</h3>
+              <p className="text-sm text-muted-foreground">Crear una nueva solicitud de crédito</p>
+            </div>
+          </div>
+          <Button className="w-full">
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Comenzar solicitud
+          </Button>
         </div>
       </main>
       

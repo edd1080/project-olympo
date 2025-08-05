@@ -77,7 +77,9 @@ const App = () => {
                 <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
                 <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
                 <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+                {/* Prequalifications route hidden for development 
                 <Route path="/prequalifications" element={<Prequalifications />} />
+                */}
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/settings/personal-info" element={<PersonalInfo />} />
                 <Route path="/settings/change-password" element={<ChangePassword />} />

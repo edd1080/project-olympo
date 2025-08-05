@@ -15,7 +15,7 @@ const BottomNavigation = () => {
       <div className="flex justify-around items-center h-16">
         <Link 
           to="/" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/') && !isActive('/applications') && !isActive('/prequalifications') && !isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/3 py-1 ${isActive('/') && !isActive('/applications') && !isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <Home className="h-6 w-6" />
           <span className="text-xs mt-1">Inicio</span>
@@ -23,12 +23,13 @@ const BottomNavigation = () => {
 
         <Link 
           to="/applications" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/applications') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/3 py-1 ${isActive('/applications') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <FileSpreadsheet className="h-6 w-6" />
           <span className="text-xs mt-1">Solicitudes</span>
         </Link>
 
+        {/* Prequalifications tab hidden for development 
         <Link 
           to="/prequalifications" 
           className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/prequalifications') ? 'text-primary' : 'text-muted-foreground'}`}
@@ -36,6 +37,7 @@ const BottomNavigation = () => {
           <CheckSquare className="h-6 w-6" />
           <span className="text-xs mt-1">Precalif.</span>
         </Link>
+        */}
 
         {/* Alertas section commented out but preserved for future use
         <Link 
@@ -49,7 +51,7 @@ const BottomNavigation = () => {
 
         <Link 
           to="/settings" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
+          className={`flex flex-col items-center justify-center w-1/3 py-1 ${isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
         >
           <Settings className="h-6 w-6" />
           <span className="text-xs mt-1">Ajustes</span>
