@@ -33,27 +33,41 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
-const formSections = [{
-  id: 'identification',
-  icon: <User size={18} />,
-  name: 'Identificación y Contacto'
-}, {
-  id: 'finances',
-  icon: <DollarSign size={18} />,
-  name: 'Finanzas y Patrimonio'
-}, {
-  id: 'business',
-  icon: <Briefcase size={18} />,
-  name: 'Negocio y Perfil Económico'
-}, {
-  id: 'guarantors',
-  icon: <Users size={18} />,
-  name: 'Garantías, Fiadores y Referencias'
-}, {
-  id: 'documents',
-  icon: <FileSignature size={18} />,
-  name: 'Documentos y Cierre'
-}];
+// Dynamic form sections based on application type
+const getFormSections = (applicationType: string) => {
+  const baseSections = [{
+    id: 'identification',
+    icon: <User size={18} />,
+    name: 'Identificación y Contacto'
+  }, {
+    id: 'finances',
+    icon: <DollarSign size={18} />,
+    name: 'Finanzas y Patrimonio'
+  }, {
+    id: 'business',
+    icon: <Briefcase size={18} />,
+    name: 'Negocio y Perfil Económico'
+  }, {
+    id: 'guarantors',
+    icon: <Users size={18} />,
+    name: 'Garantías, Fiadores y Referencias'
+  }, {
+    id: 'documents',
+    icon: <FileSignature size={18} />,
+    name: 'Documentos y Cierre'
+  }];
+
+  // Add review section only for legacy applications
+  if (applicationType !== 'oficial') {
+    baseSections.push({
+      id: 'review',
+      icon: <CheckCircle size={18} />,
+      name: 'Revisión Final'
+    });
+  }
+
+  return baseSections;
+};
 
 const ApplicationDetails = () => {
   const {
@@ -535,7 +549,7 @@ const ApplicationDetails = () => {
           </CardHeader>
           <CardContent className="pt-3 pb-6">
             <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 ${application.type === 'oficial' ? 'md:grid-cols-5' : 'md:grid-cols-6'}`}>
-              {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
+              {getFormSections(application.type).map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
                   </div>

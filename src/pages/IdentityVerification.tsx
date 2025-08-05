@@ -88,10 +88,29 @@ const IdentityVerification: React.FC = () => {
   };
 
   const handleRetry = () => {
-    setState({
-      currentStep: 'welcome',
-      captures: {}
-    });
+    // Smart retry: solo reinicia completamente si está en error
+    if (state.currentStep === 'error') {
+      setState({
+        currentStep: 'welcome',
+        captures: {}
+      });
+    } else {
+      // Permitir reintentar el paso actual manteniendo otros datos
+      const currentStepData = { ...state.captures };
+      setState(prev => ({
+        ...prev,
+        captures: currentStepData,
+        currentStep: state.currentStep
+      }));
+    }
+  };
+
+  const handleRetryStep = (step: VerificationStep) => {
+    setState(prev => ({ 
+      ...prev, 
+      currentStep: step,
+      error: undefined
+    }));
   };
 
   const handleCancel = () => {
@@ -181,9 +200,30 @@ const IdentityVerification: React.FC = () => {
               <p className="text-muted-foreground mb-4">
                 {state.error || 'Ocurrió un error durante la verificación'}
               </p>
-              <Button onClick={handleRetry} className="w-full">
-                Intentar de Nuevo
-              </Button>
+              <div className="space-y-3">
+                {/* Opción de reintentar paso específico según el error */}
+                {state.captures.dpiFrontURL && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleRetryStep('dpi-back')} 
+                    className="w-full"
+                  >
+                    Reintentar DPI Reverso
+                  </Button>
+                )}
+                {state.captures.dpiBackURL && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleRetryStep('selfie')} 
+                    className="w-full"
+                  >
+                    Reintentar Selfie
+                  </Button>
+                )}
+                <Button onClick={handleRetry} className="w-full">
+                  Reiniciar Verificación
+                </Button>
+              </div>
             </div>
           </div>
         );

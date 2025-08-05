@@ -86,6 +86,7 @@ interface Props {
     title: string;
     icon: React.ReactNode;
   }[];
+  initialKYCData?: any;
 }
 
 export const useFormContext = () => {
@@ -115,7 +116,7 @@ const createEmptyGuarantor = (): GuarantorData => ({
   financialInfoCompleted: false,
 });
 
-export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
+export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialKYCData }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -168,6 +169,65 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps }) => {
     'documents': 'Documentos',
     'review': 'Revisión Final'
   };
+
+  // Initialize form with KYC data or mock data
+  useEffect(() => {
+    const personalInfoData = initialKYCData ? {
+      nombres: initialKYCData.nombres || initialKYCData.fullName?.split(' ').slice(0, 2).join(' ') || "",
+      apellidos: initialKYCData.apellidos || initialKYCData.fullName?.split(' ').slice(2).join(' ') || "",
+      tipoDocumento: "DPI",
+      numeroDocumento: initialKYCData.cui || "",
+      fechaNacimiento: initialKYCData.fechaNacimiento || "",
+      lugarNacimiento: initialKYCData.lugarNacimiento || "",
+      nacionalidad: "Guatemalteca",
+      genero: initialKYCData.genero || "",
+      estadoCivil: initialKYCData.estadoCivil || "",
+      nit: initialKYCData.nit || "",
+      telefono: "",
+      telefonoAlterno: "",
+      email: "",
+      direccion: {
+        departamento: initialKYCData.departamento || "",
+        municipio: initialKYCData.municipio || "",
+        zona: "",
+        direccionCompleta: initialKYCData.direccion || ""
+      }
+    } : {
+      nombres: "Ana María",
+      apellidos: "García Méndez", 
+      tipoDocumento: "DPI",
+      numeroDocumento: "2547896321478",
+      fechaNacimiento: "1985-03-15",
+      lugarNacimiento: "Guatemala, Guatemala",
+      nacionalidad: "Guatemalteca",
+      genero: "Femenino",
+      estadoCivil: "Soltera",
+      nit: "25478963-2",
+      telefono: "5512-3456",
+      telefonoAlterno: "2234-5678",
+      email: "ana.garcia@email.com",
+      direccion: {
+        departamento: "Guatemala",
+        municipio: "Guatemala",
+        zona: "10",
+        direccionCompleta: "6a Avenida 15-20, Zona 10"
+      }
+    };
+
+    setFormData({
+      personalInfo: personalInfoData,
+      termsAccepted: false,
+      dataProcessingAccepted: false,
+      creditCheckAccepted: false,
+      applicationCode: `BVM_${generateRandomId()}`,
+      hasFatca: false,
+      isPep: false,
+      agentComments: "",
+      creditAmount: 0
+    });
+
+    setPersonName(`${personalInfoData.nombres} ${personalInfoData.apellidos}`);
+  }, [initialKYCData]);
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');

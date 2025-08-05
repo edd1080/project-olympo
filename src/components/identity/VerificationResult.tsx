@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, User, Calendar, MapPin, CreditCard } from 'lucide-react';
 import { IdentityData } from '@/types/identity';
 import { useAppState } from '@/context/AppStateContext';
+import { evaluatePrequalification } from '@/utils/prequalificationEngine';
+import { useToast } from '@/hooks/use-toast';
 
 interface VerificationResultProps {
   identityData: IdentityData;
@@ -18,14 +20,71 @@ const VerificationResult: React.FC<VerificationResultProps> = ({
   onRetry
 }) => {
   const navigate = useNavigate();
-  const { addApplicationFromKYC } = useAppState();
+  const { addApplicationFromKYC, addAlert } = useAppState();
+  const { toast } = useToast();
 
   const handleContinueWithApplication = () => {
-    // Create new application with KYC data
-    const newApplicationId = addApplicationFromKYC(identityData);
-    // Navigate to the new application details
-    navigate(`/applications/${newApplicationId}`);
+    // Create application from KYC data
+    const applicationId = addApplicationFromKYC(identityData);
+    
+    // Mock prequalification data based on identity
+    const prequalificationData = {
+      nombre_completo: `${identityData.firstName} ${identityData.lastName}`,
+      dpi: identityData.cui,
+      telefono: "50212345678", // Mock phone
+      monto_solicitado: 25000, // Mock amount
+      ingreso_mensual: 8000,
+      destino_credito: "personal",
+      historial: "bueno",
+      relacion_monto_ingreso: 0.3,
+      actividad_economica: "comercio"
+    };
+
+    // Run prequalification
+    const prequalificationResult = evaluatePrequalification(prequalificationData);
+    
+    // Add notification about prequalification result
+    addAlert({
+      id: Date.now(),
+      title: "Precalificación completada",
+      description: `Estado: ${prequalificationResult.status === 'green' ? 'Aprobado' : 
+                           prequalificationResult.status === 'yellow' ? 'Candidato a revisión' : 'Rechazado'}`,
+      type: prequalificationResult.status === 'green' ? 'success' : 
+            prequalificationResult.status === 'yellow' ? 'warning' : 'error',
+      timestamp: new Date().toISOString(),
+      isRead: false
+    });
+
+    // Navigate based on prequalification result
+    if (prequalificationResult.status === 'yellow') {
+      // Amarillo: ir a pantalla de excepciones
+      navigate('/applications/exceptions', {
+        state: { 
+          applicationId,
+          prequalificationResult,
+          identityData
+        }
+      });
+    } else if (prequalificationResult.status === 'green') {
+      // Verde: ir directo al formulario oficial
+      navigate('/applications/oficial/new', {
+        state: { 
+          applicationId,
+          identityData,
+          prequalificationResult
+        }
+      });
+    } else {
+      // Rojo: mostrar resultado y regresar a aplicaciones
+      toast({
+        title: "Solicitud no aprobada",
+        description: prequalificationResult.reason,
+        variant: "destructive"
+      });
+      navigate('/applications');
+    }
   };
+
   return (
     <div className="max-w-md mx-auto space-y-6">
       <Card>
