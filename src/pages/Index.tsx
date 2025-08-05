@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
+import FormTypeSelectionModal from '@/components/modals/FormTypeSelectionModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import { Button } from '@/components/ui/button';
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
+  const [showFormTypeModal, setShowFormTypeModal] = useState(false);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -19,6 +21,20 @@ const Index = () => {
       navigate('/login');
     }
   }, [navigate]);
+
+  const handleCreateNewApplication = () => {
+    setShowFormTypeModal(true);
+  };
+
+  const handleFormTypeSelection = (type: 'legacy' | 'oficial') => {
+    setShowFormTypeModal(false);
+    if (type === 'legacy') {
+      navigate('/applications/new');
+    } else {
+      // TODO: Navigate to new "Oficial" flow when ready
+      console.log('Oficial flow selected - will be implemented');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -82,7 +98,7 @@ const Index = () => {
           
         </div>
         
-        <div className="bg-background rounded-lg p-6 hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => navigate('/applications/new')}>
+        <div className="bg-background rounded-lg p-6 hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleCreateNewApplication}>
           <div className="flex items-center gap-3 mb-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <FileSpreadsheet className="h-6 w-6 text-primary" />
@@ -102,6 +118,11 @@ const Index = () => {
       <BottomNavigation />
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
+      <FormTypeSelectionModal 
+        open={showFormTypeModal} 
+        onOpenChange={setShowFormTypeModal}
+        onSelectType={handleFormTypeSelection}
+      />
     </div>
   );
 };

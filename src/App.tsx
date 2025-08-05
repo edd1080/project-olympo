@@ -16,6 +16,8 @@ import { usePWA } from "@/hooks/usePWA";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Applications from "./pages/Applications";
+import Prospects from "./pages/Prospects";
+import Alerts from "./pages/Alerts";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import RequestForm from "./pages/RequestForm";
@@ -24,6 +26,7 @@ import Prequalifications from "./pages/Prequalifications";
 import PersonalInfo from "./pages/PersonalInfo";
 import ChangePassword from "./pages/ChangePassword";
 import ReportProblem from "./pages/ReportProblem";
+import ProspectDetails from "./pages/ProspectDetails";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -70,6 +73,8 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/prospects" element={<Prospects />} />
+                <Route path="/prospects/:id" element={<ProspectDetails />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/applications/new" element={<RequestForm />} />
                 <Route path="/applications/:id" element={<ApplicationDetails />} />
@@ -77,6 +82,7 @@ const App = () => {
                 <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
                 <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
                 <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+                <Route path="/alerts" element={<Alerts />} />
                 {/* Prequalifications route hidden for development 
                 <Route path="/prequalifications" element={<Prequalifications />} />
                 */}
