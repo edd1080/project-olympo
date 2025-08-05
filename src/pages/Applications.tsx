@@ -13,6 +13,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, C
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useAppState } from '@/context/AppStateContext';
 
 const generateRandomSCOId = () => {
   return `SCO_${Math.floor(100000 + Math.random() * 900000)}`;
@@ -20,9 +21,8 @@ const generateRandomSCOId = () => {
 
 const Applications = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { applications } = useAppState();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
   const [activeStatusFilter, setActiveStatusFilter] = useState('all');
 
@@ -76,16 +76,6 @@ const Applications = () => {
     });
   };
 
-  const applications = [{
-    id: generateRandomSCOId(),
-    clientName: 'Ana García Méndez',
-    product: 'Crédito Personal',
-    amount: '$25,000',
-    status: 'active',
-    date: '2025-04-07',
-    progress: 2,
-    stage: 'Información Financiera'
-  }];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
