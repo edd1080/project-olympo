@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
+import { useAppState } from '@/context/AppStateContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -42,20 +43,16 @@ const formSections = [{
   name: 'Finanzas y Patrimonio'
 }, {
   id: 'business',
-  icon: <MapPin size={18} />,
+  icon: <Briefcase size={18} />,
   name: 'Negocio y Perfil Económico'
 }, {
   id: 'guarantors',
   icon: <Users size={18} />,
-  name: 'Fiadores y Referencias'
+  name: 'Garantías, Fiadores y Referencias'
 }, {
   id: 'documents',
-  icon: <FileCheck size={18} />,
-  name: 'Documentos'
-}, {
-  id: 'review',
-  icon: <CheckCircle size={18} />,
-  name: 'Revisión Final'
+  icon: <FileSignature size={18} />,
+  name: 'Documentos y Cierre'
 }];
 
 const ApplicationDetails = () => {
@@ -68,6 +65,7 @@ const ApplicationDetails = () => {
   const {
     toast
   } = useToast();
+  const { applications } = useAppState();
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toastShown, setToastShown] = useState(false);
@@ -75,13 +73,134 @@ const ApplicationDetails = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const getFieldDisplayValue = (value: any, fieldName?: string) => {
+    if (value === undefined || value === null || value === '') {
+      return <span className="text-muted-foreground italic">Por ingresar</span>;
+    }
+    return value;
+  };
+
   useEffect(() => {
     const fetchApplicationData = () => {
       setTimeout(() => {
+        // First check if application exists in context (from KYC)
+        const contextApp = applications.find(app => app.id === id);
+        
+        if (contextApp && contextApp.type === 'oficial') {
+          // Create application data using KYC data
+          const kycData = contextApp.kycData!;
+          const oficialApplication = {
+            id: contextApp.id,
+            status: 'draft',
+            progress: 1,
+            type: 'oficial',
+            createdAt: contextApp.date,
+            updatedAt: contextApp.date,
+            identification: {
+              agencia: getFieldDisplayValue(null),
+              cui: kycData.cui,
+              nit: getFieldDisplayValue(null),
+              tipoSocio: getFieldDisplayValue(null),
+              fullName: `${kycData.firstName} ${kycData.lastName}`,
+              email: getFieldDisplayValue(null),
+              phone: getFieldDisplayValue(null),
+              estadoCivil: getFieldDisplayValue(null),
+              address: kycData.address,
+              birthDate: kycData.birthDate,
+              nacionalidad: getFieldDisplayValue(null),
+              genero: kycData.gender,
+              profesion: getFieldDisplayValue(null),
+              educationLevel: getFieldDisplayValue(null),
+              housingType: getFieldDisplayValue(null),
+              housingYears: getFieldDisplayValue(null),
+              dependents: getFieldDisplayValue(null),
+              conyuge: null
+            },
+            work: {
+              employmentStatus: getFieldDisplayValue(null),
+              companyName: getFieldDisplayValue(null),
+              position: getFieldDisplayValue(null),
+              yearsEmployed: getFieldDisplayValue(null),
+              monthsEmployed: getFieldDisplayValue(null),
+              workAddress: getFieldDisplayValue(null),
+              workPhone: getFieldDisplayValue(null),
+              workType: getFieldDisplayValue(null),
+              incomeStability: getFieldDisplayValue(null)
+            },
+            finances: {
+              primaryIncome: getFieldDisplayValue(null),
+              secondaryIncome: getFieldDisplayValue(null),
+              incomeSource: getFieldDisplayValue(null),
+              rent: getFieldDisplayValue(null),
+              utilities: getFieldDisplayValue(null),
+              food: getFieldDisplayValue(null),
+              transportation: getFieldDisplayValue(null),
+              otherExpenses: getFieldDisplayValue(null),
+              totalExpenses: getFieldDisplayValue(null),
+              currentLoans: getFieldDisplayValue(null),
+              creditCards: getFieldDisplayValue(null),
+              totalDebts: getFieldDisplayValue(null),
+              netIncome: getFieldDisplayValue(null),
+              debtToIncomeRatio: getFieldDisplayValue(null),
+              paymentCapacity: getFieldDisplayValue(null),
+              assets: {
+                cash: getFieldDisplayValue(null),
+                inventory: getFieldDisplayValue(null),
+                equipment: getFieldDisplayValue(null),
+                realEstate: getFieldDisplayValue(null),
+                vehicles: getFieldDisplayValue(null),
+                total: getFieldDisplayValue(null)
+              },
+              liabilities: {
+                loans: getFieldDisplayValue(null),
+                creditCards: getFieldDisplayValue(null),
+                suppliers: getFieldDisplayValue(null),
+                total: getFieldDisplayValue(null)
+              },
+              netWorth: getFieldDisplayValue(null)
+            },
+            creditRequest: {
+              loanAmount: getFieldDisplayValue(null),
+              termMonths: getFieldDisplayValue(null),
+              creditType: getFieldDisplayValue(null),
+              purpose: getFieldDisplayValue(null),
+              collateral: getFieldDisplayValue(null)
+            },
+            guarantors: [],
+            documents: {
+              dpiFrontal: {
+                status: 'pending',
+                url: null
+              },
+              dpiTrasero: {
+                status: 'pending',
+                url: null
+              },
+              fotoSolicitante: {
+                status: 'pending',
+                url: null
+              },
+              recibosServicios: {
+                status: 'pending',
+                url: null
+              },
+              firmaCanvas: {
+                status: 'pending',
+                url: null
+              }
+            }
+          };
+          setApplication(oficialApplication);
+          setLoading(false);
+          return;
+        }
+
+        // Default legacy application
         const mockApplication = {
           id: 'SCO_459034',
           status: 'reviewing',
           progress: 4,
+          type: 'legacy',
           createdAt: '2025-04-05',
           updatedAt: '2025-04-07',
           identification: {
@@ -202,7 +321,7 @@ const ApplicationDetails = () => {
       }, 500);
     };
     fetchApplicationData();
-  }, [id]);
+  }, [id, applications]);
   useEffect(() => {
     if (application && !toastShown) {
       toast({
@@ -260,8 +379,9 @@ const ApplicationDetails = () => {
   const isApplicationReadyToSubmit = () => {
     if (!application) return false;
 
-    // Check if all 6 sections are completed
-    const allSectionsComplete = application.progress >= 6;
+    // Check if all sections are completed (5 for oficial, 6 for legacy)
+    const maxSections = application.type === 'oficial' ? 5 : 6;
+    const allSectionsComplete = application.progress >= maxSections;
 
     // Check if required documents are uploaded
     const requiredDocs = ['dpiFrontal', 'dpiTrasero', 'fotoSolicitante'];
@@ -401,9 +521,9 @@ const ApplicationDetails = () => {
         <div className="mb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className="font-medium">Progreso:</span>
-            <span>{application.progress}/6 secciones completadas</span>
+            <span>{application.progress}/{application.type === 'oficial' ? 5 : 6} secciones completadas</span>
           </div>
-          <Progress value={application.progress / 6 * 100} className="h-2" />
+          <Progress value={application.progress / (application.type === 'oficial' ? 5 : 6) * 100} className="h-2" />
         </div>
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
@@ -414,7 +534,7 @@ const ApplicationDetails = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-3 pb-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+            <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 ${application.type === 'oficial' ? 'md:grid-cols-5' : 'md:grid-cols-6'}`}>
               {formSections.map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}

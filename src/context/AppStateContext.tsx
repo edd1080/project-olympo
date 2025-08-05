@@ -21,6 +21,15 @@ export interface Application {
   date: string;
   progress: number;
   stage: string;
+  type?: 'legacy' | 'oficial';
+  kycData?: {
+    cui: string;
+    firstName: string;
+    lastName: string;
+    birthDate: string;
+    gender: string;
+    address: string;
+  };
 }
 
 export interface Alert {
@@ -51,6 +60,7 @@ interface AppStateContextType {
   // Actions
   addProspect: (prospect: Prospect) => void;
   addApplication: (application: Application) => void;
+  addApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }) => string;
   addAlert: (alert: Alert) => void;
   markAlertAsRead: (alertId: number) => void;
   navigateToApplication: (applicationId: string) => void;
@@ -129,6 +139,24 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     setApplications(prev => [...prev, application]);
   };
 
+  const addApplicationFromKYC = (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }) => {
+    const newId = `SCO_${Date.now().toString().slice(-6)}`;
+    const newApplication: Application = {
+      id: newId,
+      clientName: `${kycData.firstName} ${kycData.lastName}`,
+      product: 'Crédito Oficial',
+      amount: 'Por definir',
+      status: 'draft',
+      date: new Date().toISOString().split('T')[0],
+      progress: 1,
+      stage: 'Identificación y Contacto',
+      type: 'oficial',
+      kycData
+    };
+    setApplications(prev => [...prev, newApplication]);
+    return newId;
+  };
+
   const addAlert = (alert: Alert) => {
     setAlerts(prev => [alert, ...prev]);
   };
@@ -157,6 +185,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     setAlerts,
     addProspect,
     addApplication,
+    addApplicationFromKYC,
     addAlert,
     markAlertAsRead,
     navigateToApplication

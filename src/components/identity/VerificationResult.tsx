@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, User, Calendar, MapPin, CreditCard } from 'lucide-react';
 import { IdentityData } from '@/types/identity';
+import { useAppState } from '@/context/AppStateContext';
 
 interface VerificationResultProps {
   identityData: IdentityData;
@@ -15,6 +17,15 @@ const VerificationResult: React.FC<VerificationResultProps> = ({
   onContinue,
   onRetry
 }) => {
+  const navigate = useNavigate();
+  const { addApplicationFromKYC } = useAppState();
+
+  const handleContinueWithApplication = () => {
+    // Create new application with KYC data
+    const newApplicationId = addApplicationFromKYC(identityData);
+    // Navigate to the new application details
+    navigate(`/applications/${newApplicationId}`);
+  };
   return (
     <div className="max-w-md mx-auto space-y-6">
       <Card>
@@ -90,7 +101,7 @@ const VerificationResult: React.FC<VerificationResultProps> = ({
 
       <div className="space-y-3">
         <Button 
-          onClick={onContinue}
+          onClick={handleContinueWithApplication}
           className="w-full"
           size="lg"
         >
