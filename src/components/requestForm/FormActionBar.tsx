@@ -67,7 +67,8 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
                 disabled={
                   !formData.termsAccepted || 
                   !formData.dataProcessingAccepted || 
-                  !formData.creditCheckAccepted
+                  !formData.creditCheckAccepted ||
+                  !formData.digitalSignatureAccepted
                 }
               >
                 <Check className="mr-2 h-4 w-4" />

@@ -127,12 +127,11 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const [initialFormData, setInitialFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
-    identification: 'pending',
-    finances: 'pending',
-    business: 'pending',
-    guarantors: 'pending',
-    documents: 'pending',
-    review: 'pending',
+    'credit-info': 'pending',
+    'character': 'pending',
+    'business-financial': 'pending',
+    'documents': 'pending',
+    'signature': 'pending',
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [toastShown, setToastShown] = useState(false);
@@ -152,22 +151,20 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
 
   // Mapping from sectionId to step index
   const sectionIdToStepIndex = {
-    'identification': 0,
-    'finances': 1,
-    'business': 2,
-    'guarantors': 3,
-    'documents': 4,
-    'review': 5
+    'credit-info': 0,
+    'character': 1,
+    'business-financial': 2,
+    'documents': 3,
+    'signature': 4
   };
 
   // Section names for toast messages
   const sectionNames = {
-    'identification': 'Identificación y Contacto',
-    'finances': 'Finanzas y Patrimonio',
-    'business': 'Negocio y Perfil Económico',
-    'guarantors': 'Fiadores y Referencias',
+    'credit-info': 'Información del crédito + solicitante',
+    'character': 'Análisis de carácter',
+    'business-financial': 'Información financiera del negocio',
     'documents': 'Documentos',
-    'review': 'Revisión Final'
+    'signature': 'Cláusula y firma'
   };
 
   // Initialize form with KYC data or mock data
@@ -289,7 +286,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
         
         // Set sections that have data as complete
         if (mockData.personalInfo) {
-          setSectionStatus(prev => ({ ...prev, identification: 'complete' }));
+          setSectionStatus(prev => ({ ...prev, 'credit-info': 'complete' }));
         }
         
         // Only show toast once if not navigating to specific section
@@ -312,19 +309,16 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
     
     // Basic validation - in a real app this would be more sophisticated
     switch (currentSectionId) {
-      case 'identification':
-        return !!(formData.fullName && formData.cui && formData.email && formData.creditPurpose);
-      case 'finances':
-        return !!(formData.monthlyIncome || formData.businessIncome);
-      case 'business':
-        return !!(formData.businessType || formData.businessDescription);
-      case 'guarantors':
-        // Check if we have at least 2 guarantors and all are completed
-        return guarantors.length >= 2 && guarantors.every(g => g.basicInfoCompleted && g.financialInfoCompleted);
+      case 'credit-info':
+        return !!(formData.requestedAmount && formData.productType && formData.purpose);
+      case 'character':
+        return !!(formData.hasAlcoholismOrViolence !== undefined && formData.livesInHighRiskZone !== undefined);
+      case 'business-financial':
+        return !!(formData.businessName && formData.cashSales);
       case 'documents':
         return !!(formData.documentsUploaded);
-      case 'review':
-        return !!(formData.termsAccepted && formData.dataProcessingAccepted);
+      case 'signature':
+        return !!(formData.termsAccepted && formData.dataProcessingAccepted && formData.digitalSignatureAccepted);
       default:
         return false;
     }
@@ -333,8 +327,8 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   // Define sub-steps for each section
   const getSubStepsForSection = (sectionIndex: number) => {
     switch (sectionIndex) {
-      case 0: // Identificación y Contacto
-        return 3;
+      case 2: // business-financial section has 4 sub-steps
+        return 4;
       default:
         return 1;
     }
@@ -431,10 +425,10 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const handleSubmit = () => {
     console.log('Submitting form:', formData);
     
-    if (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) {
+    if (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted || !formData.digitalSignatureAccepted) {
       toast({
         title: "Error en el envío",
-        description: "Debes aceptar los términos obligatorios para continuar.",
+        description: "Debes completar todos los términos y la firma digital para continuar.",
         variant: "destructive",
         className: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
         duration: 3000,

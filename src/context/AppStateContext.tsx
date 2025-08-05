@@ -17,7 +17,7 @@ export interface Application {
   clientName: string;
   product: string;
   amount: string;
-  status: 'draft' | 'active' | 'pending' | 'approved' | 'rejected';
+  status: 'draft' | 'active' | 'pending' | 'approved' | 'rejected' | 'verification';
   date: string;
   progress: number;
   stage: string;
