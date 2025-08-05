@@ -49,10 +49,9 @@ const VerificationResult: React.FC<VerificationResultProps> = ({
       title: "Precalificación completada",
       description: `Estado: ${prequalificationResult.status === 'green' ? 'Aprobado' : 
                            prequalificationResult.status === 'yellow' ? 'Candidato a revisión' : 'Rechazado'}`,
-      type: prequalificationResult.status === 'green' ? 'success' : 
-            prequalificationResult.status === 'yellow' ? 'warning' : 'error',
-      timestamp: new Date().toISOString(),
-      isRead: false
+      date: new Date().toISOString(),
+      read: false,
+      group: 'today'
     });
 
     // Navigate based on prequalification result

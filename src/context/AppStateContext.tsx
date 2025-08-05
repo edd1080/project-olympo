@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type AppTab = 'prospectos' | 'solicitudes' | 'alertas' | 'ajustes';
+export type AppTab = 'inicio' | 'solicitudes' | 'alertas' | 'ajustes';
 
 export interface Prospect {
   id: string;
@@ -81,8 +81,8 @@ interface AppStateProviderProps {
 }
 
 export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
-  const [currentTab, setCurrentTab] = useState<AppTab>('solicitudes');
-  const [currentRoute, setCurrentRoute] = useState<string>('/applications');
+  const [currentTab, setCurrentTab] = useState<AppTab>('inicio');
+  const [currentRoute, setCurrentRoute] = useState<string>('/');
   
   // Mock initial data
   const [prospects, setProspects] = useState<Prospect[]>([

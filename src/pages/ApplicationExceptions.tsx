@@ -58,9 +58,9 @@ const ApplicationExceptions: React.FC = () => {
       id: Date.now(),
       title: "Excepción registrada",
       description: `Se ha registrado la excepción para la solicitud ${applicationId}`,
-      type: "info",
-      timestamp: new Date().toISOString(),
-      isRead: false
+      date: new Date().toISOString(),
+      read: false,
+      group: 'today'
     });
 
     toast({
