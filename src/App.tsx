@@ -21,6 +21,7 @@ import Alerts from "./pages/Alerts";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import RequestForm from "./pages/RequestForm";
+import IdentityVerification from "./pages/IdentityVerification";
 import ApplicationDetails from "./pages/ApplicationDetails";
 import Prequalifications from "./pages/Prequalifications";
 import PersonalInfo from "./pages/PersonalInfo";
@@ -77,6 +78,7 @@ const App = () => {
                 <Route path="/prospects/:id" element={<ProspectDetails />} />
                 <Route path="/applications" element={<Applications />} />
                 <Route path="/applications/new" element={<RequestForm />} />
+                <Route path="/identity-verification" element={<IdentityVerification />} />
                 <Route path="/applications/:id" element={<ApplicationDetails />} />
                 <Route path="/applications/:id/edit" element={<RequestForm />} />
                 <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />

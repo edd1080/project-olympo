@@ -31,8 +31,7 @@ const Index = () => {
     if (type === 'legacy') {
       navigate('/applications/new');
     } else {
-      // TODO: Navigate to new "Oficial" flow when ready
-      console.log('Oficial flow selected - will be implemented');
+      navigate('/identity-verification');
     }
   };
 
