@@ -44,22 +44,35 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
 
   // Auto-activate camera when component mounts
   useEffect(() => {
-    const autoStartCamera = async () => {
-      if (!hasPermission && !capturedImage) {
-        await requestPermission();
-      }
-    };
-    autoStartCamera();
-  }, [hasPermission, capturedImage, requestPermission]);
+    if (!capturedImage && !isOpen && !isLoading && !error) {
+      console.log('Auto-activating camera for document capture');
+      const timer = setTimeout(() => {
+        requestPermission();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [capturedImage, isOpen, isLoading, error, requestPermission]);
 
   const handleStartCamera = async () => {
     await requestPermission();
   };
 
   const handleCapture = async () => {
+    console.log('Attempting to capture image...');
+    
+    // Verificar que el video esté listo antes de capturar
+    if (!videoRef.current || videoRef.current.readyState < 2) {
+      console.error('Video not ready for capture');
+      return;
+    }
+    
     const imageData = capture();
-    if (!imageData) return;
+    if (!imageData) {
+      console.error('Failed to capture image');
+      return;
+    }
 
+    console.log('Image captured successfully');
     setPreviewImage(imageData);
     setShowPreview(true);
     setIsValidating(true);
@@ -164,7 +177,16 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
           <p className="text-sm text-muted-foreground">{instruction}</p>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!hasPermission ? (
+          {isLoading ? (
+            <div className="text-center space-y-4">
+              <div className="mx-auto h-32 w-full bg-muted rounded-lg flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Activando cámara...
+              </p>
+            </div>
+          ) : !hasPermission || !isOpen ? (
             <div className="text-center space-y-4">
               <div className="mx-auto h-32 w-full bg-muted rounded-lg flex items-center justify-center">
                 <Camera className="h-12 w-12 text-muted-foreground" />
@@ -173,7 +195,8 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
                 Necesitamos acceso a tu cámara para continuar
               </p>
               <Button onClick={handleStartCamera} disabled={isLoading}>
-                {isLoading ? 'Solicitando permisos...' : 'Activar Cámara'}
+                <Camera className="h-4 w-4 mr-2" />
+                Activar Cámara
               </Button>
             </div>
           ) : (
@@ -197,7 +220,12 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
                 </div>
               </div>
               
-              <Button onClick={handleCapture} className="w-full" size="lg">
+              <Button 
+                onClick={handleCapture} 
+                className="w-full" 
+                size="lg"
+                disabled={!videoRef.current || videoRef.current.readyState < 2}
+              >
                 <Camera className="h-4 w-4 mr-2" />
                 Tomar Foto
               </Button>
