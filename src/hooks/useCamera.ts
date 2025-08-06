@@ -7,7 +7,7 @@ interface CameraState {
   hasPermission: boolean;
 }
 
-export const useCamera = () => {
+export const useCamera = (facingMode: 'user' | 'environment' = 'environment') => {
   const [state, setState] = useState<CameraState>({
     isOpen: false,
     isLoading: false,
@@ -24,7 +24,7 @@ export const useCamera = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
-          facingMode: 'environment',
+          facingMode,
           width: { ideal: 1280 },
           height: { ideal: 720 }
         } 
@@ -34,6 +34,13 @@ export const useCamera = () => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        await new Promise((resolve) => {
+          const handleLoadedData = () => {
+            videoRef.current?.removeEventListener('loadeddata', handleLoadedData);
+            resolve(true);
+          };
+          videoRef.current?.addEventListener('loadeddata', handleLoadedData);
+        });
       }
       
       setState(prev => ({ 
@@ -45,6 +52,7 @@ export const useCamera = () => {
       
       return true;
     } catch (error) {
+      console.error('Camera access error:', error);
       setState(prev => ({ 
         ...prev, 
         isLoading: false, 
@@ -52,7 +60,7 @@ export const useCamera = () => {
       }));
       return false;
     }
-  }, []);
+  }, [facingMode]);
 
   const switchCamera = useCallback(async (facingMode: 'user' | 'environment') => {
     if (streamRef.current) {
@@ -82,7 +90,10 @@ export const useCamera = () => {
   }, []);
 
   const capture = useCallback((): string | null => {
-    if (!videoRef.current) return null;
+    if (!videoRef.current || videoRef.current.videoWidth === 0 || videoRef.current.videoHeight === 0) {
+      console.error('Video not ready for capture');
+      return null;
+    }
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -92,7 +103,7 @@ export const useCamera = () => {
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
     
-    context.drawImage(videoRef.current, 0, 0);
+    context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
     
     return canvas.toDataURL('image/jpeg', 0.8);
   }, []);

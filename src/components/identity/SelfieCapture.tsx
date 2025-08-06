@@ -31,7 +31,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
     requestPermission,
     capture,
     closeCamera
-  } = useCamera();
+  } = useCamera('user');
 
   useEffect(() => {
     if (capturedImage) {
@@ -198,9 +198,11 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
                 </div>
                 
                 {countdown && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="text-white text-6xl font-bold animate-pulse">
-                      {countdown}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-48 h-48 rounded-full bg-black/50 flex items-center justify-center">
+                      <div className="text-white text-6xl font-bold animate-pulse">
+                        {countdown}
+                      </div>
                     </div>
                   </div>
                 )}

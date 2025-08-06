@@ -55,17 +55,8 @@ const VerificationResult: React.FC<VerificationResultProps> = ({
     });
 
     // Navigate based on prequalification result
-    if (prequalificationResult.status === 'yellow') {
-      // Amarillo: ir a pantalla de excepciones
-      navigate('/applications/exceptions', {
-        state: { 
-          applicationId,
-          prequalificationResult,
-          identityData
-        }
-      });
-    } else if (prequalificationResult.status === 'green') {
-      // Verde: ir directo al formulario oficial
+    if (prequalificationResult.status === 'yellow' || prequalificationResult.status === 'green') {
+      // Verde y Amarillo: ir directo al formulario oficial
       navigate('/applications/oficial/new', {
         state: { 
           applicationId,

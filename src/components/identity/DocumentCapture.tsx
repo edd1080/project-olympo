@@ -33,7 +33,7 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
     switchCamera,
     capture,
     closeCamera
-  } = useCamera();
+  } = useCamera('environment');
 
   useEffect(() => {
     if (capturedImage) {
@@ -193,7 +193,7 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
               
               <div className="flex justify-center">
                 <div className="px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground">
-                  {documentType === 'front' ? 'Cámara Frontal' : 'Cámara Trasera'}
+                  Cámara Trasera
                 </div>
               </div>
               
