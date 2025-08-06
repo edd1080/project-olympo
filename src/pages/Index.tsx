@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -7,10 +8,12 @@ import FormTypeSelectionModal from '@/components/modals/FormTypeSelectionModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, Users, TrendingUp, CheckCircle, AlertCircle, Clock, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
   const [showFormTypeModal, setShowFormTypeModal] = useState(false);
+
   useEffect(() => {
     // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
@@ -18,9 +21,11 @@ const Index = () => {
       navigate('/login');
     }
   }, [navigate]);
+
   const handleCreateNewApplication = () => {
     setShowFormTypeModal(true);
   };
+
   const handleFormTypeSelection = (type: 'legacy' | 'oficial') => {
     setShowFormTypeModal(false);
     if (type === 'legacy') {
@@ -29,7 +34,9 @@ const Index = () => {
       navigate('/identity-verification');
     }
   };
-  return <div className="min-h-screen flex flex-col bg-background">
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-1 px-4 py-8 pb-20">
@@ -92,7 +99,9 @@ const Index = () => {
         
         <div className="bg-background rounded-lg p-6 hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleCreateNewApplication}>
           <div className="flex items-center gap-3 mb-3">
-            
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <FileSpreadsheet className="h-6 w-6 text-primary" />
+            </div>
             <div>
               <h3 className="text-lg font-semibold">Nueva Solicitud</h3>
               <p className="text-sm text-muted-foreground">Crear una nueva solicitud de crédito</p>
@@ -108,7 +117,13 @@ const Index = () => {
       <BottomNavigation />
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
-      <FormTypeSelectionModal open={showFormTypeModal} onOpenChange={setShowFormTypeModal} onSelectType={handleFormTypeSelection} />
-    </div>;
+      <FormTypeSelectionModal 
+        open={showFormTypeModal} 
+        onOpenChange={setShowFormTypeModal}
+        onSelectType={handleFormTypeSelection}
+      />
+    </div>
+  );
 };
+
 export default Index;
