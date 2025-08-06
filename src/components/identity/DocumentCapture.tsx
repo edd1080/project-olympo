@@ -181,25 +181,26 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => switchCamera('environment')}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <FlipHorizontal className="h-4 w-4 mr-1" />
-                  Trasera
-                </Button>
-                <Button
-                  onClick={() => switchCamera('user')}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <FlipHorizontal className="h-4 w-4 mr-1" />
-                  Frontal
-                </Button>
+              <div className="flex justify-center">
+                {documentType === 'front' ? (
+                  <Button
+                    onClick={() => switchCamera('user')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <FlipHorizontal className="h-4 w-4 mr-1" />
+                    Frontal
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => switchCamera('environment')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <FlipHorizontal className="h-4 w-4 mr-1" />
+                    Trasera
+                  </Button>
+                )}
               </div>
               
               <Button onClick={handleCapture} className="w-full" size="lg">
