@@ -26,7 +26,7 @@ const IdentityVerification: React.FC = () => {
     { step: 'welcome', label: 'Bienvenida', progress: 0 },
     { step: 'dpi-front', label: 'DPI Frente', progress: 25 },
     { step: 'dpi-back', label: 'DPI Reverso', progress: 50 },
-    { step: 'selfie', label: 'Selfie', progress: 75 },
+    { step: 'selfie', label: 'Escaneo Facial', progress: 75 },
     { step: 'success', label: 'Completado', progress: 100 }
   ];
 

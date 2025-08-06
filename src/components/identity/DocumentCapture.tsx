@@ -42,6 +42,16 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
     }
   }, [capturedImage]);
 
+  // Auto-activate camera when component mounts
+  useEffect(() => {
+    const autoStartCamera = async () => {
+      if (!hasPermission && !capturedImage) {
+        await requestPermission();
+      }
+    };
+    autoStartCamera();
+  }, [hasPermission, capturedImage, requestPermission]);
+
   const handleStartCamera = async () => {
     await requestPermission();
   };
@@ -182,25 +192,9 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
               </div>
               
               <div className="flex justify-center">
-                {documentType === 'front' ? (
-                  <Button
-                    onClick={() => switchCamera('user')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <FlipHorizontal className="h-4 w-4 mr-1" />
-                    Frontal
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => switchCamera('environment')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <FlipHorizontal className="h-4 w-4 mr-1" />
-                    Trasera
-                  </Button>
-                )}
+                <div className="px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground">
+                  {documentType === 'front' ? 'Cámara Frontal' : 'Cámara Trasera'}
+                </div>
               </div>
               
               <Button onClick={handleCapture} className="w-full" size="lg">

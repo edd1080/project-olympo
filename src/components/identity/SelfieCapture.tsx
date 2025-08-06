@@ -76,7 +76,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
     setTimeout(() => {
       setIsValidating(false);
       if (validation.isValid) {
-        setValidationMessage('Selfie capturada correctamente');
+        setValidationMessage('Escaneo facial completado correctamente');
       } else {
         setValidationMessage(validation.message || 'No se detectó tu rostro claramente, intenta de nuevo');
       }
@@ -103,7 +103,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
       <div className="max-w-md mx-auto space-y-6">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-lg">Tu Selfie</CardTitle>
+            <CardTitle className="text-lg">Escaneo Facial</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
@@ -141,9 +141,9 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
             className="w-full"
             size="lg"
             disabled={isValidating || !validationMessage.includes('correctamente')}
-          >
-            Confirmar Selfie
-          </Button>
+            >
+              Confirmar Escaneo
+            </Button>
           
           <Button 
             onClick={handleRetry}
@@ -162,7 +162,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
     <div className="max-w-md mx-auto space-y-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-lg">Toma tu Selfie</CardTitle>
+          <CardTitle className="text-lg">Escaneo Facial</CardTitle>
           <p className="text-sm text-muted-foreground">
             Coloca tu rostro dentro del círculo y mantente quieto
           </p>
@@ -174,10 +174,10 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
                 <User className="h-12 w-12 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Necesitamos acceso a tu cámara frontal
+                Necesitamos acceso a tu cámara frontal para el escaneo facial
               </p>
               <Button onClick={handleStartCamera} disabled={isLoading}>
-                {isLoading ? 'Solicitando permisos...' : 'Activar Cámara'}
+                {isLoading ? 'Solicitando permisos...' : 'Iniciar Escaneo Facial'}
               </Button>
             </div>
           ) : (
@@ -218,7 +218,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
                   disabled={countdown !== null}
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  {countdown ? `Capturando en ${countdown}...` : 'Tomar Selfie'}
+                  {countdown ? `Escaneando en ${countdown}...` : 'Iniciar Escaneo Facial'}
                 </Button>
               </div>
             </div>
