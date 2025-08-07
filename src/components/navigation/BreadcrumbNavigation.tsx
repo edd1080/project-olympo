@@ -27,12 +27,18 @@ const BreadcrumbNavigation = () => {
 
   const getFormSectionLabel = (sectionId: string): string => {
     const sectionLabels: Record<string, string> = {
+      // Legacy application sections
       'identification': 'Identificación y Contacto',
       'finances': 'Finanzas y Patrimonio', 
       'business': 'Negocio y Perfil Económico',
       'guarantors': 'Garantías, Fiadores y Referencias',
       'documents': 'Documentos y Cierre',
-      'review': 'Revisión Final'
+      'review': 'Revisión Final',
+      // Official application sections
+      'credit-details': 'Detalles del Crédito',
+      'character': 'Análisis de Carácter',
+      'business-financial': 'Información Financiera',
+      'signature': 'Cláusula y Firma'
     };
     return sectionLabels[sectionId] || sectionId;
   };

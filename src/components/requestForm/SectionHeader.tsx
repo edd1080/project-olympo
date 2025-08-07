@@ -20,6 +20,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get icon based on section ID
   const getSectionIcon = () => {
     switch (sectionId) {
+      // Legacy application sections
       case 'identification':
         return <User className="h-5 w-5 text-primary" />;
       case 'finances':
@@ -32,6 +33,15 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         return <FileCheck className="h-5 w-5 text-primary" />;
       case 'review':
         return <CheckCircle className="h-5 w-5 text-primary" />;
+      // Official application sections
+      case 'credit-details':
+        return <DollarSign className="h-5 w-5 text-primary" />;
+      case 'character':
+        return <User className="h-5 w-5 text-primary" />;
+      case 'business-financial':
+        return <Calculator className="h-5 w-5 text-primary" />;
+      case 'signature':
+        return <FileCheck className="h-5 w-5 text-primary" />;
       default:
         return <User className="h-5 w-5 text-primary" />;
     }
@@ -40,6 +50,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get section title based on section ID
   const getSectionTitle = () => {
     switch (sectionId) {
+      // Legacy application sections
       case 'identification':
         return 'Identificación y Contacto';
       case 'finances':
@@ -52,6 +63,15 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         return 'Documentos y Cierre';
       case 'review':
         return 'Revisión Final';
+      // Official application sections
+      case 'credit-details':
+        return 'Detalles del Crédito';
+      case 'character':
+        return 'Análisis de Carácter';
+      case 'business-financial':
+        return 'Información Financiera';
+      case 'signature':
+        return 'Cláusula y Firma';
       default:
         return 'Sección';
     }
@@ -60,6 +80,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   // Get section instructions based on section ID
   const getSectionInstructions = () => {
     switch (sectionId) {
+      // Legacy application sections
       case 'identification':
         return 'Complete todos los datos personales del solicitante, incluyendo información del cónyuge y dependientes si aplica.';
       case 'finances':
@@ -72,6 +93,15 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         return 'Suba fotografías del solicitante, documentos de identificación, comprobantes de domicilio y firma.';
       case 'review':
         return 'El solicitante debe revisar y aceptar los términos y condiciones del crédito antes de firmar.';
+      // Official application sections
+      case 'credit-details':
+        return 'Complete la información detallada del crédito solicitado, datos personales y de contacto del solicitante.';
+      case 'character':
+        return 'Evalúe las referencias comerciales, personales y el análisis de carácter del solicitante.';
+      case 'business-financial':
+        return 'Ingrese información financiera del negocio, estados patrimoniales y capacidad de pago.';
+      case 'signature':
+        return 'Revise las cláusulas del contrato y obtenga la firma digital del solicitante o testigo.';
       default:
         return 'Complete todos los campos requeridos en esta sección.';
     }

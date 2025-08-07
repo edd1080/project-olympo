@@ -35,38 +35,57 @@ const applicationStatuses = {
 };
 // Dynamic form sections based on application type
 const getFormSections = (applicationType: string) => {
-  const baseSections = [{
-    id: 'identification',
-    icon: <User size={18} />,
-    name: 'Identificación y Contacto'
-  }, {
-    id: 'finances',
-    icon: <DollarSign size={18} />,
-    name: 'Finanzas y Patrimonio'
-  }, {
-    id: 'business',
-    icon: <Briefcase size={18} />,
-    name: 'Negocio y Perfil Económico'
-  }, {
-    id: 'guarantors',
-    icon: <Users size={18} />,
-    name: 'Garantías, Fiadores y Referencias'
-  }, {
-    id: 'documents',
-    icon: <FileSignature size={18} />,
-    name: 'Documentos y Cierre'
-  }];
-
-  // Add review section only for legacy applications
-  if (applicationType !== 'oficial') {
-    baseSections.push({
+  if (applicationType === 'oficial') {
+    // Official application sections (5 steps)
+    return [{
+      id: 'credit-details',
+      icon: <DollarSign size={18} />,
+      name: 'Detalles del Crédito'
+    }, {
+      id: 'character',
+      icon: <Users size={18} />,
+      name: 'Análisis de Carácter'
+    }, {
+      id: 'business-financial',
+      icon: <BarChart3 size={18} />,
+      name: 'Información Financiera'
+    }, {
+      id: 'documents',
+      icon: <FileSignature size={18} />,
+      name: 'Documentos e Imágenes'
+    }, {
+      id: 'signature',
+      icon: <FileCheck size={18} />,
+      name: 'Cláusula y Firma'
+    }];
+  } else {
+    // Legacy application sections (6 steps)
+    return [{
+      id: 'identification',
+      icon: <User size={18} />,
+      name: 'Identificación y Contacto'
+    }, {
+      id: 'finances',
+      icon: <DollarSign size={18} />,
+      name: 'Finanzas y Patrimonio'
+    }, {
+      id: 'business',
+      icon: <Briefcase size={18} />,
+      name: 'Negocio y Perfil Económico'
+    }, {
+      id: 'guarantors',
+      icon: <Users size={18} />,
+      name: 'Garantías, Fiadores y Referencias'
+    }, {
+      id: 'documents',
+      icon: <FileSignature size={18} />,
+      name: 'Documentos y Cierre'
+    }, {
       id: 'review',
       icon: <CheckCircle size={18} />,
       name: 'Revisión Final'
-    });
+    }];
   }
-
-  return baseSections;
 };
 
 const ApplicationDetails = () => {
@@ -352,9 +371,16 @@ const ApplicationDetails = () => {
   };
   
   const navigateToFormSection = (sectionId: string) => {
-    navigate(`/applications/${id}/edit`, {
+    // Determine the correct route based on application type
+    const editRoute = application?.type === 'oficial' 
+      ? `/applications/${id}/edit-oficial` 
+      : `/applications/${id}/edit`;
+      
+    navigate(editRoute, {
       state: {
-        sectionId
+        sectionId,
+        identityData: application?.type === 'oficial' ? application?.kycData : undefined,
+        applicationId: id
       }
     });
     toast({
@@ -365,9 +391,16 @@ const ApplicationDetails = () => {
   };
 
   const navigateToDocuments = () => {
-    navigate(`/applications/${id}/edit`, {
+    // Determine the correct route based on application type
+    const editRoute = application?.type === 'oficial' 
+      ? `/applications/${id}/edit-oficial` 
+      : `/applications/${id}/edit`;
+      
+    navigate(editRoute, {
       state: {
-        sectionId: 'documents'
+        sectionId: 'documents',
+        identityData: application?.type === 'oficial' ? application?.kycData : undefined,
+        applicationId: id
       }
     });
     toast({
@@ -378,9 +411,17 @@ const ApplicationDetails = () => {
   };
 
   const handleAddGuarantor = () => {
-    navigate(`/applications/${id}/edit`, {
+    // Determine the correct route and section based on application type
+    const editRoute = application?.type === 'oficial' 
+      ? `/applications/${id}/edit-oficial` 
+      : `/applications/${id}/edit`;
+    const sectionId = application?.type === 'oficial' ? 'character' : 'guarantors';
+      
+    navigate(editRoute, {
       state: {
-        sectionId: 'guarantors'
+        sectionId,
+        identityData: application?.type === 'oficial' ? application?.kycData : undefined,
+        applicationId: id
       }
     });
     toast({

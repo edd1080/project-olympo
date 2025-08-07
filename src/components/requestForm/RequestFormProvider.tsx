@@ -63,6 +63,13 @@ interface FormContextType {
   getSubStepsForSection: (sectionIndex: number) => number;
   hasUnsavedChanges: boolean;
   
+  // Step configuration
+  steps: {
+    id: string;
+    title: string;
+    icon: React.ReactNode;
+  }[];
+  
   // New guarantor-related context
   guarantors: GuarantorData[];
   setGuarantors: React.Dispatch<React.SetStateAction<GuarantorData[]>>;
@@ -126,12 +133,13 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [initialFormData, setInitialFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
-  const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
-    'credit-details': 'pending',
-    'character': 'pending',
-    'business-financial': 'pending',
-    'documents': 'pending',
-    'signature': 'pending',
+  const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>(() => {
+    // Initialize section status based on provided steps
+    const initialStatus: Record<string, 'pending' | 'complete'> = {};
+    steps.forEach(step => {
+      initialStatus[step.id] = 'pending';
+    });
+    return initialStatus;
   });
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [toastShown, setToastShown] = useState(false);
@@ -149,23 +157,17 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   // Check if there are unsaved changes
   const hasUnsavedChanges = JSON.stringify(formData) !== JSON.stringify(lastSavedData);
 
-  // Mapping from sectionId to step index
-  const sectionIdToStepIndex = {
-    'credit-details': 0,
-    'character': 1,
-    'business-financial': 2,
-    'documents': 3,
-    'signature': 4
-  };
+  // Mapping from sectionId to step index - dynamically built from steps
+  const sectionIdToStepIndex = steps.reduce((acc, step, index) => {
+    acc[step.id] = index;
+    return acc;
+  }, {} as Record<string, number>);
 
-  // Section names for toast messages
-  const sectionNames = {
-    'credit-details': 'Detalles del Crédito',
-    'character': 'Análisis de Carácter',
-    'business-financial': 'Información Financiera',
-    'documents': 'Documentos e Imágenes',
-    'signature': 'Cláusula y Firma'
-  };
+  // Section names for toast messages - dynamically built from steps
+  const sectionNames = steps.reduce((acc, step) => {
+    acc[step.id] = step.title;
+    return acc;
+  }, {} as Record<string, string>);
 
   // Initialize form with KYC data or mock data
   useEffect(() => {
@@ -522,6 +524,9 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
     isLastSubStep,
     getSubStepsForSection,
     hasUnsavedChanges,
+    
+    // Step configuration
+    steps,
     
     // New guarantor context values
     guarantors,

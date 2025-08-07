@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import { ChevronDown, CheckCircle } from 'lucide-react';
 import { useFormContext } from './RequestFormProvider';
 import { steps } from './formSteps';
+import { stepsOficial } from './formStepsOficial';
 const DynamicFormHeader: React.FC = () => {
   const {
     activeStep,
     handleChangeSection,
-    sectionStatus
+    sectionStatus,
+    steps: contextSteps
   } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
-  const currentStep = steps[activeStep];
-  const totalSteps = steps.length;
+  const currentStep = contextSteps[activeStep];
+  const totalSteps = contextSteps.length;
   const currentStepNumber = activeStep + 1;
   const progress = currentStepNumber / totalSteps * 100;
 
   // Define step contexts for each section
   const getStepContext = (stepId: string) => {
     switch (stepId) {
+      // Legacy application sections
       case 'identification':
         return 'Datos básicos';
       case 'finances':
@@ -29,6 +32,15 @@ const DynamicFormHeader: React.FC = () => {
         return 'Documentos y cierre';
       case 'review':
         return 'Revisión final';
+      // Official application sections
+      case 'credit-details':
+        return 'Información del crédito';
+      case 'character':
+        return 'Evaluación de carácter';
+      case 'business-financial':
+        return 'Datos financieros';
+      case 'signature':
+        return 'Firma y cláusulas';
       default:
         return 'Información general';
     }
@@ -56,9 +68,9 @@ const DynamicFormHeader: React.FC = () => {
             <ChevronDown size={20} className={`text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
           </button>
 
-          {/* Dropdown menu */}
-          {isExpanded && <div className="absolute top-full left-0 mt-2 w-full max-w-md bg-popover border rounded-lg shadow-lg z-30 py-2">
-              {steps.map((step, index) => {
+           {/* Dropdown menu */}
+           {isExpanded && <div className="absolute top-full left-0 mt-2 w-full max-w-md bg-popover border rounded-lg shadow-lg z-30 py-2">
+               {contextSteps.map((step, index) => {
             const isActive = activeStep === index;
             const isCompleted = sectionStatus[step.id] === 'complete';
             return <button key={step.id} onClick={() => handleSectionSelect(index)} className={`
