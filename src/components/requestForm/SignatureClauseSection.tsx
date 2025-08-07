@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, FileSignature, AlertCircle } from 'lucide-react';
+import { CheckCircle, FileSignature, AlertCircle, Camera, Upload, User, FileText } from 'lucide-react';
 
 interface SignatureClauseSectionProps {
   formData: any;
@@ -227,14 +229,156 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
             </div>
           </div>
 
-          {/* Final confirmation */}
-          {formData.digitalSignatureAccepted && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-2 text-green-700">
-                <CheckCircle className="h-5 w-5" />
-                <span className="font-medium">Firma completada exitosamente</span>
+          {/* Alternative signing section */}
+          <div className="mt-8 p-6 border rounded-lg bg-amber-50/50 dark:bg-amber-950/20">
+            <h4 className="font-semibold mb-4 flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Firma alternativa
+            </h4>
+            
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <Switch
+                  id="applicantCannotSign"
+                  checked={formData.applicantCannotSign || false}
+                  onCheckedChange={(checked) => updateFormData('applicantCannotSign', checked)}
+                  disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
+                />
+                <Label 
+                  htmlFor="applicantCannotSign" 
+                  className={`text-sm font-medium ${(!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) ? 'text-muted-foreground' : ''}`}
+                >
+                  El solicitante no firma
+                </Label>
               </div>
-              <p className="text-sm text-green-600 mt-1">
+              
+              <p className="text-xs text-muted-foreground">
+                Active esta opción si el solicitante no puede firmar. Se requerirá información del testigo.
+              </p>
+
+              {/* Witness signature section - only visible when applicant cannot sign */}
+              {formData.applicantCannotSign && (
+                <div className="mt-6 p-4 border-l-4 border-amber-500 bg-amber-50/30 dark:bg-amber-950/10 space-y-4">
+                  <h5 className="font-medium flex items-center gap-2">
+                    <FileSignature className="h-4 w-4" />
+                    Información del testigo
+                  </h5>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="witnessName">Nombre completo del testigo *</Label>
+                      <Input
+                        id="witnessName"
+                        placeholder="Ingrese nombre completo"
+                        value={formData.witnessName || ''}
+                        onChange={(e) => updateFormData('witnessName', e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="witnessDPI">DPI del testigo *</Label>
+                      <Input
+                        id="witnessDPI"
+                        placeholder="1234 56789 0123"
+                        value={formData.witnessDPI || ''}
+                        onChange={(e) => updateFormData('witnessDPI', e.target.value)}
+                        maxLength={15}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="witnessNIT">NIT del testigo *</Label>
+                    <Input
+                      id="witnessNIT"
+                      placeholder="12345678-9"
+                      value={formData.witnessNIT || ''}
+                      onChange={(e) => updateFormData('witnessNIT', e.target.value)}
+                      className="max-w-sm"
+                    />
+                  </div>
+
+                  {/* Photo with fingerprint upload */}
+                  <div className="space-y-2">
+                    <Label>Fotografía del solicitante con huella dactilar *</Label>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Fotografía donde aparezca el solicitante mostrando su huella dactilar
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          // Mock fingerprint photo capture
+                          updateFormData('fingerprintPhoto', 'mock_fingerprint_photo.jpg');
+                        }}
+                      >
+                        <Camera className="mr-2 h-4 w-4" />
+                        Tomar foto con huella
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          // Mock file upload
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = (e) => {
+                            const file = (e.target as HTMLInputElement).files?.[0];
+                            if (file) {
+                              updateFormData('fingerprintPhoto', file.name);
+                            }
+                          };
+                          input.click();
+                        }}
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        Subir archivo
+                      </Button>
+                    </div>
+                    
+                    {formData.fingerprintPhoto && (
+                      <div className="flex items-center gap-2 text-sm text-green-600 mt-2">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Foto con huella cargada: {formData.fingerprintPhoto}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Witness signature confirmation */}
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="witnessSignature"
+                      checked={formData.witnessSignatureAccepted || false}
+                      onCheckedChange={(checked) => updateFormData('witnessSignatureAccepted', checked)}
+                      disabled={!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto}
+                    />
+                    <Label 
+                      htmlFor="witnessSignature" 
+                      className={`text-sm font-medium ${(!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto) ? 'text-muted-foreground' : ''}`}
+                    >
+                      Confirmo que actúo como testigo de la firma del solicitante y que todos los datos proporcionados son correctos.
+                    </Label>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Final confirmation */}
+          {((formData.digitalSignatureAccepted && !formData.applicantCannotSign) || 
+            (formData.applicantCannotSign && formData.witnessSignatureAccepted)) && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950/20 dark:border-green-900/30">
+              <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                <CheckCircle className="h-5 w-5" />
+                <span className="font-medium">
+                  {formData.applicantCannotSign ? 'Firma de testigo completada exitosamente' : 'Firma completada exitosamente'}
+                </span>
+              </div>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                 Tu solicitud está lista para ser enviada. Se generará un código de confirmación una vez enviada.
               </p>
             </div>
