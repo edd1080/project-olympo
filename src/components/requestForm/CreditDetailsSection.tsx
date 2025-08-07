@@ -5,8 +5,6 @@ import PersonalDataForm from './creditDetails/PersonalDataForm';
 import ContactDataForm from './creditDetails/ContactDataForm';
 import EducationFamilyForm from './creditDetails/EducationFamilyForm';
 import AdditionalDataForm from './creditDetails/AdditionalDataForm';
-import CreditDetailsNavigation from './creditDetails/CreditDetailsNavigation';
-
 interface CreditDetailsSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -34,13 +32,7 @@ const CreditDetailsSection: React.FC<CreditDetailsSectionProps> = ({ formData, u
 
   return (
     <div className="space-y-6">
-      {/* Navigation indicator */}
-      <CreditDetailsNavigation />
-      
-      {/* Current sub-form content */}
-      <div className="space-y-6">
-        {renderSubForm()}
-      </div>
+      {renderSubForm()}
     </div>
   );
 };

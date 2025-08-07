@@ -1,8 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, XCircle, User, Building2, FileText } from 'lucide-react';
 
 interface CharacterAnalysisProps {
   formData: any;
@@ -10,175 +11,195 @@ interface CharacterAnalysisProps {
 }
 
 const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateFormData }) => {
-  // Helper function to handle switch changes
   const handleSwitchChange = (field: string, checked: boolean) => {
     updateFormData(field, checked);
   };
 
-  return (
-    <Card className="border-0 shadow-none">
-      <CardContent className="p-0 space-y-6">
-        <div>
-          <h3 className="font-semibold text-lg">Análisis de carácter</h3>
-          <p className="text-muted-foreground text-sm">
-            Por favor responde las siguientes preguntas sobre el solicitante.
-          </p>
-        </div>
+  const getSwitchIndicator = (isPositive: boolean, checked: boolean) => {
+    const isGood = isPositive ? checked : !checked;
+    return (
+      <div className="flex items-center gap-2">
+        {isGood ? (
+          <CheckCircle className="h-4 w-4 text-green-600" />
+        ) : (
+          <XCircle className="h-4 w-4 text-red-600" />
+        )}
+        <Badge variant={isGood ? "secondary" : "destructive"} className="text-xs">
+          {isGood ? "Positivo" : "Negativo"}
+        </Badge>
+      </div>
+    );
+  };
 
-        {/* Personal aspects section */}
-        <div className="space-y-4">
-          <h4 className="font-medium text-primary">Aspectos a considerar</h4>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasAlcoholismOrViolence" className="flex-1">
-                ¿El solicitante tiene antecedentes de alcoholismo y/o violencia?
-              </Label>
-              <Switch 
-                id="hasAlcoholismOrViolence"
-                checked={formData.hasAlcoholismOrViolence || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasAlcoholismOrViolence', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="livesInHighRiskZone" className="flex-1">
-                ¿El solicitante vive en una zona de alto riesgo?
-              </Label>
-              <Switch 
-                id="livesInHighRiskZone"
-                checked={formData.livesInHighRiskZone || false}
-                onCheckedChange={(checked) => handleSwitchChange('livesInHighRiskZone', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="livesInSamePlaceTwoYears" className="flex-1">
-                ¿El solicitante reside en el mismo lugar hace más de dos años?
-              </Label>
-              <Switch 
-                id="livesInSamePlaceTwoYears"
-                checked={formData.livesInSamePlaceTwoYears || false}
-                onCheckedChange={(checked) => handleSwitchChange('livesInSamePlaceTwoYears', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="informedSpouseAboutFinancing" className="flex-1">
-                ¿El solicitante informó a su cónyuge/encargado sobre el financiamiento?
-              </Label>
-              <Switch 
-                id="informedSpouseAboutFinancing"
-                checked={formData.informedSpouseAboutFinancing || false}
-                onCheckedChange={(checked) => handleSwitchChange('informedSpouseAboutFinancing', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasGoodNeighborReferences" className="flex-1">
-                ¿El solicitante cuenta con buenas referencias de sus vecinos?
-              </Label>
-              <Switch 
-                id="hasGoodNeighborReferences"
-                checked={formData.hasGoodNeighborReferences || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasGoodNeighborReferences', checked)}
-              />
-            </div>
+  const CharacterSection = ({ 
+    title, 
+    icon: Icon, 
+    children 
+  }: { 
+    title: string; 
+    icon: React.ElementType; 
+    children: React.ReactNode;
+  }) => (
+    <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
+          <h4 className="font-semibold text-lg text-foreground">{title}</h4>
         </div>
-
-        {/* Project aspects section */}
-        <div className="space-y-4">
-          <h4 className="font-medium text-primary">Sobre el proyecto</h4>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasCreditPurposeClarity" className="flex-1">
-                ¿El solicitante tiene claridad del destino del crédito?
-              </Label>
-              <Switch 
-                id="hasCreditPurposeClarity"
-                checked={formData.hasCreditPurposeClarity || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasCreditPurposeClarity', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="businessInHighRiskArea" className="flex-1">
-                ¿El negocio se encuentra en un sector geográfico de alto riesgo?
-              </Label>
-              <Switch 
-                id="businessInHighRiskArea"
-                checked={formData.businessInHighRiskArea || false}
-                onCheckedChange={(checked) => handleSwitchChange('businessInHighRiskArea', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="businessOlderThanOneYear" className="flex-1">
-                ¿La antigüedad del negocio es mayor a un año?
-              </Label>
-              <Switch 
-                id="businessOlderThanOneYear"
-                checked={formData.businessOlderThanOneYear || false}
-                onCheckedChange={(checked) => handleSwitchChange('businessOlderThanOneYear', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasOtherEconomicActivities" className="flex-1">
-                ¿El solicitante cuenta con otras actividades económicas?
-              </Label>
-              <Switch 
-                id="hasOtherEconomicActivities"
-                checked={formData.hasOtherEconomicActivities || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasOtherEconomicActivities', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="keepsWrittenRecords" className="flex-1">
-                ¿El solicitante lleva registros escritos de sus compras y ventas?
-              </Label>
-              <Switch 
-                id="keepsWrittenRecords"
-                checked={formData.keepsWrittenRecords || false}
-                onCheckedChange={(checked) => handleSwitchChange('keepsWrittenRecords', checked)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* References and payment record section */}
-        <div className="space-y-4">
-          <h4 className="font-medium text-primary">Sobre referencia y récord de pago</h4>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasSatisfactorySIBReferences" className="flex-1">
-                ¿El solicitante posee referencias satisfactorias en la SIB?
-              </Label>
-              <Switch 
-                id="hasSatisfactorySIBReferences"
-                checked={formData.hasSatisfactorySIBReferences || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasSatisfactorySIBReferences', checked)}
-              />
-            </div>
-            
-            <div className="flex items-center justify-between border-b pb-2">
-              <Label htmlFor="hasInternalRatingAB" className="flex-1">
-                ¿El solicitante tiene calificación interna de pago A o B?
-              </Label>
-              <Switch 
-                id="hasInternalRatingAB"
-                checked={formData.hasInternalRatingAB || false}
-                onCheckedChange={(checked) => handleSwitchChange('hasInternalRatingAB', checked)}
-              />
-            </div>
-          </div>
+        <div className="space-y-6">
+          {children}
         </div>
       </CardContent>
     </Card>
+  );
+
+  const SwitchItem = ({ 
+    id, 
+    label, 
+    checked, 
+    isPositive = true,
+    onChange 
+  }: {
+    id: string;
+    label: string;
+    checked: boolean;
+    isPositive?: boolean;
+    onChange: (checked: boolean) => void;
+  }) => (
+    <div className="flex items-start justify-between gap-4 p-4 rounded-lg bg-card/50 border border-border/30 hover:bg-accent/20 transition-colors">
+      <div className="flex-1 space-y-2">
+        <Label htmlFor={id} className="text-sm font-medium leading-5 cursor-pointer">
+          {label}
+        </Label>
+        {getSwitchIndicator(isPositive, checked)}
+      </div>
+      <Switch 
+        id={id}
+        checked={checked}
+        onCheckedChange={onChange}
+        className="shrink-0"
+      />
+    </div>
+  );
+
+  return (
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <h3 className="font-bold text-2xl text-foreground">Análisis de carácter</h3>
+        <p className="text-muted-foreground">
+          Evalúa las características del solicitante marcando cada aspecto. Los indicadores muestran si la respuesta es positiva o negativa para la evaluación crediticia.
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        {/* Personal aspects section */}
+        <CharacterSection title="Aspectos personales" icon={User}>
+          <SwitchItem
+            id="hasAlcoholismOrViolence"
+            label="¿El solicitante tiene antecedentes de alcoholismo y/o violencia?"
+            checked={formData.hasAlcoholismOrViolence || false}
+            isPositive={false}
+            onChange={(checked) => handleSwitchChange('hasAlcoholismOrViolence', checked)}
+          />
+          
+          <SwitchItem
+            id="livesInHighRiskZone"
+            label="¿El solicitante vive en una zona de alto riesgo?"
+            checked={formData.livesInHighRiskZone || false}
+            isPositive={false}
+            onChange={(checked) => handleSwitchChange('livesInHighRiskZone', checked)}
+          />
+          
+          <SwitchItem
+            id="livesInSamePlaceTwoYears"
+            label="¿El solicitante reside en el mismo lugar hace más de dos años?"
+            checked={formData.livesInSamePlaceTwoYears || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('livesInSamePlaceTwoYears', checked)}
+          />
+          
+          <SwitchItem
+            id="informedSpouseAboutFinancing"
+            label="¿El solicitante informó a su cónyuge/encargado sobre el financiamiento?"
+            checked={formData.informedSpouseAboutFinancing || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('informedSpouseAboutFinancing', checked)}
+          />
+          
+          <SwitchItem
+            id="hasGoodNeighborReferences"
+            label="¿El solicitante cuenta con buenas referencias de sus vecinos?"
+            checked={formData.hasGoodNeighborReferences || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('hasGoodNeighborReferences', checked)}
+          />
+        </CharacterSection>
+
+        {/* Project aspects section */}
+        <CharacterSection title="Sobre el proyecto" icon={Building2}>
+          <SwitchItem
+            id="hasCreditPurposeClarity"
+            label="¿El solicitante tiene claridad del destino del crédito?"
+            checked={formData.hasCreditPurposeClarity || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('hasCreditPurposeClarity', checked)}
+          />
+          
+          <SwitchItem
+            id="businessInHighRiskArea"
+            label="¿El negocio se encuentra en un sector geográfico de alto riesgo?"
+            checked={formData.businessInHighRiskArea || false}
+            isPositive={false}
+            onChange={(checked) => handleSwitchChange('businessInHighRiskArea', checked)}
+          />
+          
+          <SwitchItem
+            id="businessOlderThanOneYear"
+            label="¿La antigüedad del negocio es mayor a un año?"
+            checked={formData.businessOlderThanOneYear || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('businessOlderThanOneYear', checked)}
+          />
+          
+          <SwitchItem
+            id="hasOtherEconomicActivities"
+            label="¿El solicitante cuenta con otras actividades económicas?"
+            checked={formData.hasOtherEconomicActivities || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('hasOtherEconomicActivities', checked)}
+          />
+          
+          <SwitchItem
+            id="keepsWrittenRecords"
+            label="¿El solicitante lleva registros escritos de sus compras y ventas?"
+            checked={formData.keepsWrittenRecords || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('keepsWrittenRecords', checked)}
+          />
+        </CharacterSection>
+
+        {/* References and payment record section */}
+        <CharacterSection title="Referencias y récord de pago" icon={FileText}>
+          <SwitchItem
+            id="hasSatisfactorySIBReferences"
+            label="¿El solicitante posee referencias satisfactorias en la SIB?"
+            checked={formData.hasSatisfactorySIBReferences || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('hasSatisfactorySIBReferences', checked)}
+          />
+          
+          <SwitchItem
+            id="hasInternalRatingAB"
+            label="¿El solicitante tiene calificación interna de pago A o B?"
+            checked={formData.hasInternalRatingAB || false}
+            isPositive={true}
+            onChange={(checked) => handleSwitchChange('hasInternalRatingAB', checked)}
+          />
+        </CharacterSection>
+      </div>
+    </div>
   );
 };
 
