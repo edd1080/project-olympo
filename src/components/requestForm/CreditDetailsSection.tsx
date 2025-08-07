@@ -4,7 +4,7 @@ import CreditInfoForm from './creditDetails/CreditInfoForm';
 import PersonalDataForm from './creditDetails/PersonalDataForm';
 import ContactDataForm from './creditDetails/ContactDataForm';
 import EducationFamilyForm from './creditDetails/EducationFamilyForm';
-import AdditionalDataForm from './creditDetails/AdditionalDataForm';
+import DependentsForm from './creditDetails/DependentsForm';
 interface CreditDetailsSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -24,7 +24,7 @@ const CreditDetailsSection: React.FC<CreditDetailsSectionProps> = ({ formData, u
       case 3:
         return <EducationFamilyForm formData={formData} updateFormData={updateFormData} />;
       case 4:
-        return <AdditionalDataForm formData={formData} updateFormData={updateFormData} />;
+        return <DependentsForm formData={formData} updateFormData={updateFormData} />;
       default:
         return <CreditInfoForm formData={formData} updateFormData={updateFormData} />;
     }

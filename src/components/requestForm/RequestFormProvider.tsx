@@ -127,7 +127,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const [initialFormData, setInitialFormData] = useState<Record<string, any>>({});
   const [personName, setPersonName] = useState<string>("");
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'pending' | 'complete'>>({
-    'credit-info': 'pending',
+    'credit-details': 'pending',
     'character': 'pending',
     'business-financial': 'pending',
     'documents': 'pending',
@@ -151,7 +151,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
 
   // Mapping from sectionId to step index
   const sectionIdToStepIndex = {
-    'credit-info': 0,
+    'credit-details': 0,
     'character': 1,
     'business-financial': 2,
     'documents': 3,
@@ -160,11 +160,11 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
 
   // Section names for toast messages
   const sectionNames = {
-    'credit-info': 'Información del crédito + solicitante',
-    'character': 'Análisis de carácter',
-    'business-financial': 'Información financiera del negocio',
-    'documents': 'Documentos',
-    'signature': 'Cláusula y firma'
+    'credit-details': 'Detalles del Crédito',
+    'character': 'Análisis de Carácter',
+    'business-financial': 'Información Financiera',
+    'documents': 'Documentos e Imágenes',
+    'signature': 'Cláusula y Firma'
   };
 
   // Initialize form with KYC data or mock data
@@ -286,7 +286,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
         
         // Set sections that have data as complete
         if (mockData.personalInfo) {
-          setSectionStatus(prev => ({ ...prev, 'credit-info': 'complete' }));
+          setSectionStatus(prev => ({ ...prev, 'credit-details': 'complete' }));
         }
         
         // Only show toast once if not navigating to specific section
@@ -309,7 +309,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
     
     // Basic validation - in a real app this would be more sophisticated
     switch (currentSectionId) {
-      case 'credit-info':
+      case 'credit-details':
         return !!(formData.requestedAmount && formData.productType && formData.purpose);
       case 'character':
         return !!(formData.hasAlcoholismOrViolence !== undefined && formData.livesInHighRiskZone !== undefined);
@@ -327,8 +327,16 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   // Define sub-steps for each section
   const getSubStepsForSection = (sectionIndex: number) => {
     switch (sectionIndex) {
+      case 0: // credit-details section has 5 sub-steps
+        return 5;
+      case 1: // character section has 1 sub-step
+        return 1;
       case 2: // business-financial section has 4 sub-steps
         return 4;
+      case 3: // documents section has 1 sub-step
+        return 1;
+      case 4: // signature section has 1 sub-step
+        return 1;
       default:
         return 1;
     }

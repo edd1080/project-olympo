@@ -2,7 +2,6 @@
 import React from 'react';
 import { useFormContext } from './RequestFormProvider';
 import CreditDetailsSection from './CreditDetailsSection';
-import ApplicantInfoSection from './ApplicantInfoSection';
 import CharacterAnalysis from './CharacterAnalysis';
 import BusinessFinancialSection from './BusinessFinancialSection';
 import PhotoDocumentUpload from './PhotoDocumentUpload';
@@ -17,14 +16,12 @@ const StepContent: React.FC = () => {
       case 0:
         return <CreditDetailsSection formData={formData} updateFormData={updateFormData} />;
       case 1:
-        return <ApplicantInfoSection formData={formData} updateFormData={updateFormData} />;
-      case 2:
         return <CharacterAnalysis formData={formData} updateFormData={updateFormData} />;
-      case 3:
+      case 2:
         return <BusinessFinancialSection formData={formData} updateFormData={updateFormData} />;
-      case 4:
+      case 3:
         return <PhotoDocumentUpload formData={formData} updateFormData={updateFormData} />;
-      case 5:
+      case 4:
         return <SignatureClauseSection formData={formData} updateFormData={updateFormData} />;
       /* Ocultar excepciones para formulario oficial
       case 'exceptions':
