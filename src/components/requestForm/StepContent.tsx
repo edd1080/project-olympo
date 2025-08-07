@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useFormContext } from './RequestFormProvider';
-import CreditInfoSection from './CreditInfoSection';
+import CreditDetailsSection from './CreditDetailsSection';
 import ApplicantInfoSection from './ApplicantInfoSection';
 import CharacterAnalysis from './CharacterAnalysis';
 import BusinessFinancialSection from './BusinessFinancialSection';
@@ -15,7 +15,7 @@ const StepContent: React.FC = () => {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <CreditInfoSection formData={formData} updateFormData={updateFormData} />;
+        return <CreditDetailsSection formData={formData} updateFormData={updateFormData} />;
       case 1:
         return <ApplicantInfoSection formData={formData} updateFormData={updateFormData} />;
       case 2:
