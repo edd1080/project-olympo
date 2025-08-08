@@ -2,7 +2,10 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import GeneralBusinessInfo from './businessFinancial/GeneralBusinessInfo';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import AddressModule from './AddressModule';
 import BusinessProducts from './businessFinancial/BusinessProducts';
 import FinancialAnalysis from './FinancialAnalysis';
 import PatrimonialStatement from './PatrimonialStatement';
@@ -23,18 +26,19 @@ interface BusinessFinancialSectionProps {
 }
 
 const screens = [
-  { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
-  { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
-  { id: 'info', label: 'Información del Negocio', icon: Building2 },
+  { id: 'info', label: 'Info General', icon: Building2 },
   { id: 'products', label: 'Productos', icon: Package },
   { id: 'seasonality', label: 'Estacionalidad', icon: CalendarRange },
   { id: 'expenses', label: 'Gastos', icon: Receipt },
+  { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
+  { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
 ] as const;
 
 type ScreenId = typeof screens[number]['id'];
 
 const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ formData, updateFormData }) => {
-  const [activeScreen, setActiveScreen] = React.useState<ScreenId>('analysis');
+  const [activeScreen, setActiveScreen] = React.useState<ScreenId>('info');
+  const [addressOpen, setAddressOpen] = React.useState(false);
 
   const currentIndex = screens.findIndex((s) => s.id === activeScreen);
   const prev = currentIndex > 0 ? screens[currentIndex - 1] : null;
@@ -100,10 +104,87 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
         {activeScreen === 'info' && (
           <Card>
             <CardHeader>
-              <CardTitle>Datos del negocio</CardTitle>
+              <CardTitle>Información financiera</CardTitle>
             </CardHeader>
             <CardContent>
-              <GeneralBusinessInfo formData={formData} updateFormData={updateFormData} />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="businessName">Nombre del negocio</Label>
+                  <Input
+                    id="businessName"
+                    value={formData.businessName ?? ''}
+                    onChange={(e) => updateFormData('businessName', e.target.value)}
+                    placeholder="Ej. Tienda La Esperanza"
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="businessAddress">Dirección completa del negocio</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="businessAddress"
+                      value={formData.businessAddress ?? ''}
+                      readOnly
+                      placeholder="No registrada"
+                    />
+                    <Sheet open={addressOpen} onOpenChange={setAddressOpen}>
+                      <SheetTrigger asChild>
+                        <Button variant="outline">Agregar/Editar</Button>
+                      </SheetTrigger>
+                      <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
+                        <SheetHeader>
+                          <SheetTitle>Dirección del negocio</SheetTitle>
+                        </SheetHeader>
+                        <div className="p-2 md:p-4">
+                          <AddressModule
+                            initialData={formData.businessAddressDetails}
+                            onSave={(data) => {
+                              updateFormData('businessAddressDetails', data);
+                              updateFormData('businessAddress', (data as any).direccionCompleta);
+                              setAddressOpen(false);
+                            }}
+                            onCancel={() => setAddressOpen(false)}
+                          />
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cashSales">Ventas totales a contado</Label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
+                    <Input
+                      id="cashSales"
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      className="pl-7"
+                      value={formData.cashSales ?? ''}
+                      onChange={(e) => updateFormData('cashSales', parseFloat(e.target.value || '0'))}
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="creditSales">Ventas totales a crédito</Label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
+                    <Input
+                      id="creditSales"
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      className="pl-7"
+                      value={formData.creditSales ?? ''}
+                      onChange={(e) => updateFormData('creditSales', parseFloat(e.target.value || '0'))}
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}
