@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { User, Building2, FileText } from 'lucide-react';
+import { User, Building2, FileText, CheckCircle } from 'lucide-react';
 
 interface CharacterAnalysisProps {
   formData: any;
@@ -54,29 +54,57 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
   const recordKeepingLevel: 'ninguno' | 'informal' | 'formal' | undefined =
     formData.recordKeepingLevel ?? (typeof formData.keepsWrittenRecords === 'boolean' ? (formData.keepsWrittenRecords ? 'informal' : 'ninguno') : undefined);
 
-  const CharacterSection = ({ 
-    title, 
-    icon: Icon, 
-    children 
-  }: { 
-    title: string; 
-    icon: React.ElementType; 
-    children: React.ReactNode;
-  }) => (
-    <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-3 mb-6">
+// Section completion helpers
+const isBool = (v: any) => typeof v === 'boolean';
+
+const personalComplete =
+  isBool(formData.hasAlcoholismOrViolence) &&
+  !!areaRiskLevel &&
+  isBool(formData.livesInSamePlaceTwoYears) &&
+  isBool(formData.informedSpouseAboutFinancing) &&
+  !!neighborReferences;
+
+const projectComplete =
+  !!creditPurposeClarityLevel &&
+  isBool(formData.businessInHighRiskArea) &&
+  !!businessAntiquity &&
+  isBool(formData.hasOtherEconomicActivities) &&
+  !!recordKeepingLevel;
+
+const referencesComplete =
+  isBool(formData.hasSatisfactorySIBReferences) &&
+  isBool(formData.hasInternalRatingAB);
+
+const CharacterSection = ({
+  title, 
+  icon: Icon, 
+  complete = false,
+  children 
+}: { 
+  title: string; 
+  icon: React.ElementType; 
+  complete?: boolean;
+  children: React.ReactNode;
+}) => (
+  <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow">
+    <CardContent className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Icon className="h-5 w-5 text-primary" />
           </div>
           <h4 className="font-semibold text-lg text-foreground">{title}</h4>
         </div>
-        <div className="divide-y divide-border">
-          {children}
-        </div>
-      </CardContent>
-    </Card>
-  );
+        {complete && (
+          <CheckCircle className="h-5 w-5 text-[hsl(var(--success))]" aria-label="Subformulario completo" />
+        )}
+      </div>
+      <div className="divide-y divide-border">
+        {children}
+      </div>
+    </CardContent>
+  </Card>
+);
 
   const ToggleRow = ({ 
     id,
@@ -100,37 +128,43 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
     </div>
   );
 
-  const RadioRow = ({
-    id,
-    label,
-    value,
-    onChange,
-    options
-  }: {
-    id: string;
-    label: string;
-    value?: string;
-    onChange: (val: string) => void;
-    options: { value: string; label: string }[];
-  }) => (
-    <div className="py-4">
-      <div className="flex items-start justify-between gap-4">
-        <Label htmlFor={id} className="text-sm font-medium leading-5">
-          {label}
-        </Label>
-        <RadioGroup value={value} onValueChange={onChange} className="flex gap-4 md:gap-6">
-          {options.map((opt) => (
-            <div key={opt.value} className="flex items-center space-x-2">
-              <RadioGroupItem id={`${id}-${opt.value}`} value={opt.value} />
-              <Label htmlFor={`${id}-${opt.value}`} className="text-sm cursor-pointer">
-                {opt.label}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-    </div>
-  );
+const RadioRow = ({
+  id,
+  label,
+  value,
+  onChange,
+  options
+}: {
+  id: string;
+  label: string;
+  value?: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string }[];
+}) => (
+  <div className="py-4">
+    <Label htmlFor={id} className="block text-sm font-medium leading-5 mb-3">
+      {label}
+    </Label>
+    <RadioGroup value={value} onValueChange={onChange} className="grid grid-cols-3 gap-2">
+      {options.map((opt) => {
+        const isSelected = value === opt.value;
+        const isDimmed = value !== undefined && !isSelected;
+        return (
+          <div
+            key={opt.value}
+            className={`flex items-center justify-center gap-2 rounded-md border px-3 py-2 transition-colors ${isSelected ? 'border-primary bg-primary/10' : 'border-border'} ${isDimmed ? 'opacity-50' : ''}`}
+          >
+            <RadioGroupItem id={`${id}-${opt.value}`} value={opt.value} />
+            <Label htmlFor={`${id}-${opt.value}`} className="text-sm cursor-pointer">
+              {opt.label}
+            </Label>
+          </div>
+        );
+      })}
+    </RadioGroup>
+  </div>
+);
+
 
   return (
     <div className="space-y-8">
@@ -143,7 +177,7 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
 
       <div className="space-y-6">
         {/* Aspectos personales */}
-        <CharacterSection title="Aspectos personales" icon={User}>
+        <CharacterSection title="Aspectos personales" icon={User} complete={personalComplete}>
           <ToggleRow
             id="hasAlcoholismOrViolence"
             label="¿El solicitante tiene antecedentes de alcoholismo y/o violencia?"
@@ -191,7 +225,7 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
         </CharacterSection>
 
         {/* Sobre el proyecto */}
-        <CharacterSection title="Sobre el proyecto" icon={Building2}>
+        <CharacterSection title="Sobre el proyecto" icon={Building2} complete={projectComplete}>
           <RadioRow
             id="creditPurposeClarityLevel"
             label="Claridad del destino del crédito"
@@ -244,7 +278,7 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
         </CharacterSection>
 
         {/* Referencias y récord de pago */}
-        <CharacterSection title="Referencias y récord de pago" icon={FileText}>
+        <CharacterSection title="Referencias y récord de pago" icon={FileText} complete={referencesComplete}>
           <ToggleRow
             id="hasSatisfactorySIBReferences"
             label="¿El solicitante posee referencias satisfactorias en la SIB?"
