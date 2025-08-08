@@ -18,11 +18,11 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="flex flex-wrap gap-2">
+        <TabsList className="flex flex-wrap gap-2 h-auto overflow-visible">
           <TabsTrigger value="general">Información general</TabsTrigger>
           <TabsTrigger value="sales">Información de ventas</TabsTrigger>
-          <TabsTrigger value="products">Productos del negocio</TabsTrigger>
-          <TabsTrigger value="additional">Info financiera adicional</TabsTrigger>
+          <TabsTrigger value="products">Productos</TabsTrigger>
+          <TabsTrigger value="additional">Info adicional</TabsTrigger>
           <TabsTrigger value="fixed">Activos fijos</TabsTrigger>
           <TabsTrigger value="liab">Pasivos</TabsTrigger>
           <TabsTrigger value="summary">Resumen</TabsTrigger>
