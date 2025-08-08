@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, User, Building2, FileText } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { User, Building2, FileText } from 'lucide-react';
 
 interface CharacterAnalysisProps {
   formData: any;
@@ -11,25 +11,48 @@ interface CharacterAnalysisProps {
 }
 
 const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateFormData }) => {
-  const handleSwitchChange = (field: string, checked: boolean) => {
-    updateFormData(field, checked);
+  // Helpers to keep backward compatibility while introducing nuanced fields
+  const setAreaRiskLevel = (value: 'bajo' | 'medio' | 'alto') => {
+    updateFormData('areaRiskLevel', value);
+    // Derive legacy boolean for compatibility
+    updateFormData('livesInHighRiskZone', value === 'alto');
   };
 
-  const getSwitchIndicator = (isPositive: boolean, checked: boolean) => {
-    const isGood = isPositive ? checked : !checked;
-    return (
-      <div className="flex items-center gap-2">
-        {isGood ? (
-          <CheckCircle className="h-4 w-4 text-green-600" />
-        ) : (
-          <XCircle className="h-4 w-4 text-red-600" />
-        )}
-        <Badge variant={isGood ? "secondary" : "destructive"} className="text-xs">
-          {isGood ? "Positivo" : "Negativo"}
-        </Badge>
-      </div>
-    );
+  const setNeighborReferences = (value: 'ninguna' | 'mixtas' | 'positivas') => {
+    updateFormData('neighborReferences', value);
+    updateFormData('hasGoodNeighborReferences', value === 'positivas');
   };
+
+  const setCreditPurposeClarityLevel = (value: 'alta' | 'media' | 'baja') => {
+    updateFormData('creditPurposeClarityLevel', value);
+    updateFormData('hasCreditPurposeClarity', value === 'alta');
+  };
+
+  const setBusinessAntiquity = (value: 'menos_6m' | '6_12m' | 'mas_1a') => {
+    updateFormData('businessAntiquity', value);
+    updateFormData('businessOlderThanOneYear', value === 'mas_1a');
+  };
+
+  const setRecordKeepingLevel = (value: 'ninguno' | 'informal' | 'formal') => {
+    updateFormData('recordKeepingLevel', value);
+    updateFormData('keepsWrittenRecords', value !== 'ninguno');
+  };
+
+  // Current values with legacy fallbacks
+  const areaRiskLevel: 'bajo' | 'medio' | 'alto' | undefined =
+    formData.areaRiskLevel ?? (formData.livesInHighRiskZone === true ? 'alto' : formData.livesInHighRiskZone === false ? 'bajo' : undefined);
+
+  const neighborReferences: 'ninguna' | 'mixtas' | 'positivas' | undefined =
+    formData.neighborReferences ?? (formData.hasGoodNeighborReferences === true ? 'positivas' : formData.hasGoodNeighborReferences === false ? 'ninguna' : undefined);
+
+  const creditPurposeClarityLevel: 'alta' | 'media' | 'baja' | undefined =
+    formData.creditPurposeClarityLevel ?? (formData.hasCreditPurposeClarity === true ? 'alta' : formData.hasCreditPurposeClarity === false ? 'baja' : undefined);
+
+  const businessAntiquity: 'menos_6m' | '6_12m' | 'mas_1a' | undefined =
+    formData.businessAntiquity ?? (formData.businessOlderThanOneYear === true ? 'mas_1a' : undefined);
+
+  const recordKeepingLevel: 'ninguno' | 'informal' | 'formal' | undefined =
+    formData.recordKeepingLevel ?? (typeof formData.keepsWrittenRecords === 'boolean' ? (formData.keepsWrittenRecords ? 'informal' : 'ninguno') : undefined);
 
   const CharacterSection = ({ 
     title, 
@@ -48,39 +71,64 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
           </div>
           <h4 className="font-semibold text-lg text-foreground">{title}</h4>
         </div>
-        <div className="space-y-6">
+        <div className="divide-y divide-border">
           {children}
         </div>
       </CardContent>
     </Card>
   );
 
-  const SwitchItem = ({ 
-    id, 
-    label, 
-    checked, 
-    isPositive = true,
-    onChange 
+  const ToggleRow = ({ 
+    id,
+    label,
+    checked,
+    onChange
   }: {
     id: string;
     label: string;
     checked: boolean;
-    isPositive?: boolean;
     onChange: (checked: boolean) => void;
   }) => (
-    <div className="flex items-start justify-between gap-4 p-4 rounded-lg bg-card/50 border border-border/30 hover:bg-accent/20 transition-colors">
-      <div className="flex-1 space-y-2">
-        <Label htmlFor={id} className="text-sm font-medium leading-5 cursor-pointer">
+    <div className="py-4 flex items-center justify-between gap-4">
+      <Label htmlFor={id} className="text-sm font-medium leading-5 cursor-pointer">
+        {label}
+      </Label>
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-muted-foreground hidden sm:inline-block">{checked ? 'Sí' : 'No'}</span>
+        <Switch id={id} checked={checked} onCheckedChange={onChange} className="shrink-0" />
+      </div>
+    </div>
+  );
+
+  const RadioRow = ({
+    id,
+    label,
+    value,
+    onChange,
+    options
+  }: {
+    id: string;
+    label: string;
+    value?: string;
+    onChange: (val: string) => void;
+    options: { value: string; label: string }[];
+  }) => (
+    <div className="py-4">
+      <div className="flex items-start justify-between gap-4">
+        <Label htmlFor={id} className="text-sm font-medium leading-5">
           {label}
         </Label>
-        {getSwitchIndicator(isPositive, checked)}
+        <RadioGroup value={value} onValueChange={onChange} className="flex gap-4 md:gap-6">
+          {options.map((opt) => (
+            <div key={opt.value} className="flex items-center space-x-2">
+              <RadioGroupItem id={`${id}-${opt.value}`} value={opt.value} />
+              <Label htmlFor={`${id}-${opt.value}`} className="text-sm cursor-pointer">
+                {opt.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
-      <Switch 
-        id={id}
-        checked={checked}
-        onCheckedChange={onChange}
-        className="shrink-0"
-      />
     </div>
   );
 
@@ -89,113 +137,126 @@ const CharacterAnalysis: React.FC<CharacterAnalysisProps> = ({ formData, updateF
       <div className="space-y-3">
         <h3 className="font-bold text-2xl text-foreground">Análisis de carácter</h3>
         <p className="text-muted-foreground">
-          Evalúa las características del solicitante marcando cada aspecto. Los indicadores muestran si la respuesta es positiva o negativa para la evaluación crediticia.
+          Responde cada pregunta con Sí/No o selecciona el nivel correspondiente. No se requiere escritura en esta sección.
         </p>
       </div>
 
       <div className="space-y-6">
-        {/* Personal aspects section */}
+        {/* Aspectos personales */}
         <CharacterSection title="Aspectos personales" icon={User}>
-          <SwitchItem
+          <ToggleRow
             id="hasAlcoholismOrViolence"
             label="¿El solicitante tiene antecedentes de alcoholismo y/o violencia?"
-            checked={formData.hasAlcoholismOrViolence || false}
-            isPositive={false}
-            onChange={(checked) => handleSwitchChange('hasAlcoholismOrViolence', checked)}
+            checked={!!formData.hasAlcoholismOrViolence}
+            onChange={(checked) => updateFormData('hasAlcoholismOrViolence', checked)}
           />
-          
-          <SwitchItem
-            id="livesInHighRiskZone"
-            label="¿El solicitante vive en una zona de alto riesgo?"
-            checked={formData.livesInHighRiskZone || false}
-            isPositive={false}
-            onChange={(checked) => handleSwitchChange('livesInHighRiskZone', checked)}
+
+          <RadioRow
+            id="areaRiskLevel"
+            label="Nivel de riesgo de la zona donde vive el solicitante"
+            value={areaRiskLevel}
+            onChange={(val) => setAreaRiskLevel(val as 'bajo' | 'medio' | 'alto')}
+            options={[
+              { value: 'bajo', label: 'Bajo' },
+              { value: 'medio', label: 'Medio' },
+              { value: 'alto', label: 'Alto' },
+            ]}
           />
-          
-          <SwitchItem
+
+          <ToggleRow
             id="livesInSamePlaceTwoYears"
             label="¿El solicitante reside en el mismo lugar hace más de dos años?"
-            checked={formData.livesInSamePlaceTwoYears || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('livesInSamePlaceTwoYears', checked)}
+            checked={!!formData.livesInSamePlaceTwoYears}
+            onChange={(checked) => updateFormData('livesInSamePlaceTwoYears', checked)}
           />
-          
-          <SwitchItem
+
+          <ToggleRow
             id="informedSpouseAboutFinancing"
             label="¿El solicitante informó a su cónyuge/encargado sobre el financiamiento?"
-            checked={formData.informedSpouseAboutFinancing || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('informedSpouseAboutFinancing', checked)}
+            checked={!!formData.informedSpouseAboutFinancing}
+            onChange={(checked) => updateFormData('informedSpouseAboutFinancing', checked)}
           />
-          
-          <SwitchItem
-            id="hasGoodNeighborReferences"
-            label="¿El solicitante cuenta con buenas referencias de sus vecinos?"
-            checked={formData.hasGoodNeighborReferences || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('hasGoodNeighborReferences', checked)}
+
+          <RadioRow
+            id="neighborReferences"
+            label="Calidad de referencias de vecinos"
+            value={neighborReferences}
+            onChange={(val) => setNeighborReferences(val as 'ninguna' | 'mixtas' | 'positivas')}
+            options={[
+              { value: 'ninguna', label: 'No tiene referencias' },
+              { value: 'mixtas', label: 'Referencias mixtas' },
+              { value: 'positivas', label: 'Referencias positivas' },
+            ]}
           />
         </CharacterSection>
 
-        {/* Project aspects section */}
+        {/* Sobre el proyecto */}
         <CharacterSection title="Sobre el proyecto" icon={Building2}>
-          <SwitchItem
-            id="hasCreditPurposeClarity"
-            label="¿El solicitante tiene claridad del destino del crédito?"
-            checked={formData.hasCreditPurposeClarity || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('hasCreditPurposeClarity', checked)}
+          <RadioRow
+            id="creditPurposeClarityLevel"
+            label="Claridad del destino del crédito"
+            value={creditPurposeClarityLevel}
+            onChange={(val) => setCreditPurposeClarityLevel(val as 'alta' | 'media' | 'baja')}
+            options={[
+              { value: 'alta', label: 'Claridad total' },
+              { value: 'media', label: 'Idea general' },
+              { value: 'baja', label: 'No tiene claridad' },
+            ]}
           />
-          
-          <SwitchItem
+
+          <ToggleRow
             id="businessInHighRiskArea"
             label="¿El negocio se encuentra en un sector geográfico de alto riesgo?"
-            checked={formData.businessInHighRiskArea || false}
-            isPositive={false}
-            onChange={(checked) => handleSwitchChange('businessInHighRiskArea', checked)}
+            checked={!!formData.businessInHighRiskArea}
+            onChange={(checked) => updateFormData('businessInHighRiskArea', checked)}
           />
-          
-          <SwitchItem
-            id="businessOlderThanOneYear"
-            label="¿La antigüedad del negocio es mayor a un año?"
-            checked={formData.businessOlderThanOneYear || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('businessOlderThanOneYear', checked)}
+
+          <RadioRow
+            id="businessAntiquity"
+            label="Antigüedad del negocio"
+            value={businessAntiquity}
+            onChange={(val) => setBusinessAntiquity(val as 'menos_6m' | '6_12m' | 'mas_1a')}
+            options={[
+              { value: 'menos_6m', label: 'Menos de 6 meses' },
+              { value: '6_12m', label: '6 a 12 meses' },
+              { value: 'mas_1a', label: 'Más de un año' },
+            ]}
           />
-          
-          <SwitchItem
+
+          <ToggleRow
             id="hasOtherEconomicActivities"
             label="¿El solicitante cuenta con otras actividades económicas?"
-            checked={formData.hasOtherEconomicActivities || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('hasOtherEconomicActivities', checked)}
+            checked={!!formData.hasOtherEconomicActivities}
+            onChange={(checked) => updateFormData('hasOtherEconomicActivities', checked)}
           />
-          
-          <SwitchItem
-            id="keepsWrittenRecords"
-            label="¿El solicitante lleva registros escritos de sus compras y ventas?"
-            checked={formData.keepsWrittenRecords || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('keepsWrittenRecords', checked)}
+
+          <RadioRow
+            id="recordKeepingLevel"
+            label="Nivel de registros de compras y ventas"
+            value={recordKeepingLevel}
+            onChange={(val) => setRecordKeepingLevel(val as 'ninguno' | 'informal' | 'formal')}
+            options={[
+              { value: 'ninguno', label: 'No lleva registros' },
+              { value: 'informal', label: 'Lleva registros informales' },
+              { value: 'formal', label: 'Lleva registros formales' },
+            ]}
           />
         </CharacterSection>
 
-        {/* References and payment record section */}
+        {/* Referencias y récord de pago */}
         <CharacterSection title="Referencias y récord de pago" icon={FileText}>
-          <SwitchItem
+          <ToggleRow
             id="hasSatisfactorySIBReferences"
             label="¿El solicitante posee referencias satisfactorias en la SIB?"
-            checked={formData.hasSatisfactorySIBReferences || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('hasSatisfactorySIBReferences', checked)}
+            checked={!!formData.hasSatisfactorySIBReferences}
+            onChange={(checked) => updateFormData('hasSatisfactorySIBReferences', checked)}
           />
-          
-          <SwitchItem
+
+          <ToggleRow
             id="hasInternalRatingAB"
             label="¿El solicitante tiene calificación interna de pago A o B?"
-            checked={formData.hasInternalRatingAB || false}
-            isPositive={true}
-            onChange={(checked) => handleSwitchChange('hasInternalRatingAB', checked)}
+            checked={!!formData.hasInternalRatingAB}
+            onChange={(checked) => updateFormData('hasInternalRatingAB', checked)}
           />
         </CharacterSection>
       </div>

@@ -314,7 +314,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
       case 'credit-details':
         return !!(formData.requestedAmount && formData.productType && formData.purpose);
       case 'character':
-        return !!(formData.hasAlcoholismOrViolence !== undefined && formData.livesInHighRiskZone !== undefined);
+        return !!(formData.hasAlcoholismOrViolence !== undefined && (formData.areaRiskLevel !== undefined || formData.livesInHighRiskZone !== undefined));
       case 'business-financial':
         return !!(formData.businessName && formData.cashSales);
       case 'documents':
