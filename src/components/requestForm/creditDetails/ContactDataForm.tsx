@@ -7,22 +7,21 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { MapPin, Edit3 } from 'lucide-react';
 import AddressModule from '../AddressModule';
 import { validatePhone } from '@/utils/dpiValidation';
-
 interface ContactDataFormProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
 }
-
-const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormData }) => {
+const ContactDataForm: React.FC<ContactDataFormProps> = ({
+  formData,
+  updateFormData
+}) => {
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [mobileError, setMobileError] = useState<string>('');
   const [homePhoneError, setHomePhoneError] = useState<string>('');
-
   const handleAddressUpdate = (addressData: any) => {
     updateFormData('completeAddress', addressData);
     setIsAddressOpen(false);
   };
-
   const handleMobileChange = (value: string) => {
     const validation = validatePhone(value);
     if (!validation.isValid) {
@@ -32,7 +31,6 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormD
     }
     updateFormData('mobilePhone', value);
   };
-
   const handleHomePhoneChange = (value: string) => {
     if (value) {
       const validation = validatePhone(value);
@@ -46,9 +44,7 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormD
     }
     updateFormData('homePhone', value);
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Subtitle */}
       <h3 className="text-subtitle text-secondary-foreground">Datos de contacto</h3>
       
@@ -58,11 +54,7 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormD
           Dirección completa *
         </Label>
         <div className="flex gap-2">
-          <Input
-            value={formData.completeAddress?.direccionCompleta || 'No registrada'}
-            readOnly
-            className="bg-muted flex-1"
-          />
+          <Input value={formData.completeAddress?.direccionCompleta || 'No registrada'} readOnly className="bg-muted flex-1" />
           <Sheet open={isAddressOpen} onOpenChange={setIsAddressOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -79,11 +71,7 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormD
                   Completa la información de tu dirección de residencia
                 </SheetDescription>
               </SheetHeader>
-              <AddressModule
-                initialData={formData.completeAddress}
-                onSave={handleAddressUpdate}
-                onCancel={() => setIsAddressOpen(false)}
-              />
+              <AddressModule initialData={formData.completeAddress} onSave={handleAddressUpdate} onCancel={() => setIsAddressOpen(false)} />
             </SheetContent>
           </Sheet>
         </div>
@@ -95,64 +83,21 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({ formData, updateFormD
           <Label htmlFor="homePhone" className="text-label">
             Teléfono casa
           </Label>
-          <Input
-            id="homePhone"
-            value={formData.homePhone || ''}
-            onChange={(e) => handleHomePhoneChange(e.target.value)}
-            placeholder="0000-0000"
-          />
-          {homePhoneError && (
-            <p className="text-sm text-destructive">{homePhoneError}</p>
-          )}
+          <Input id="homePhone" value={formData.homePhone || ''} onChange={e => handleHomePhoneChange(e.target.value)} placeholder="0000-0000" />
+          {homePhoneError && <p className="text-sm text-destructive">{homePhoneError}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="mobilePhone" className="text-label">
             Número celular *
           </Label>
-          <Input
-            id="mobilePhone"
-            value={formData.mobilePhone || ''}
-            onChange={(e) => handleMobileChange(e.target.value)}
-            placeholder="0000-0000"
-          />
-          {mobileError && (
-            <p className="text-sm text-destructive">{mobileError}</p>
-          )}
+          <Input id="mobilePhone" value={formData.mobilePhone || ''} onChange={e => handleMobileChange(e.target.value)} placeholder="0000-0000" />
+          {mobileError && <p className="text-sm text-destructive">{mobileError}</p>}
         </div>
       </div>
 
       {/* Nationality section */}
-      <div className="space-y-4">
-        <h4 className="text-subtitle text-secondary-foreground">Nacionalidad</h4>
-        
-        <div className="space-y-2">
-          <Label htmlFor="nationality" className="text-label">
-            Nacionalidad *
-          </Label>
-          <Select 
-            onValueChange={(value) => updateFormData('nationality', value)} 
-            value={formData.nationality || ''}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar nacionalidad" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="guatemalteca">Guatemalteca</SelectItem>
-              <SelectItem value="hondurena">Hondureña</SelectItem>
-              <SelectItem value="salvadorena">Salvadoreña</SelectItem>
-              <SelectItem value="nicaraguense">Nicaragüense</SelectItem>
-              <SelectItem value="costarricense">Costarricense</SelectItem>
-              <SelectItem value="belicena">Beliceña</SelectItem>
-              <SelectItem value="mexicana">Mexicana</SelectItem>
-              <SelectItem value="estadounidense">Estadounidense</SelectItem>
-              <SelectItem value="otra">Otra</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
-  );
+      
+    </div>;
 };
-
 export default ContactDataForm;
