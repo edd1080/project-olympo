@@ -97,7 +97,7 @@ const EducationFamilyForm: React.FC<EducationFamilyFormProps> = ({
       </div>
 
       {/* Spouse information - conditional */}
-      {isMarried && <div className="space-y-4 p-4 border rounded-lg bg-accent/5 border-accent/20">
+      {isMarried && <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
           <h4 className="font-medium text-accent-foreground">Datos del cónyuge</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

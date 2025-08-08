@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { MapPin, Edit3 } from 'lucide-react';
+import { MapPin, Plus } from 'lucide-react';
 import AddressModule from '../AddressModule';
 import { validatePhone } from '@/utils/dpiValidation';
 interface ContactDataFormProps {
@@ -58,7 +58,7 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({
           <Sheet open={isAddressOpen} onOpenChange={setIsAddressOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
-                <Edit3 className="h-4 w-4" />
+                <Plus className="h-4 w-4" />
               </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[90vh]">

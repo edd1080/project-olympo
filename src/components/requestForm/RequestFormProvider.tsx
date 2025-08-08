@@ -329,8 +329,8 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   // Define sub-steps for each section
   const getSubStepsForSection = (sectionIndex: number) => {
     switch (sectionIndex) {
-      case 0: // credit-details section has 5 sub-steps
-        return 5;
+      case 0: // credit-details section has 4 sub-steps
+        return 4;
       case 1: // character section has 1 sub-step
         return 1;
       case 2: // business-financial section has 4 sub-steps
