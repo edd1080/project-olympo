@@ -240,14 +240,14 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
         <div className="flex items-center justify-between gap-2">
           <div>
             {prev && (
-              <Button variant="outline" onClick={() => setActiveScreen(prev.id)}>
+              <Button variant="outline" size="sm" onClick={() => setActiveScreen(prev.id)}>
                 Atrás {prev.label}
               </Button>
             )}
           </div>
           <div>
             {next && (
-              <Button onClick={() => setActiveScreen(next.id)}>
+              <Button size="sm" onClick={() => setActiveScreen(next.id)}>
                 Siguiente {next.label}
               </Button>
             )}
