@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -40,6 +40,33 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
   const [activeScreen, setActiveScreen] = React.useState<ScreenId>('info');
   const [addressOpen, setAddressOpen] = React.useState(false);
 
+  const chipRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
+  React.useEffect(() => {
+    const el = chipRefs.current[activeScreen];
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, [activeScreen]);
+
+  const handleAddProduct = React.useCallback(() => {
+    const newProduct = {
+      id: Date.now(),
+      type: '',
+      unit: '',
+      quantity: '',
+      unitCost: '',
+      sellingPrice: '',
+      margin: '',
+      bestMonth: '',
+      worstMonth: '',
+      bestAmount: '',
+      worstAmount: '',
+      photo: null,
+    };
+    const current = Array.isArray(formData.products) ? formData.products : [];
+    updateFormData('products', [...current, newProduct]);
+  }, [formData.products, updateFormData]);
+
   const currentIndex = screens.findIndex((s) => s.id === activeScreen);
   const prev = currentIndex > 0 ? screens[currentIndex - 1] : null;
   const next = currentIndex < screens.length - 1 ? screens[currentIndex + 1] : null;
@@ -62,6 +89,7 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
               <button
                 key={id}
                 type="button"
+                ref={(el) => { if (el) chipRefs.current[id] = el; }}
                 onClick={() => setActiveScreen(id)}
                 aria-selected={active}
                 className={
@@ -80,11 +108,14 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
       </nav>
 
       {/* Screen title */}
-      <header className="flex items-center gap-2">
-        <CurrentIcon className="h-5 w-5" />
-        <h2 className="text-xl font-semibold">
-          {screens[currentIndex].label}
-        </h2>
+      <header className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <CurrentIcon className="h-5 w-5" />
+          <h2 className="text-xl font-semibold">{screens[currentIndex].label}</h2>
+        </div>
+        {activeScreen === 'products' && (
+          <Button size="sm" onClick={handleAddProduct}>Agregar Producto</Button>
+        )}
       </header>
 
       {/* Screen content */}
@@ -103,9 +134,6 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
 
         {activeScreen === 'info' && (
           <Card>
-            <CardHeader>
-              <CardTitle>Información financiera</CardTitle>
-            </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
