@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import CircularProgress from "@/components/requestForm/CircularProgress";
+import NewGuarantorSheet from "@/components/requestForm/guarantors/NewGuarantorSheet";
 
 const applicationStatuses = {
   'pending': {
@@ -106,6 +107,7 @@ const ApplicationDetails = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newSheetOpen, setNewSheetOpen] = useState(false);
 
   const getFieldDisplayValue = (value: any, fieldName?: string) => {
     if (value === undefined || value === null || value === '') {
@@ -412,24 +414,31 @@ const ApplicationDetails = () => {
   };
 
   const handleAddGuarantor = () => {
-    // Determine the correct route and section based on application type
-    const editRoute = application?.type === 'oficial' 
-      ? `/applications/${id}/edit-oficial` 
-      : `/applications/${id}/edit`;
-    const sectionId = application?.type === 'oficial' ? 'character' : 'guarantors';
-      
-    navigate(editRoute, {
-      state: {
-        sectionId,
-        identityData: application?.type === 'oficial' ? application?.kycData : undefined,
-        applicationId: id
-      }
-    });
-    toast({
-      title: "Agregar Fiador",
-      description: "Navegando al formulario de fiadores",
-      duration: 2000
-    });
+    setNewSheetOpen(true);
+  };
+
+  const handleSheetCreate = (data: { fullName: string; birthDate: string; age: number; employmentType: 'asalariado' | 'negocio' }) => {
+    if (!application) return;
+    const newGuarantor = {
+      id: `G${Date.now()}`,
+      nombre: data.fullName,
+      dpi: '—',
+      telefono: '—',
+      parentesco: '—',
+      salario: 0,
+      tipoEmpleo: data.employmentType === 'asalariado' ? 'Asalariado' : 'Negocio propio',
+      empresa: '—',
+      porcentajeCobertura: 0,
+      status: 'in-progress',
+      progress: 0,
+    };
+    setApplication((prev: any) => ({ ...prev, guarantors: [...(prev?.guarantors || []), newGuarantor] }));
+    setNewSheetOpen(false);
+    toast({ title: "Fiador agregado", description: "Se creó el nuevo fiador.", duration: 2000 });
+  };
+
+  const handleSheetDiscard = () => {
+    setNewSheetOpen(false);
   };
 
   const isApplicationReadyToSubmit = () => {
@@ -630,6 +639,7 @@ const ApplicationDetails = () => {
                   Se requieren mínimo 2 fiadores para procesar la solicitud
                 </p>
                 <Button 
+                  size="sm"
                   onClick={handleAddGuarantor}
                   className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white"
                 >
@@ -658,7 +668,7 @@ const ApplicationDetails = () => {
                           <p className="text-sm font-medium">Q{guarantor.salario.toLocaleString()}</p>
                           <p className="text-xs text-muted-foreground">{guarantor.progress}% completo</p>
                         </div>
-                        <CircularProgress progress={guarantor.progress || 0} size={28} strokeWidth={3} />
+                        <CircularProgress progress={guarantor.progress || 0} size={36} strokeWidth={4} />
                       </div>
                     </div>
                   ))}
@@ -666,6 +676,7 @@ const ApplicationDetails = () => {
                 <div className="flex justify-center pt-2">
                   <Button 
                     variant="outline" 
+                    size="sm"
                     onClick={handleAddGuarantor}
                     className="border-[#E18E33] text-[#E18E33] hover:bg-[#E18E33]/10"
                   >
@@ -677,6 +688,13 @@ const ApplicationDetails = () => {
             )}
           </CardContent>
         </Card>
+
+        <NewGuarantorSheet
+          open={newSheetOpen}
+          onOpenChange={setNewSheetOpen}
+          onCreate={handleSheetCreate}
+          onDiscard={handleSheetDiscard}
+        />
 
         <Tabs defaultValue="summary" className="mb-6">
           <TabsList className="mb-4">

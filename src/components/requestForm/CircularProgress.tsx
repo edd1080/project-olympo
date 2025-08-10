@@ -48,6 +48,14 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
           strokeLinecap="round"
           className="text-primary transition-all duration-500 ease-out"
         />
+        {/* Inner circle to improve text legibility */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={Math.max(0, radius - strokeWidth - 1)}
+          fill="currentColor"
+          className="text-background"
+        />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-xs font-semibold text-primary">
