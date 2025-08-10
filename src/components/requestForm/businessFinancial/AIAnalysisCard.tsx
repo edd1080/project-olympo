@@ -159,7 +159,10 @@ const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ formData, financialData
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm">{result.resumen}</p>
+        <p className="text-sm font-medium">
+          <span className="mr-1">Comentario:</span>
+          <span>{typeof result.resumen === 'string' ? result.resumen.charAt(0).toUpperCase() + result.resumen.slice(1) : ''}</span>
+        </p>
 
         <div className="flex flex-wrap gap-2">
           {result.drivers.slice(0, 3).map((d, i) => (
