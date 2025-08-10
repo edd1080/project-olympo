@@ -16,6 +16,10 @@ interface GuarantorData {
   email: string;
   phone: string;
   address: string;
+  // Minimal creation fields
+  birthDate?: string;
+  age?: number;
+  employmentType?: 'asalariado' | 'negocio';
   
   // Financial Info
   monthlyIncome: number;
@@ -111,6 +115,8 @@ const createEmptyGuarantor = (): GuarantorData => ({
   email: '',
   phone: '',
   address: '',
+  birthDate: '',
+  age: 0,
   monthlyIncome: 0,
   monthlyExpenses: 0,
   hasProperty: false,
@@ -148,11 +154,11 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const [agentComments, setAgentComments] = useState("");
   const [lastSavedData, setLastSavedData] = useState<Record<string, any>>({});
   
-  // New guarantor states
-  const [guarantors, setGuarantors] = useState<GuarantorData[]>([createEmptyGuarantor(), createEmptyGuarantor()]);
-  const [currentGuarantorIndex, setCurrentGuarantorIndex] = useState(0);
-  const [guarantorFormStep, setGuarantorFormStep] = useState(0); // 0: basic info, 1: financial info
-  const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
+// New guarantor states
+const [guarantors, setGuarantors] = useState<GuarantorData[]>([createEmptyGuarantor(), createEmptyGuarantor(), createEmptyGuarantor()]);
+const [currentGuarantorIndex, setCurrentGuarantorIndex] = useState(0);
+const [guarantorFormStep, setGuarantorFormStep] = useState(0); // 0: basic info, 1: financial info
+const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   
   // Check if there are unsaved changes
   const hasUnsavedChanges = JSON.stringify(formData) !== JSON.stringify(lastSavedData);

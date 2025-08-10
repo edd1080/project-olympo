@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import GuarantorBasicInfo from './guarantors/GuarantorBasicInfo';
 import GuarantorFinancialInfo from './guarantors/GuarantorFinancialInfo';
 import CircularProgress from './CircularProgress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import NewGuarantorSheet from './guarantors/NewGuarantorSheet';
 
 interface GuarantorsSectionProps {
   formData: Record<string, any>;
@@ -26,10 +26,15 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
     guarantorFormStep,
     setGuarantorFormStep,
     addGuarantor,
+    updateGuarantor,
     removeGuarantor,
     isInGuarantorForm,
     setIsInGuarantorForm
   } = useFormContext();
+
+  const [newSheetOpen, setNewSheetOpen] = React.useState(false);
+  const pendingNewIndexRef = React.useRef<number | null>(null);
+
 
   const handleEditGuarantor = (index: number, step: number = 0) => {
     setCurrentGuarantorIndex(index);
@@ -59,6 +64,13 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
     }
   };
 
+  const handleAddNewGuarantor = () => {
+    const newIndex = guarantors.length;
+    pendingNewIndexRef.current = newIndex;
+    addGuarantor();
+    setNewSheetOpen(true);
+  };
+
   const getGuarantorStatus = (guarantor: any) => {
     if (guarantor.basicInfoCompleted && guarantor.financialInfoCompleted) {
       return 'complete';
@@ -77,6 +89,27 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
       default:
         return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Pendiente</Badge>;
     }
+  };
+
+  const handleSheetDiscard = () => {
+    const idx = pendingNewIndexRef.current;
+    if (idx !== null) {
+      removeGuarantor(idx);
+      pendingNewIndexRef.current = null;
+    }
+    setNewSheetOpen(false);
+  };
+
+  const handleSheetCreate = (data: { fullName: string; birthDate: string; age: number; employmentType: 'asalariado' | 'negocio' }) => {
+    const idx = pendingNewIndexRef.current;
+    if (idx !== null) {
+      updateGuarantor(idx, 'fullName', data.fullName);
+      updateGuarantor(idx, 'birthDate', data.birthDate);
+      updateGuarantor(idx, 'age', data.age);
+      updateGuarantor(idx, 'employmentType', data.employmentType);
+      pendingNewIndexRef.current = null;
+    }
+    setNewSheetOpen(false);
   };
 
 const computeGuarantorProgress = (g: any) => {
@@ -104,10 +137,10 @@ const computeGuarantorProgress = (g: any) => {
   return Math.round((basicPct * 0.5 + financialPct * 0.5) * 100);
 };
 
-const currentGuarantor = guarantors[currentGuarantorIndex];
-const canProceedToFinancial = currentGuarantor?.basicInfoCompleted;
-const isFormComplete = currentGuarantor?.basicInfoCompleted && currentGuarantor?.financialInfoCompleted;
-const completedGuarantors = guarantors.filter(g => getGuarantorStatus(g) === 'complete').length;
+  const currentGuarantor = guarantors[currentGuarantorIndex];
+  const canProceedToFinancial = currentGuarantor?.basicInfoCompleted;
+  const isFormComplete = currentGuarantor?.basicInfoCompleted && currentGuarantor?.financialInfoCompleted;
+  const completedGuarantors = guarantors.filter(g => getGuarantorStatus(g) === 'complete').length;
 
   if (isInGuarantorForm) {
     return (
@@ -273,12 +306,19 @@ const completedGuarantors = guarantors.filter(g => getGuarantorStatus(g) === 'co
           <p className="text-muted-foreground mb-4">
             {guarantors.length === 2 ? 'Agregar fiador adicional (opcional)' : 'Agregar nuevo fiador'}
           </p>
-          <Button onClick={addGuarantor} variant="outline">
+          <Button onClick={handleAddNewGuarantor} variant="outline">
             <Plus className="h-4 w-4 mr-2" />
             Agregar Fiador
           </Button>
         </CardContent>
       </Card>
+
+      <NewGuarantorSheet
+        open={newSheetOpen}
+        onOpenChange={setNewSheetOpen}
+        onCreate={handleSheetCreate}
+        onDiscard={handleSheetDiscard}
+      />
 
       {/* Status Summary */}
       <Card className="bg-gradient-to-r from-primary/5 to-accent/5 border shadow-sm">
