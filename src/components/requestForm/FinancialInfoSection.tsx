@@ -18,7 +18,9 @@ import {
   FileText,
   Target,
   Copy,
-  Zap
+  Zap,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import FixedAssetsDescription from './businessFinancial/FixedAssetsDescription';
 import LiabilitiesDescription from './businessFinancial/LiabilitiesDescription';
@@ -163,7 +165,7 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
               {activePeriod === 'actual' && (
                 <Button
                   variant="outline"
-                  className="h-8 px-3 text-xs bg-[#E18E33] text-white border-[#E18E33] hover:bg-[#E18E33]/90 flex items-center gap-1"
+                  className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5 flex items-center gap-1"
                   onClick={() => copyFromPrevious(category)}
                 >
                   <Copy className="h-4 w-4" />
@@ -390,20 +392,21 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
             {prev && (
               <Button 
                 variant="outline" 
-                className="h-8 px-3 text-xs bg-[#E18E33] text-white border-[#E18E33] hover:bg-[#E18E33]/90" 
+                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
                 onClick={() => setActiveScreen(prev.id)}
               >
-                Atrás {prev.label}
+                <ChevronLeft className="h-4 w-4" />
               </Button>
             )}
           </div>
           <div>
             {next && (
               <Button 
-                className="h-8 px-3 text-xs bg-[#E18E33] text-white hover:bg-[#E18E33]/90" 
+                variant="outline"
+                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
                 onClick={() => setActiveScreen(next.id)}
               >
-                Siguiente {next.label}
+                <ChevronRight className="h-4 w-4" />
               </Button>
             )}
           </div>

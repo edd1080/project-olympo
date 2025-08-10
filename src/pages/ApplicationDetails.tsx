@@ -602,16 +602,85 @@ const ApplicationDetails = () => {
           </CardContent>
         </Card>
 
+        {/* Fiadores Section */}
+        <Card className="mb-6 border-primary/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center justify-between">
+              <div className="flex items-center">
+                <Users className="h-4 w-4 mr-2 text-primary" />
+                Fiadores
+              </div>
+              <Badge variant="outline" className="text-xs">
+                {application.guarantors.length} de 2 mínimo
+              </Badge>
+            </CardTitle>
+            <CardDescription className="text-sm">
+              Gestiona los fiadores de la solicitud
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-3 pb-6">
+            {application.guarantors.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="font-medium mb-2">No hay fiadores registrados</h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Se requieren mínimo 2 fiadores para procesar la solicitud
+                </p>
+                <Button 
+                  onClick={handleAddGuarantor}
+                  className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar Primer Fiador
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid gap-3">
+                  {application.guarantors.map((guarantor: any, index: number) => (
+                    <div key={guarantor.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <UserCheck className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium">{guarantor.nombre}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {guarantor.parentesco} • {guarantor.dpi}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right hidden sm:block">
+                          <p className="text-sm font-medium">Q{guarantor.salario.toLocaleString()}</p>
+                          <p className="text-xs text-muted-foreground">{guarantor.progress}% completo</p>
+                        </div>
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-center pt-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleAddGuarantor}
+                    className="border-[#E18E33] text-[#E18E33] hover:bg-[#E18E33]/10"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Agregar Otro Fiador
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="summary" className="mb-6">
           <TabsList className="mb-4">
             <TabsTrigger value="summary" className="font-semibold">Resumen</TabsTrigger>
             <TabsTrigger value="details">Detalles</TabsTrigger>
-            <TabsTrigger value="guarantors">
-              <div className="flex items-center gap-1">
-                
-                <span>Fiadores</span>
-              </div>
-            </TabsTrigger>
             <TabsTrigger value="docs">Documentos</TabsTrigger>
           </TabsList>
           
@@ -1063,80 +1132,6 @@ const ApplicationDetails = () => {
             </div>
           </TabsContent>
           
-          <TabsContent value="guarantors">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-lg">
-                  <Users className="h-5 w-5 mr-2 text-primary" />
-                  Fiadores Registrados
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {application.guarantors.length === 0 ? <div className="text-center p-12">
-                    <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No hay fiadores registrados</h3>
-                    <p className="text-muted-foreground mb-6">
-                      Para procesar la solicitud de crédito se requieren mínimo 2 fiadores
-                    </p>
-                    <Button onClick={handleAddGuarantor} className="bg-primary hover:bg-primary/90">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Agregar Fiador
-                    </Button>
-                  </div> : <div className="space-y-4">
-                    {application.guarantors.map((guarantor: any) => <Card key={guarantor.id} className="p-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm text-muted-foreground">Nombre</p>
-                            <p className="font-medium">{guarantor.nombre}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">DPI</p>
-                            <p className="font-medium">{guarantor.dpi}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Parentesco</p>
-                            <p className="font-medium">{guarantor.parentesco}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Teléfono</p>
-                            <p className="font-medium">{guarantor.telefono}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Salario</p>
-                            <p className="font-medium">Q{guarantor.salario.toLocaleString()}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Tipo de Empleo</p>
-                            <p className="font-medium">{guarantor.tipoEmpleo}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Empresa/Empleador</p>
-                            <p className="font-medium">{guarantor.empresa}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">% Cobertura</p>
-                            <p className="font-medium">{guarantor.porcentajeCobertura}%</p>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-sm mb-2">
-                            <span>Progreso:</span>
-                            <span>{guarantor.progress}%</span>
-                          </div>
-                          <Progress value={guarantor.progress} className="h-2" />
-                        </div>
-                      </Card>)}
-                    
-                    <div className="text-center pt-4">
-                      <Button onClick={handleAddGuarantor} variant="outline">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Agregar Otro Fiador
-                      </Button>
-                    </div>
-                  </div>}
-              </CardContent>
-            </Card>
-          </TabsContent>
           
           <TabsContent value="docs">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
