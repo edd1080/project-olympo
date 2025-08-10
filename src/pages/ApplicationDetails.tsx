@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import CircularProgress from "@/components/requestForm/CircularProgress";
 
 const applicationStatuses = {
   'pending': {
@@ -610,9 +611,9 @@ const ApplicationDetails = () => {
                 <Users className="h-4 w-4 mr-2 text-primary" />
                 Fiadores
               </div>
-              <Badge variant="outline" className="text-xs">
-                {application.guarantors.length} de 2 mínimo
-              </Badge>
+<Badge className={`${application.guarantors.length >= 2 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'} text-xs`}>
+  {application.guarantors.length} de 2 mínimo
+</Badge>
             </CardTitle>
             <CardDescription className="text-sm">
               Gestiona los fiadores de la solicitud
@@ -640,7 +641,7 @@ const ApplicationDetails = () => {
               <div className="space-y-4">
                 <div className="grid gap-3">
                   {application.guarantors.map((guarantor: any, index: number) => (
-                    <div key={guarantor.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div key={guarantor.id} className="group flex items-center justify-between p-4 rounded-xl border bg-gradient-to-r from-primary/5 to-accent/5 hover:shadow-md transition">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <UserCheck className="h-5 w-5 text-primary" />
@@ -657,7 +658,7 @@ const ApplicationDetails = () => {
                           <p className="text-sm font-medium">Q{guarantor.salario.toLocaleString()}</p>
                           <p className="text-xs text-muted-foreground">{guarantor.progress}% completo</p>
                         </div>
-                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        <CircularProgress progress={guarantor.progress || 0} size={28} strokeWidth={3} />
                       </div>
                     </div>
                   ))}

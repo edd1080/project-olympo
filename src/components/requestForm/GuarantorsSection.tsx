@@ -1,12 +1,14 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Plus, Check, Clock, Edit, Trash2 } from 'lucide-react';
+import { Plus, Check, Clock, Edit, Trash2 } from 'lucide-react';
 import { useFormContext } from './RequestFormProvider';
 import GuarantorBasicInfo from './guarantors/GuarantorBasicInfo';
 import GuarantorFinancialInfo from './guarantors/GuarantorFinancialInfo';
+import CircularProgress from './CircularProgress';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface GuarantorsSectionProps {
   formData: Record<string, any>;
@@ -77,9 +79,35 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
     }
   };
 
-  const currentGuarantor = guarantors[currentGuarantorIndex];
-  const canProceedToFinancial = currentGuarantor?.basicInfoCompleted;
-  const isFormComplete = currentGuarantor?.basicInfoCompleted && currentGuarantor?.financialInfoCompleted;
+const computeGuarantorProgress = (g: any) => {
+  if (!g) return 0;
+  const basicFields = [
+    !!g.fullName?.trim(),
+    !!g.cui?.trim(),
+    !!g.email?.trim(),
+    !!g.phone?.trim(),
+    !!g.address?.trim(),
+  ];
+  const basicFilled = basicFields.filter(Boolean).length;
+  const basicPct = basicFields.length ? basicFilled / basicFields.length : 0;
+
+  const financialChecks = [
+    (g.monthlyIncome ?? 0) > 0,
+    (g.monthlyExpenses ?? 0) > 0,
+    !!g.bankAccounts?.toString().trim(),
+    g.hasProperty ? (g.propertyValue ?? 0) > 0 : true,
+    g.hasVehicle ? (g.vehicleValue ?? 0) > 0 : true,
+  ];
+  const financialFilled = financialChecks.filter(Boolean).length;
+  const financialPct = financialChecks.length ? financialFilled / financialChecks.length : 0;
+
+  return Math.round((basicPct * 0.5 + financialPct * 0.5) * 100);
+};
+
+const currentGuarantor = guarantors[currentGuarantorIndex];
+const canProceedToFinancial = currentGuarantor?.basicInfoCompleted;
+const isFormComplete = currentGuarantor?.basicInfoCompleted && currentGuarantor?.financialInfoCompleted;
+const completedGuarantors = guarantors.filter(g => getGuarantorStatus(g) === 'complete').length;
 
   if (isInGuarantorForm) {
     return (
@@ -151,12 +179,15 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="border-b pb-4">
-        <h2 className="text-xl font-semibold">Garantías, Fiadores y Referencias</h2>
-        <p className="text-muted-foreground">
-          Se requieren mínimo 2 fiadores para la solicitud de crédito
-        </p>
-      </div>
+<div className="border-b pb-4 flex items-start justify-between">
+  <div>
+    <h2 className="text-xl font-semibold">Garantías, Fiadores y Referencias</h2>
+    <p className="text-muted-foreground">Se requieren mínimo 2 fiadores para la solicitud de crédito</p>
+  </div>
+  <Badge className={`${completedGuarantors >= 2 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'}`}>
+    {completedGuarantors} de 2 mínimo
+  </Badge>
+</div>
 
       {/* Guarantors List */}
       <div className="space-y-4">
@@ -164,81 +195,73 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
           const status = getGuarantorStatus(guarantor);
           
           return (
-            <Card key={guarantor.id} className="relative">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-primary" />
-                    Fiador {index + 1}
-                    {guarantor.fullName && (
-                      <span className="text-base font-normal text-muted-foreground">
-                        - {guarantor.fullName}
-                      </span>
-                    )}
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    {getStatusBadge(status)}
-                    {guarantors.length > 2 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeGuarantor(index)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {guarantor.fullName ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">DPI:</span> {guarantor.cui || 'No proporcionado'}
-                      </div>
-                      <div>
-                        <span className="font-medium">Email:</span> {guarantor.email || 'No proporcionado'}
-                      </div>
-                      <div>
-                        <span className="font-medium">Teléfono:</span> {guarantor.phone || 'No proporcionado'}
-                      </div>
-                      <div>
-                        <span className="font-medium">Ingresos:</span> {
-                          guarantor.monthlyIncome > 0 
-                            ? `Q${guarantor.monthlyIncome.toLocaleString()}`
-                            : 'No proporcionado'
-                        }
-                      </div>
+            <div
+              key={guarantor.id}
+              className="group relative rounded-xl border bg-gradient-to-r from-primary/5 to-accent/5 p-4 shadow-sm transition hover:shadow-md"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 shadow-sm">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {(guarantor.fullName || `F${index + 1}`).charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-medium">
+                      {guarantor.fullName || `Fiador ${index + 1}`}
+                      <span className="ml-2 text-sm text-muted-foreground">DPI: {guarantor.cui || '—'}</span>
                     </div>
-                  ) : (
-                    <p className="text-muted-foreground">Sin información completada</p>
-                  )}
-                  
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditGuarantor(index, 0)}
-                    >
-                      <Edit className="h-4 w-4 mr-1" />
-                      Información Básica
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditGuarantor(index, 1)}
-                      disabled={!guarantor.basicInfoCompleted}
-                    >
-                      <Edit className="h-4 w-4 mr-1" />
-                      Análisis Financiero
-                    </Button>
+                    <div className="text-xs text-muted-foreground">
+                      Tel: {guarantor.phone || '—'} · Email: {guarantor.email || '—'}
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex items-center gap-3">
+                  <CircularProgress progress={computeGuarantorProgress(guarantor)} size={28} strokeWidth={3} />
+                  {getStatusBadge(status)}
+                  {guarantors.length > 2 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeGuarantor(index)}
+                      className="text-red-600 hover:text-red-800"
+                      aria-label="Eliminar fiador"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-3 grid grid-cols-1 gap-3 text-sm md:grid-cols-3">
+                <div>
+                  <span className="font-medium">Ingresos:</span>{' '}
+                  {guarantor.monthlyIncome > 0 ? `Q${guarantor.monthlyIncome.toLocaleString()}` : '—'}
+                </div>
+                <div>
+                  <span className="font-medium">Gastos:</span>{' '}
+                  {guarantor.monthlyExpenses > 0 ? `Q${guarantor.monthlyExpenses.toLocaleString()}` : '—'}
+                </div>
+                <div>
+                  <span className="font-medium">Cuentas bancarias:</span>{' '}
+                  {guarantor.bankAccounts?.toString() || '—'}
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={() => handleEditGuarantor(index, 0)}>
+                  <Edit className="mr-1 h-4 w-4" /> Información Básica
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleEditGuarantor(index, 1)}
+                  disabled={!guarantor.basicInfoCompleted}
+                >
+                  <Edit className="mr-1 h-4 w-4" /> Análisis Financiero
+                </Button>
+              </div>
+            </div>
           );
         })}
       </div>
@@ -258,7 +281,7 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
       </Card>
 
       {/* Status Summary */}
-      <Card className="bg-blue-50 dark:bg-blue-950">
+      <Card className="bg-gradient-to-r from-primary/5 to-accent/5 border shadow-sm">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div>
