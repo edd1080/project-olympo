@@ -138,7 +138,7 @@ const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ formData, financialData
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5" /> Comentario AI (offline)
+            <Bot className="h-5 w-5" /> Comentario AI
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -153,7 +153,7 @@ const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ formData, financialData
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5" /> Comentario AI (offline)
+            <Bot className="h-5 w-5" /> Comentario AI
           </CardTitle>
           <Badge className={`border ${riskBadgeClasses(result.riesgo)}`}>{result.riesgo.toUpperCase()}</Badge>
         </div>
