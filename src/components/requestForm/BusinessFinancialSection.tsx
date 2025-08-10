@@ -101,8 +101,8 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
                 className={
                   `inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-colors whitespace-nowrap ` +
                   (active
-                    ? 'bg-primary/10 text-primary border-primary'
-                    : 'bg-background text-foreground hover:bg-muted')
+                    ? 'bg-[#E18E33]/10 text-[#E18E33] border-[#E18E33]'
+                    : 'bg-background text-foreground hover:bg-[#E18E33]/5')
                 }
               >
                 <Icon className="h-4 w-4" />
@@ -248,14 +248,21 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
         <div className="flex items-center justify-between gap-2">
           <div>
             {prev && (
-              <Button variant="outline" size="sm" onClick={() => setActiveScreen(prev.id)}>
+              <Button 
+                variant="outline" 
+                className="h-8 px-3 text-xs bg-[#E18E33] text-white border-[#E18E33] hover:bg-[#E18E33]/90" 
+                onClick={() => setActiveScreen(prev.id)}
+              >
                 Atrás {prev.label}
               </Button>
             )}
           </div>
           <div>
             {next && (
-              <Button size="sm" onClick={() => setActiveScreen(next.id)}>
+              <Button 
+                className="h-8 px-3 text-xs bg-[#E18E33] text-white hover:bg-[#E18E33]/90" 
+                onClick={() => setActiveScreen(next.id)}
+              >
                 Siguiente {next.label}
               </Button>
             )}
