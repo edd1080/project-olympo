@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import FixedAssetsDescription from './businessFinancial/FixedAssetsDescription';
 import LiabilitiesDescription from './businessFinancial/LiabilitiesDescription';
+import AIAnalysisCard from './businessFinancial/AIAnalysisCard';
 
 interface FinancialInfoSectionProps {
   formData: any;
@@ -253,6 +254,9 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
           </div>
         </CardContent>
       </Card>
+
+      {/* Comentario AI (offline) */}
+      <AIAnalysisCard formData={formData} financialData={financialData} totals={totals} />
 
       {/* Financial Ratios */}
       <Card>
