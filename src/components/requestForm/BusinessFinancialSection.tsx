@@ -30,8 +30,8 @@ const screens = [
   { id: 'products', label: 'Productos', icon: Package },
   { id: 'seasonality', label: 'Estacionalidad', icon: CalendarRange },
   { id: 'expenses', label: 'Gastos', icon: Receipt },
-  { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
-  { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
+  // { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
+  // { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
 ] as const;
 
 type ScreenId = typeof screens[number]['id'];
@@ -49,6 +49,13 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
   }, [activeScreen]);
 
   const handleAddProduct = React.useCallback(() => {
+    const current = Array.isArray(formData.products) ? formData.products : [];
+    if (current.length >= 10) {
+      // You can add toast notification here if available
+      console.warn('Máximo 10 productos permitidos');
+      return;
+    }
+    
     const newProduct = {
       id: Date.now(),
       type: '',
@@ -63,7 +70,6 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
       worstAmount: '',
       photo: null,
     };
-    const current = Array.isArray(formData.products) ? formData.products : [];
     updateFormData('products', [...current, newProduct]);
   }, [formData.products, updateFormData]);
 
@@ -120,6 +126,7 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
 
       {/* Screen content */}
       <section className="space-y-4">
+        {/* Commented out - moved to separate FinancialInfoSection
         {activeScreen === 'analysis' && (
           <div className="space-y-4">
             <FinancialAnalysis formData={formData} updateFormData={updateFormData} />
@@ -131,6 +138,7 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
             <PatrimonialStatement formData={formData} updateFormData={updateFormData} />
           </div>
         )}
+        */}
 
         {activeScreen === 'info' && (
           <Card>
