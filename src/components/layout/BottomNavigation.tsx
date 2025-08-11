@@ -6,8 +6,6 @@ import { User, FileSpreadsheet, AlertCircle, Settings } from 'lucide-react';
 const BottomNavigation = () => {
   const location = useLocation();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [previousTabIndex, setPreviousTabIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   
   const tabs = [
     { path: '/', icon: User, label: 'Inicio', exactMatch: true },
@@ -27,37 +25,17 @@ const BottomNavigation = () => {
     const currentIndex = tabs.findIndex(tab => 
       isActive(tab.path, tab.exactMatch)
     );
-    if (currentIndex !== -1 && currentIndex !== activeTabIndex) {
-      setPreviousTabIndex(activeTabIndex);
-      setIsTransitioning(true);
+    if (currentIndex !== -1) {
       setActiveTabIndex(currentIndex);
-      
-      // Reset transition state after animation completes
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
     }
-  }, [location.pathname, activeTabIndex]);
+  }, [location.pathname]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4">
       <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg relative overflow-hidden">
-        {/* Exit circle - fades out from previous position */}
-        {isTransitioning && (
-          <div 
-            className="absolute inset-y-2 bg-primary rounded-full animate-circle-exit shadow-sm"
-            style={{
-              width: 'calc(25% - 4px)',
-              left: `calc(${previousTabIndex * 25}% + 2px)`,
-            }}
-          />
-        )}
-        
-        {/* Enter circle - fades in at new position */}
+        {/* Simple moving circle indicator */}
         <div 
-          className={`absolute inset-y-2 bg-primary rounded-full shadow-sm ${
-            isTransitioning ? 'animate-circle-enter' : 'transition-all duration-500 ease-out'
-          }`}
+          className="absolute inset-y-2 bg-primary rounded-full transition-all duration-300 ease-out shadow-sm"
           style={{
             width: 'calc(25% - 4px)',
             left: `calc(${activeTabIndex * 25}% + 2px)`,
@@ -75,46 +53,17 @@ const BottomNavigation = () => {
                 to={tab.path}
                 className={`
                   flex flex-col items-center justify-center px-4 py-2 rounded-full 
-                  transition-all duration-300 ease-out group relative
+                  transition-colors duration-300 ease-out
                   ${active 
                     ? 'text-primary-foreground' 
-                    : 'text-muted-foreground hover:text-foreground hover:scale-105'
+                    : 'text-muted-foreground hover:text-foreground'
                   }
                 `}
-                onClick={() => {
-                  if (index !== activeTabIndex) {
-                    setPreviousTabIndex(activeTabIndex);
-                    setIsTransitioning(true);
-                    setActiveTabIndex(index);
-                    setTimeout(() => setIsTransitioning(false), 300);
-                  }
-                }}
               >
-                <Icon 
-                  className={`
-                    h-5 w-5 transition-all duration-300 ease-out
-                    ${active 
-                      ? 'animate-icon-bounce' 
-                      : 'group-hover:scale-110 group-hover:-translate-y-0.5'
-                    }
-                  `} 
-                />
-                <span 
-                  className={`
-                    text-xs mt-0.5 font-medium transition-all duration-300 ease-out
-                    ${active 
-                      ? 'animate-fade-in' 
-                      : 'group-hover:font-semibold'
-                    }
-                  `}
-                >
+                <Icon className="h-5 w-5" />
+                <span className="text-xs mt-0.5 font-medium">
                   {tab.label}
                 </span>
-                
-                {/* Active tab circle fill effect */}
-                {active && (
-                  <div className="absolute inset-0 bg-primary/10 rounded-full animate-fill-circle -z-10" />
-                )}
               </Link>
             );
           })}
