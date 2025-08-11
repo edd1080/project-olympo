@@ -1,74 +1,95 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, FileSpreadsheet, AlertCircle, Settings } from 'lucide-react';
 
 const BottomNavigation = () => {
   const location = useLocation();
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   
-  const isActive = (path: string): boolean => {
+  const tabs = [
+    { path: '/', icon: User, label: 'Inicio', exactMatch: true },
+    { path: '/applications', icon: FileSpreadsheet, label: 'Solicitudes' },
+    { path: '/alerts', icon: AlertCircle, label: 'Alertas' },
+    { path: '/settings', icon: Settings, label: 'Ajustes' }
+  ];
+  
+  const isActive = (path: string, exactMatch?: boolean): boolean => {
+    if (exactMatch) {
+      return location.pathname === path;
+    }
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
+  useEffect(() => {
+    const currentIndex = tabs.findIndex(tab => 
+      isActive(tab.path, tab.exactMatch)
+    );
+    if (currentIndex !== -1) {
+      setActiveTabIndex(currentIndex);
+    }
+  }, [location.pathname]);
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4">
-      <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg">
-        <div className="flex items-center gap-1 px-2 py-2">
-          <Link 
-            to="/" 
-            className={`
-              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
-              ${isActive('/') && location.pathname === '/' 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }
-            `}
-          >
-            <User className="h-5 w-5" />
-            <span className="text-xs mt-0.5 font-medium">Inicio</span>
-          </Link>
-
-          <Link 
-            to="/applications" 
-            className={`
-              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
-              ${isActive('/applications') 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }
-            `}
-          >
-            <FileSpreadsheet className="h-5 w-5" />
-            <span className="text-xs mt-0.5 font-medium">Solicitudes</span>
-          </Link>
-
-          <Link 
-            to="/alerts" 
-            className={`
-              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
-              ${isActive('/alerts') 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }
-            `}
-          >
-            <AlertCircle className="h-5 w-5" />
-            <span className="text-xs mt-0.5 font-medium">Alertas</span>
-          </Link>
-
-          <Link 
-            to="/settings" 
-            className={`
-              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
-              ${isActive('/settings') 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }
-            `}
-          >
-            <Settings className="h-5 w-5" />
-            <span className="text-xs mt-0.5 font-medium">Ajustes</span>
-          </Link>
+      <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg relative overflow-hidden">
+        {/* Sliding background indicator */}
+        <div 
+          className="absolute inset-y-2 bg-primary rounded-full transition-all duration-500 ease-out shadow-sm"
+          style={{
+            width: 'calc(25% - 4px)',
+            left: `calc(${activeTabIndex * 25}% + 2px)`,
+            transform: 'translateX(0)',
+          }}
+        />
+        
+        <div className="flex items-center gap-1 px-2 py-2 relative z-10">
+          {tabs.map((tab, index) => {
+            const Icon = tab.icon;
+            const active = isActive(tab.path, tab.exactMatch);
+            
+            return (
+              <Link 
+                key={tab.path}
+                to={tab.path}
+                className={`
+                  flex flex-col items-center justify-center px-4 py-2 rounded-full 
+                  transition-all duration-300 ease-out group relative
+                  ${active 
+                    ? 'text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground hover:scale-105'
+                  }
+                `}
+                onClick={() => setActiveTabIndex(index)}
+              >
+                <Icon 
+                  className={`
+                    h-5 w-5 transition-all duration-300 ease-out
+                    ${active 
+                      ? 'animate-icon-bounce' 
+                      : 'group-hover:scale-110 group-hover:-translate-y-0.5'
+                    }
+                  `} 
+                />
+                <span 
+                  className={`
+                    text-xs mt-0.5 font-medium transition-all duration-300 ease-out
+                    ${active 
+                      ? 'animate-fade-in' 
+                      : 'group-hover:font-semibold'
+                    }
+                  `}
+                >
+                  {tab.label}
+                </span>
+                
+                {/* Active tab circle fill effect */}
+                {active && (
+                  <div className="absolute inset-0 bg-primary/10 rounded-full animate-fill-circle -z-10" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
