@@ -20,9 +20,9 @@ const BottomNavigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2 px-4">
       <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg">
-        <div className="flex items-center gap-1 px-2 py-2">
+        <div className="flex items-center gap-1 px-1.5 py-1.5">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const active = isActive(tab.path, tab.exactMatch);
@@ -32,15 +32,15 @@ const BottomNavigation = () => {
                 key={tab.path}
                 to={tab.path}
                 className={`
-                  flex flex-col items-center justify-center px-4 py-2 rounded-full 
+                  flex flex-col items-center justify-center px-3 py-1.5 rounded-full 
                   ${active 
                     ? 'bg-primary text-primary-foreground' 
                     : 'text-muted-foreground'
                   }
                 `}
               >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs mt-0.5 font-medium">
+                <Icon className="h-4 w-4" />
+                <span className="text-[10px] mt-0 font-medium">
                   {tab.label}
                 </span>
               </Link>
