@@ -50,10 +50,10 @@ const Index = () => {
         <MonthlyGoalCard />
         
         {/* Asymmetric Metrics Layout */}
-        <div className="grid grid-cols-12 gap-4 mb-8">
-          {/* Large Card - Active Applications (Left Side) */}
-          <div className="col-span-12 md:col-span-7">
-            <Card className="h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Large Card - Active Applications (Left Column) */}
+          <div>
+            <Card className="h-48">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center h-full justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
@@ -66,37 +66,33 @@ const Index = () => {
             </Card>
           </div>
           
-          {/* Small Cards Stack (Right Side) */}
-          <div className="col-span-12 md:col-span-5 space-y-4">
+          {/* Small Cards Stack (Right Column) */}
+          <div className="space-y-4">
             {/* Approved Applications */}
-            <Card>
+            <Card className="h-20">
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Aprobadas</p>
-                      <h3 className="text-xl font-bold">12</h3>
-                    </div>
+                <div className="flex items-center gap-3 h-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Aprobadas</p>
+                    <h3 className="text-xl font-bold">12</h3>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
             {/* Pending Applications */}
-            <Card>
+            <Card className="h-20">
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10">
-                      <Clock className="h-5 w-5 text-amber-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Pendientes</p>
-                      <h3 className="text-xl font-bold">8</h3>
-                    </div>
+                <div className="flex items-center gap-3 h-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10">
+                    <Clock className="h-5 w-5 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Pendientes</p>
+                    <h3 className="text-xl font-bold">8</h3>
                   </div>
                 </div>
               </CardContent>
