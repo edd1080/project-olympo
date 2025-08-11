@@ -11,39 +11,65 @@ const BottomNavigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
-      <div className="flex justify-around items-center h-16">
-        <Link 
-          to="/" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/') && location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <User className="h-6 w-6" />
-          <span className="text-xs mt-1">Inicio</span>
-        </Link>
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4">
+      <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg">
+        <div className="flex items-center gap-1 px-2 py-2">
+          <Link 
+            to="/" 
+            className={`
+              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
+              ${isActive('/') && location.pathname === '/' 
+                ? 'bg-primary text-primary-foreground shadow-sm' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+              }
+            `}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs mt-0.5 font-medium">Inicio</span>
+          </Link>
 
-        <Link 
-          to="/applications" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/applications') ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <FileSpreadsheet className="h-6 w-6" />
-          <span className="text-xs mt-1">Solicitudes</span>
-        </Link>
+          <Link 
+            to="/applications" 
+            className={`
+              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
+              ${isActive('/applications') 
+                ? 'bg-primary text-primary-foreground shadow-sm' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+              }
+            `}
+          >
+            <FileSpreadsheet className="h-5 w-5" />
+            <span className="text-xs mt-0.5 font-medium">Solicitudes</span>
+          </Link>
 
-        <Link 
-          to="/alerts" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/alerts') ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <AlertCircle className="h-6 w-6" />
-          <span className="text-xs mt-1">Alertas</span>
-        </Link>
+          <Link 
+            to="/alerts" 
+            className={`
+              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
+              ${isActive('/alerts') 
+                ? 'bg-primary text-primary-foreground shadow-sm' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+              }
+            `}
+          >
+            <AlertCircle className="h-5 w-5" />
+            <span className="text-xs mt-0.5 font-medium">Alertas</span>
+          </Link>
 
-        <Link 
-          to="/settings" 
-          className={`flex flex-col items-center justify-center w-1/4 py-1 ${isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <Settings className="h-6 w-6" />
-          <span className="text-xs mt-1">Ajustes</span>
-        </Link>
+          <Link 
+            to="/settings" 
+            className={`
+              flex flex-col items-center justify-center px-4 py-2 rounded-full transition-all duration-300 ease-out
+              ${isActive('/settings') 
+                ? 'bg-primary text-primary-foreground shadow-sm' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+              }
+            `}
+          >
+            <Settings className="h-5 w-5" />
+            <span className="text-xs mt-0.5 font-medium">Ajustes</span>
+          </Link>
+        </div>
       </div>
     </div>
   );
