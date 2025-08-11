@@ -6,6 +6,8 @@ import { User, FileSpreadsheet, AlertCircle, Settings } from 'lucide-react';
 const BottomNavigation = () => {
   const location = useLocation();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [previousTabIndex, setPreviousTabIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   const tabs = [
     { path: '/', icon: User, label: 'Inicio', exactMatch: true },
@@ -25,21 +27,40 @@ const BottomNavigation = () => {
     const currentIndex = tabs.findIndex(tab => 
       isActive(tab.path, tab.exactMatch)
     );
-    if (currentIndex !== -1) {
+    if (currentIndex !== -1 && currentIndex !== activeTabIndex) {
+      setPreviousTabIndex(activeTabIndex);
+      setIsTransitioning(true);
       setActiveTabIndex(currentIndex);
+      
+      // Reset transition state after animation completes
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
     }
-  }, [location.pathname]);
+  }, [location.pathname, activeTabIndex]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4">
       <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg relative overflow-hidden">
-        {/* Sliding background indicator */}
+        {/* Exit circle - fades out from previous position */}
+        {isTransitioning && (
+          <div 
+            className="absolute inset-y-2 bg-primary rounded-full animate-circle-exit shadow-sm"
+            style={{
+              width: 'calc(25% - 4px)',
+              left: `calc(${previousTabIndex * 25}% + 2px)`,
+            }}
+          />
+        )}
+        
+        {/* Enter circle - fades in at new position */}
         <div 
-          className="absolute inset-y-2 bg-primary rounded-full transition-all duration-500 ease-out shadow-sm"
+          className={`absolute inset-y-2 bg-primary rounded-full shadow-sm ${
+            isTransitioning ? 'animate-circle-enter' : 'transition-all duration-500 ease-out'
+          }`}
           style={{
             width: 'calc(25% - 4px)',
             left: `calc(${activeTabIndex * 25}% + 2px)`,
-            transform: 'translateX(0)',
           }}
         />
         
@@ -60,7 +81,14 @@ const BottomNavigation = () => {
                     : 'text-muted-foreground hover:text-foreground hover:scale-105'
                   }
                 `}
-                onClick={() => setActiveTabIndex(index)}
+                onClick={() => {
+                  if (index !== activeTabIndex) {
+                    setPreviousTabIndex(activeTabIndex);
+                    setIsTransitioning(true);
+                    setActiveTabIndex(index);
+                    setTimeout(() => setIsTransitioning(false), 300);
+                  }
+                }}
               >
                 <Icon 
                   className={`
