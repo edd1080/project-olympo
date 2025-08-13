@@ -4,15 +4,15 @@ import { Eye, EyeOff, Lock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@/context/UserContext';
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { login, role } = useUser();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
@@ -23,31 +23,36 @@ const LoginForm = () => {
       });
       return;
     }
+    
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
-
-      // Simulating API call with a timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // For demo purposes, accept any non-empty credentials
-      console.log('Login successful:', {
-        username
-      });
-
-      // Store auth token (in a real app, this would come from the server)
-      localStorage.setItem('authToken', 'demo-token-12345');
-      toast({
-        title: "¡Inicio de sesión exitoso!",
-        description: "Bienvenido/a a Crédito Productivo"
-      });
-
-      // Redirect to main app
-      navigate('/');
+      const success = await login({ username, password });
+      
+      if (success) {
+        toast({
+          title: "¡Inicio de sesión exitoso!",
+          description: "Bienvenido/a a Crédito Productivo"
+        });
+        
+        // Redirect based on user role
+        if (role === 'manager') {
+          navigate('/manager/invc');
+        } else {
+          navigate('/');
+        }
+      } else {
+        toast({
+          title: "Error de autenticación",
+          description: "Usuario o contraseña incorrectos",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       console.error('Login error:', error);
       toast({
         title: "Error de inicio de sesión",
-        description: "Credenciales incorrectas o problema de conexión",
+        description: "Problema de conexión o error del servidor",
         variant: "destructive"
       });
     } finally {

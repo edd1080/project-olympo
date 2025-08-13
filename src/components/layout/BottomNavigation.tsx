@@ -1,16 +1,30 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, FileSpreadsheet, AlertCircle, Settings } from 'lucide-react';
+import { User, FileSpreadsheet, AlertCircle, Settings, MapPin, DollarSign } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 const BottomNavigation = () => {
   const location = useLocation();
+  const { role } = useUser();
   
-  const tabs = [
+  // Agent tabs (original functionality)
+  const agentTabs = [
     { path: '/', icon: User, label: 'Inicio', exactMatch: true },
     { path: '/applications', icon: FileSpreadsheet, label: 'Solicitudes' },
     { path: '/alerts', icon: AlertCircle, label: 'Alertas' },
     { path: '/settings', icon: Settings, label: 'Ajustes' }
   ];
+
+  // Manager tabs (new functionality)
+  const managerTabs = [
+    { path: '/manager/invc', icon: MapPin, label: 'INVC', exactMatch: true },
+    { path: '/manager/authorizations', icon: DollarSign, label: 'Autorizaciones' },
+    { path: '/manager/alerts', icon: AlertCircle, label: 'Alertas' },
+    { path: '/manager/settings', icon: Settings, label: 'Ajustes' }
+  ];
+
+  // Select tabs based on user role
+  const tabs = role === 'manager' ? managerTabs : agentTabs;
   
   const isActive = (path: string, exactMatch?: boolean): boolean => {
     if (exactMatch) {
