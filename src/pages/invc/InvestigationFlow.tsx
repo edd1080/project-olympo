@@ -161,11 +161,15 @@ export default function InvestigationFlow() {
                   <div>
                     <h1 className="font-semibold">INVC - {id}</h1>
                     <p className="text-sm text-muted-foreground">
-                      {investigation?.applicantName || 'Cargando...'}
+                      Cargando...
                     </p>
                   </div>
                 </div>
-                {investigation && <DynamicStatusChip investigation={investigation} />}
+                {investigation && (
+                  <div className="text-sm text-muted-foreground">
+                    Estado: activo
+                  </div>
+                )}
               </div>
             </div>
           </div>

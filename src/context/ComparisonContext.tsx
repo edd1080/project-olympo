@@ -7,139 +7,96 @@ import {
   ApplicationData,
   ComparisonConfig 
 } from '@/types/invc-comparison';
-import { useInvestigation } from './InvestigationContext';
-import { useUser } from './UserContext';
-import { calculateFieldDifference, validateThreshold, generateDefaultSections } from '@/utils/comparisonHelpers';
+import { generateDefaultSections, calculateInvestigationSummary } from '@/utils/comparisonHelpers';
+import { getApplicationData } from '@/data/mockApplicationData';
 
 interface ComparisonContextType {
-  // Gestión de investigaciones de comparación
-  getComparison: (applicationId: string) => ComparisonInvestigation | null;
-  initializeComparison: (applicationId: string, applicationData: ApplicationData) => void;
-  
-  // Gestión de campos
-  updateFieldObserved: (applicationId: string, sectionId: string, fieldId: string, value: any) => void;
-  confirmField: (applicationId: string, sectionId: string, fieldId: string) => void;
-  adjustField: (applicationId: string, sectionId: string, fieldId: string, value: any, comment: string, evidence?: any[]) => void;
-  blockField: (applicationId: string, sectionId: string, fieldId: string, reason: string) => void;
-  
-  // Gestión de secciones
-  getSectionProgress: (applicationId: string, sectionId: string) => { completed: number; total: number; percentage: number };
-  isSectionComplete: (applicationId: string, sectionId: string) => boolean;
-  
-  // Validaciones y umbrales
-  validateField: (applicationId: string, sectionId: string, fieldId: string) => void;
-  getFieldDifference: (field: ComparisonField) => number | null;
-  
-  // Resumen y finalización
-  getSummary: (applicationId: string) => ComparisonInvestigation['summary'] | null;
-  canFinalize: (applicationId: string) => boolean;
-  finalizeComparison: (applicationId: string) => void;
-  
-  // Configuración
+  // State
+  comparisons: ComparisonState;
   config: ComparisonConfig;
+  
+  // Main functions
+  initializeComparison: (applicationId: string, applicationData?: ApplicationData) => Promise<ComparisonInvestigation>;
+  updateFieldObserved: (applicationId: string, fieldId: string, value: any) => Promise<void>;
+  confirmField: (applicationId: string, fieldId: string) => Promise<void>;
+  adjustField: (applicationId: string, fieldId: string, reason: string, comment?: string) => Promise<void>;
+  blockField: (applicationId: string, fieldId: string, reason: string, comment?: string) => Promise<void>;
+  finalizeComparison: (applicationId: string) => Promise<any>;
+  
+  // Config management
   updateConfig: (newConfig: Partial<ComparisonConfig>) => void;
 }
 
 const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'invc_comparisons';
-const CONFIG_STORAGE_KEY = 'invc_comparison_config';
-
-// Configuración por defecto
+// Default configuration
 const defaultConfig: ComparisonConfig = {
-  defaultThresholds: {
-    income: { fieldId: 'monthly_income', minPercentage: 10, maxPercentage: 25 },
-    expenses: { fieldId: 'monthly_expenses', minPercentage: 15, maxPercentage: 30 },
-    creditAmount: { fieldId: 'credit_amount', minPercentage: 5, maxPercentage: 20 }
-  },
-  adjustmentReasons: [
-    { id: 'income_overestimated', label: 'Ingresos sobreestimados', category: 'income', severity: 'medium', requiresEvidence: true },
-    { id: 'expenses_underestimated', label: 'Gastos subestimados', category: 'expenses', severity: 'medium', requiresEvidence: true },
-    { id: 'no_economic_activity', label: 'Sin actividad económica activa', category: 'activity', severity: 'critical', requiresEvidence: true },
-    { id: 'different_products', label: 'Productos diferentes a los declarados', category: 'products', severity: 'low', requiresEvidence: true },
-    { id: 'incorrect_personal_info', label: 'Información personal incorrecta', category: 'personal', severity: 'high', requiresEvidence: false }
-  ],
+  defaultThresholds: {},
+  adjustmentReasons: [],
   validationRules: {
-    geoRadiusMeters: 500,
+    geoRadiusMeters: 100,
     incomeThresholdPercent: 15,
     expenseThresholdPercent: 20,
     productMatchPercent: 70
   },
-  autoSaveInterval: 500,
+  autoSaveInterval: 5000,
   geoAccuracyRequired: 50
 };
 
 export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [comparisons, setComparisons] = useState<ComparisonState>({});
   const [config, setConfig] = useState<ComparisonConfig>(defaultConfig);
-  const { user } = useUser();
-  const investigation = useInvestigation();
 
-  // Cargar desde localStorage al montar
-  useEffect(() => {
-    try {
-      const storedComparisons = localStorage.getItem(STORAGE_KEY);
-      const storedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
-      
-      if (storedComparisons) {
-        setComparisons(JSON.parse(storedComparisons));
+  const initializeComparison = useCallback(async (applicationId: string, providedData?: ApplicationData): Promise<ComparisonInvestigation> => {
+    // Get application data
+    const applicationData = providedData || getApplicationData(applicationId) || {
+      applicationId,
+      applicantName: 'Solicitante Desconocido',
+      applicantInfo: {
+        fullName: 'Nombre no disponible',
+        dpi: '0000000000000',
+        phone: '',
+        mobile: '',
+        address: '',
+      },
+      economicActivity: {
+        businessType: '',
+        isActive: false,
+        products: []
+      },
+      financialInfo: {
+        monthlyIncome: 0,
+        monthlyExpenses: 0,
+        creditAmount: 0,
+        term: 0,
+        installment: 0
+      },
+      guarantors: [],
+      metadata: {
+        createdAt: new Date(),
+        agentId: '',
+        lastModified: new Date()
       }
-      
-      if (storedConfig) {
-        setConfig({ ...defaultConfig, ...JSON.parse(storedConfig) });
-      }
-    } catch (error) {
-      console.error('Error loading comparison data from localStorage:', error);
-    }
-  }, []);
+    };
 
-  // Guardar en localStorage cuando cambie el estado
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(comparisons));
-    } catch (error) {
-      console.error('Error saving comparisons to localStorage:', error);
-    }
-  }, [comparisons]);
-
-  // Guardar configuración en localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
-    } catch (error) {
-      console.error('Error saving config to localStorage:', error);
-    }
-  }, [config]);
-
-  // Auto-guardado con debounce
-  const debouncedSave = useCallback(
-    debounce((applicationId: string, updatedComparison: ComparisonInvestigation) => {
-      setComparisons(prev => ({
-        ...prev,
-        [applicationId]: updatedComparison
-      }));
-    }, config.autoSaveInterval),
-    [config.autoSaveInterval]
-  );
-
-  const getComparison = (applicationId: string): ComparisonInvestigation | null => {
-    return comparisons[applicationId] || null;
-  };
-
-  const initializeComparison = (applicationId: string, applicationData: ApplicationData) => {
-    if (comparisons[applicationId]) return;
-
-    const baseInvestigation = investigation.getInvestigation(applicationId);
-    if (!baseInvestigation) {
-      investigation.initializeInvestigation(applicationId);
-    }
-
+    // Generate sections from application data
     const sections = generateDefaultSections(applicationData);
-    
-    const newComparison: ComparisonInvestigation = {
-      ...(baseInvestigation || investigation.getInvestigation(applicationId)!),
+
+    // Create investigation object
+    const investigation: ComparisonInvestigation = {
+      applicationId,
+      applicantName: applicationData.applicantName,
+      cards: [], // Compatibility with existing Investigation type
+      presence: null,
+      geoValidation: null,
+      progress: { completed: 0, total: sections.reduce((acc, section) => acc + section.fields.length, 0), percentage: 0 },
+      discrepancies: [],
+      metadata: { createdAt: new Date(), agentId: '', lastModified: new Date() },
+      
+      // Comparison-specific properties
       applicationData,
       sections,
+      detectedDifferences: [],
       diffs: {},
       fotometria: {
         negocio_ok: false,
@@ -147,256 +104,173 @@ export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         geo_ok: false,
         additional_photos: 0
       },
-      thresholds: config.defaultThresholds,
+      thresholds: {},
       validationRules: config.validationRules,
       summary: {
         totalFields: sections.reduce((acc, section) => acc + section.fields.length, 0),
         completedFields: 0,
+        confirmedFields: 0,
         adjustedFields: 0,
         blockedFields: 0,
+        overallStatus: 'pending',
         overallRisk: 'low',
         recommendedAction: 'approve'
       }
     };
 
+    // Update state
     setComparisons(prev => ({
       ...prev,
-      [applicationId]: newComparison
+      [applicationId]: investigation
     }));
-  };
 
-  const updateFieldObserved = (applicationId: string, sectionId: string, fieldId: string, value: any) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return;
+    return investigation;
+  }, [config]);
 
-    const updatedSections = comparison.sections.map(section => {
-      if (section.id !== sectionId) return section;
-      
-      const updatedFields = section.fields.map(field => {
-        if (field.id !== fieldId) return field;
-        
-        return {
-          ...field,
-          observed: value,
-          status: 'pending' as const,
-          timestamp: new Date()
-        };
-      });
+  const updateFieldObserved = useCallback(async (applicationId: string, fieldId: string, value: any): Promise<void> => {
+    setComparisons(prev => {
+      const comparison = prev[applicationId];
+      if (!comparison) return prev;
 
-      return { ...section, fields: updatedFields };
+      const updatedSections = comparison.sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field => 
+          field.id === fieldId 
+            ? { ...field, observedValue: value }
+            : field
+        )
+      }));
+
+      const updated = {
+        ...comparison,
+        sections: updatedSections,
+        summary: calculateInvestigationSummary({ ...comparison, sections: updatedSections })
+      };
+
+      return {
+        ...prev,
+        [applicationId]: updated
+      };
     });
+  }, []);
 
-    const updatedComparison = { ...comparison, sections: updatedSections };
-    debouncedSave(applicationId, updatedComparison);
-  };
+  const confirmField = useCallback(async (applicationId: string, fieldId: string): Promise<void> => {
+    setComparisons(prev => {
+      const comparison = prev[applicationId];
+      if (!comparison) return prev;
 
-  const confirmField = (applicationId: string, sectionId: string, fieldId: string) => {
+      const updatedSections = comparison.sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field => 
+          field.id === fieldId 
+            ? { ...field, status: 'confirmed' as const }
+            : field
+        )
+      }));
+
+      const updated = {
+        ...comparison,
+        sections: updatedSections,
+        summary: calculateInvestigationSummary({ ...comparison, sections: updatedSections })
+      };
+
+      return {
+        ...prev,
+        [applicationId]: updated
+      };
+    });
+  }, []);
+
+  const adjustField = useCallback(async (applicationId: string, fieldId: string, reason: string, comment?: string): Promise<void> => {
+    setComparisons(prev => {
+      const comparison = prev[applicationId];
+      if (!comparison) return prev;
+
+      const updatedSections = comparison.sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field => 
+          field.id === fieldId 
+            ? { 
+                ...field, 
+                status: 'adjusted' as const,
+                adjustmentReason: reason,
+                comment: comment || field.comment
+              }
+            : field
+        )
+      }));
+
+      const updated = {
+        ...comparison,
+        sections: updatedSections,
+        summary: calculateInvestigationSummary({ ...comparison, sections: updatedSections })
+      };
+
+      return {
+        ...prev,
+        [applicationId]: updated
+      };
+    });
+  }, []);
+
+  const blockField = useCallback(async (applicationId: string, fieldId: string, reason: string, comment?: string): Promise<void> => {
+    setComparisons(prev => {
+      const comparison = prev[applicationId];
+      if (!comparison) return prev;
+
+      const updatedSections = comparison.sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field => 
+          field.id === fieldId 
+            ? { 
+                ...field, 
+                status: 'blocked' as const,
+                adjustmentReason: reason,
+                comment: comment || field.comment
+              }
+            : field
+        )
+      }));
+
+      const updated = {
+        ...comparison,
+        sections: updatedSections,
+        summary: calculateInvestigationSummary({ ...comparison, sections: updatedSections })
+      };
+
+      return {
+        ...prev,
+        [applicationId]: updated
+      };
+    });
+  }, []);
+
+  const finalizeComparison = useCallback(async (applicationId: string): Promise<any> => {
     const comparison = comparisons[applicationId];
-    if (!comparison) return;
+    if (!comparison) throw new Error('Comparison not found');
 
-    const updatedComparison = updateFieldStatus(comparison, sectionId, fieldId, 'confirmed');
-    setComparisons(prev => ({ ...prev, [applicationId]: updatedComparison }));
+    // Here you would typically save to backend
+    console.log('Finalizing comparison:', comparison);
     
-    // Actualizar el contexto de investigación base
-    const field = findField(updatedComparison, sectionId, fieldId);
-    if (field) {
-      investigation.updateCardStatus(applicationId, fieldId, 'confirmed');
-    }
-  };
+    return comparison;
+  }, [comparisons]);
 
-  const adjustField = (applicationId: string, sectionId: string, fieldId: string, value: any, comment: string, evidence?: any[]) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return;
-
-    const updatedComparison = updateFieldWithAdjustment(comparison, sectionId, fieldId, value, comment, evidence);
-    setComparisons(prev => ({ ...prev, [applicationId]: updatedComparison }));
-    
-    investigation.updateCardStatus(applicationId, fieldId, 'mismatch');
-    if (comment) {
-      investigation.addCardComment(applicationId, fieldId, comment);
-    }
-  };
-
-  const blockField = (applicationId: string, sectionId: string, fieldId: string, reason: string) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return;
-
-    const updatedComparison = updateFieldStatus(comparison, sectionId, fieldId, 'blocked', reason);
-    setComparisons(prev => ({ ...prev, [applicationId]: updatedComparison }));
-    
-    investigation.updateCardStatus(applicationId, fieldId, 'blocked');
-    investigation.addCardComment(applicationId, fieldId, reason);
-  };
-
-  const validateField = (applicationId: string, sectionId: string, fieldId: string) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return;
-
-    const field = findField(comparison, sectionId, fieldId);
-    if (!field) return;
-
-    const difference = calculateFieldDifference(field);
-    const threshold = comparison.thresholds[fieldId];
-    
-    if (difference !== null && threshold) {
-      const isValid = validateThreshold(difference, threshold);
-      if (!isValid && field.status === 'pending') {
-        // Auto-marcar como ajustado si excede el umbral
-        adjustField(applicationId, sectionId, fieldId, field.observed, 'Diferencia detectada automáticamente');
-      }
-    }
-  };
-
-  const getFieldDifference = (field: ComparisonField): number | null => {
-    return calculateFieldDifference(field);
-  };
-
-  const getSectionProgress = (applicationId: string, sectionId: string) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return { completed: 0, total: 0, percentage: 0 };
-
-    const section = comparison.sections.find(s => s.id === sectionId);
-    if (!section) return { completed: 0, total: 0, percentage: 0 };
-
-    return section.progress;
-  };
-
-  const isSectionComplete = (applicationId: string, sectionId: string): boolean => {
-    const progress = getSectionProgress(applicationId, sectionId);
-    return progress.percentage === 100;
-  };
-
-  const getSummary = (applicationId: string) => {
-    const comparison = comparisons[applicationId];
-    return comparison?.summary || null;
-  };
-
-  const canFinalize = (applicationId: string): boolean => {
-    const comparison = comparisons[applicationId];
-    if (!comparison) return false;
-
-    // No se puede finalizar si hay campos bloqueados críticos
-    const criticalBlocked = comparison.summary.blockedFields > 0;
-    const geoValid = comparison.fotometria.geo_ok;
-    
-    return !criticalBlocked && geoValid;
-  };
-
-  const finalizeComparison = (applicationId: string) => {
-    const comparison = comparisons[applicationId];
-    if (!comparison || !canFinalize(applicationId)) return;
-
-    const updatedComparison = {
-      ...comparison,
-      metadata: {
-        ...comparison.metadata,
-        completedAt: new Date()
-      }
-    };
-
-    setComparisons(prev => ({ ...prev, [applicationId]: updatedComparison }));
-    investigation.completeInvestigation(applicationId);
-  };
-
-  const updateConfig = (newConfig: Partial<ComparisonConfig>) => {
+  const updateConfig = useCallback((newConfig: Partial<ComparisonConfig>) => {
     setConfig(prev => ({ ...prev, ...newConfig }));
-  };
-
-  // Funciones auxiliares
-  const findField = (comparison: ComparisonInvestigation, sectionId: string, fieldId: string): ComparisonField | null => {
-    const section = comparison.sections.find(s => s.id === sectionId);
-    return section?.fields.find(f => f.id === fieldId) || null;
-  };
-
-  const updateFieldStatus = (
-    comparison: ComparisonInvestigation, 
-    sectionId: string, 
-    fieldId: string, 
-    status: ComparisonField['status'],
-    comment?: string
-  ): ComparisonInvestigation => {
-    const updatedSections = comparison.sections.map(section => {
-      if (section.id !== sectionId) return section;
-      
-      const updatedFields = section.fields.map(field => {
-        if (field.id !== fieldId) return field;
-        
-        return {
-          ...field,
-          status,
-          comment: comment || field.comment,
-          timestamp: new Date()
-        };
-      });
-
-      const completed = updatedFields.filter(f => f.status === 'confirmed').length;
-      const progress = {
-        completed,
-        total: updatedFields.length,
-        percentage: Math.round((completed / updatedFields.length) * 100)
-      };
-
-      return { 
-        ...section, 
-        fields: updatedFields,
-        progress,
-        status: progress.percentage === 100 ? 'completed' as const : 'in_progress' as const
-      };
-    });
-
-    return { ...comparison, sections: updatedSections };
-  };
-
-  const updateFieldWithAdjustment = (
-    comparison: ComparisonInvestigation,
-    sectionId: string,
-    fieldId: string,
-    value: any,
-    comment: string,
-    evidence?: any[]
-  ): ComparisonInvestigation => {
-    const field = findField(comparison, sectionId, fieldId);
-    if (!field) return comparison;
-
-    const difference = calculateFieldDifference({ ...field, observed: value });
-    
-    const updatedComparison = updateFieldStatus(comparison, sectionId, fieldId, 'adjusted', comment);
-    
-    // Registrar la diferencia
-    if (difference !== null) {
-      updatedComparison.diffs[fieldId] = {
-        field: fieldId,
-        declaredValue: field.declared,
-        observedValue: value,
-        difference,
-        severity: difference > 25 ? 'critical' : difference > 15 ? 'high' : 'medium',
-        autoDetected: false
-      };
-    }
-
-    return updatedComparison;
-  };
-
-  const value: ComparisonContextType = {
-    getComparison,
-    initializeComparison,
-    updateFieldObserved,
-    confirmField,
-    adjustField,
-    blockField,
-    getSectionProgress,
-    isSectionComplete,
-    validateField,
-    getFieldDifference,
-    getSummary,
-    canFinalize,
-    finalizeComparison,
-    config,
-    updateConfig
-  };
+  }, []);
 
   return (
-    <ComparisonContext.Provider value={value}>
+    <ComparisonContext.Provider value={{
+      comparisons,
+      config,
+      initializeComparison,
+      updateFieldObserved,
+      confirmField,
+      adjustField,
+      blockField,
+      finalizeComparison,
+      updateConfig
+    }}>
       {children}
     </ComparisonContext.Provider>
   );
@@ -409,12 +283,3 @@ export const useComparison = () => {
   }
   return context;
 };
-
-// Utility function for debounce
-function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
-  let timeout: NodeJS.Timeout;
-  return ((...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  }) as T;
-}

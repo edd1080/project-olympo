@@ -5,6 +5,7 @@ import { GeoLocation } from '@/types/invc';
 export const mockApplicationsData: Record<string, ApplicationData> = {
   'APP001': {
     applicationId: 'APP001',
+    applicantName: 'María José García López',
     applicantInfo: {
       fullName: 'María Elena González Pérez',
       dpi: '2356 78901 1234',
@@ -63,6 +64,7 @@ export const mockApplicationsData: Record<string, ApplicationData> = {
 
   'APP002': {
     applicationId: 'APP002',
+    applicantName: 'Carlos Eduardo Mendoza',
     applicantInfo: {
       fullName: 'José Antonio Ruiz López',
       dpi: '3456 78901 2345',
@@ -113,6 +115,7 @@ export const mockApplicationsData: Record<string, ApplicationData> = {
 
   'APP003': {
     applicationId: 'APP003',
+    applicantName: 'Ana Patricia Rodríguez',
     applicantInfo: {
       fullName: 'Carmen Sofía Díaz Martínez',
       dpi: '4567 89012 3456',
@@ -172,6 +175,7 @@ export const mockApplicationsData: Record<string, ApplicationData> = {
   // Caso con discrepancias menores
   'APP004': {
     applicationId: 'APP004',
+    applicantName: 'José Luis Hernández',
     applicantInfo: {
       fullName: 'Pedro Pablo Morales Castillo',
       dpi: '5678 90123 4567',
@@ -224,6 +228,7 @@ export const mockApplicationsData: Record<string, ApplicationData> = {
   // Caso con discrepancias críticas
   'APP005': {
     applicationId: 'APP005',
+    applicantName: 'Sofía Elena Morales',
     applicantInfo: {
       fullName: 'Roberto Carlos Jiménez Vega',
       dpi: '6789 01234 5678',

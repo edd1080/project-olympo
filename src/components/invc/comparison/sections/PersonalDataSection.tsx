@@ -35,13 +35,13 @@ export const PersonalDataSection: React.FC<PersonalDataSectionProps> = ({
           // Handle confirmation
           console.log('Confirmed:', field.fieldName);
         }}
-        onAdjust={(reason, comment) => {
+        onAdjust={(reason) => {
           // Handle adjustment
-          console.log('Adjusted:', field.fieldName, reason, comment);
+          console.log('Adjusted:', field.fieldName, reason);
         }}
-        onBlock={(reason, comment) => {
+        onBlock={(reason) => {
           // Handle blocking
-          console.log('Blocked:', field.fieldName, reason, comment);
+          console.log('Blocked:', field.fieldName, reason);
         }}
         showDifference={field.type === 'text'}
       />

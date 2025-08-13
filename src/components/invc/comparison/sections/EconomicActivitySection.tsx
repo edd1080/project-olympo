@@ -44,11 +44,11 @@ export const EconomicActivitySection: React.FC<EconomicActivitySectionProps> = (
         onConfirm={() => {
           console.log('Confirmed:', field.fieldName);
         }}
-        onAdjust={(reason, comment) => {
-          console.log('Adjusted:', field.fieldName, reason, comment);
+        onAdjust={(reason) => {
+          console.log('Adjusted:', field.fieldName, reason);
         }}
-        onBlock={(reason, comment) => {
-          console.log('Blocked:', field.fieldName, reason, comment);
+        onBlock={(reason) => {
+          console.log('Blocked:', field.fieldName, reason);
         }}
         showDifference={field.type === 'text'}
       />

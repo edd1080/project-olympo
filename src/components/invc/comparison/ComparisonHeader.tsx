@@ -46,7 +46,7 @@ export const ComparisonHeader: React.FC<ComparisonHeaderProps> = ({ comparison }
           <div>
             <h2 className="text-xl font-semibold">Comparación de Datos</h2>
             <p className="text-sm text-muted-foreground">
-              Solicitud {comparison.applicationData.id}
+              Solicitud {comparison.applicationData.applicationId}
             </p>
           </div>
         </div>

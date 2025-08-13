@@ -1,91 +1,80 @@
-import { 
-  ComparisonField, 
-  INVCSection, 
-  ApplicationData, 
-  FieldThreshold,
-  ComparisonInvestigation 
-} from '@/types/invc-comparison';
+import { ComparisonField, INVCSection, ApplicationData, ComparisonInvestigation } from '@/types/invc-comparison';
 
 /**
- * Calcula la diferencia entre el valor declarado y observado
+ * Calcula la diferencia porcentual entre valores declarados y observados
  */
-export const calculateFieldDifference = (field: ComparisonField): number | null => {
-  if (field.type === 'boolean' || field.type === 'text') return null;
-  if (field.observed === undefined || field.observed === null) return null;
+export function calculateFieldDifference(field: ComparisonField): number | null {
+  if (field.type !== 'number' && field.type !== 'currency') return null;
+  if (field.observedValue === undefined || field.observedValue === null) return null;
   
-  const declared = parseFloat(field.declared);
-  const observed = parseFloat(field.observed);
+  const declared = parseFloat(field.declaredValue) || 0;
+  const observed = parseFloat(field.observedValue) || 0;
   
-  if (isNaN(declared) || isNaN(observed)) return null;
   if (declared === 0) return observed === 0 ? 0 : 100;
   
   return Math.abs(((observed - declared) / declared) * 100);
-};
+}
 
 /**
  * Valida si una diferencia está dentro del umbral permitido
  */
-export const validateThreshold = (difference: number, threshold: FieldThreshold): boolean => {
+export function validateThreshold(difference: number, threshold: { minPercentage?: number; maxPercentage?: number }): boolean {
   if (threshold.maxPercentage && difference > threshold.maxPercentage) return false;
   if (threshold.minPercentage && difference < threshold.minPercentage) return false;
   return true;
-};
+}
 
 /**
- * Determina la severidad de una discrepancia basada en la diferencia
+ * Calcula la severidad de una discrepancia basada en la diferencia
  */
-export const calculateSeverity = (difference: number, fieldType: string): ComparisonField['severity'] => {
-  if (fieldType === 'currency' || fieldType === 'number') {
-    if (difference > 50) return 'critical';
-    if (difference > 25) return 'high';
+export function calculateSeverity(difference: number, fieldType: string): ComparisonField['severity'] {
+  if (fieldType === 'currency') {
+    if (difference > 30) return 'critical';
+    if (difference > 20) return 'high';
     if (difference > 10) return 'medium';
     return 'low';
   }
   
-  // Para otros tipos, evaluar caso por caso
-  return 'medium';
-};
+  if (difference > 50) return 'critical';
+  if (difference > 25) return 'high';
+  if (difference > 10) return 'medium';
+  return 'low';
+}
 
 /**
- * Formatea valores según su tipo
+ * Formatea un valor según su tipo para mostrar en UI
  */
-export const formatFieldValue = (value: any, type: ComparisonField['type']): string => {
-  if (value === null || value === undefined) return 'N/A';
+export function formatFieldValue(value: any, type: ComparisonField['type']): string {
+  if (value === null || value === undefined) return 'No especificado';
   
   switch (type) {
     case 'currency':
       return new Intl.NumberFormat('es-GT', { 
         style: 'currency', 
         currency: 'GTQ',
-        minimumFractionDigits: 0
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(value);
-      
     case 'number':
       return new Intl.NumberFormat('es-GT').format(value);
-      
     case 'boolean':
       return value ? 'Sí' : 'No';
-      
     case 'date':
-      if (value instanceof Date) {
-        return value.toLocaleDateString('es-GT');
-      }
       return new Date(value).toLocaleDateString('es-GT');
-      
     default:
       return String(value);
   }
-};
+}
 
 /**
  * Genera las secciones por defecto basadas en los datos de la aplicación
  */
-export const generateDefaultSections = (applicationData: ApplicationData): INVCSection[] => {
-  const sections: INVCSection[] = [
+export function generateDefaultSections(applicationData: ApplicationData): INVCSection[] {
+  return [
     {
       id: 'personal_data',
       title: 'Datos Personales',
-      description: 'Verificación de información personal del solicitante',
+      description: 'Información personal del solicitante',
       required: true,
       order: 1,
       status: 'pending',
@@ -93,324 +82,282 @@ export const generateDefaultSections = (applicationData: ApplicationData): INVCS
       fields: [
         {
           id: 'fullName',
+          sectionId: 'personal_data',
+          fieldName: 'fullName',
           label: 'Nombre completo',
           type: 'text',
-          declared: applicationData.applicantInfo.fullName,
+          declaredValue: applicationData.applicantInfo.fullName,
           status: 'pending',
-          required: true
+          isRequired: true
         },
         {
           id: 'dpi',
+          sectionId: 'personal_data',
+          fieldName: 'dpi',
           label: 'Número de DPI',
           type: 'text',
-          declared: applicationData.applicantInfo.dpi,
+          declaredValue: applicationData.applicantInfo.dpi,
           status: 'pending',
-          required: true
+          isRequired: true
         },
         {
           id: 'phone',
+          sectionId: 'personal_data',
+          fieldName: 'phone',
           label: 'Teléfono',
           type: 'text',
-          declared: applicationData.applicantInfo.phone,
+          declaredValue: applicationData.applicantInfo.phone,
           status: 'pending',
-          required: false
+          isRequired: false
         },
         {
           id: 'mobile',
+          sectionId: 'personal_data',
+          fieldName: 'mobile',
           label: 'Celular',
           type: 'text',
-          declared: applicationData.applicantInfo.mobile,
+          declaredValue: applicationData.applicantInfo.mobile,
           status: 'pending',
-          required: true
+          isRequired: true
         },
         {
           id: 'address',
+          sectionId: 'personal_data',
+          fieldName: 'address',
           label: 'Dirección',
           type: 'text',
-          declared: applicationData.applicantInfo.address,
+          declaredValue: applicationData.applicantInfo.address,
           status: 'pending',
-          required: true
+          isRequired: true
         }
       ]
     },
-
-    {
-      id: 'location_presence',
-      title: 'Ubicación y Presencia',
-      description: 'Confirmación de presencia y validación de ubicación',
-      required: true,
-      order: 2,
-      status: 'pending',
-      progress: { completed: 0, total: 2, percentage: 0 },
-      fields: [
-        {
-          id: 'person_found',
-          label: '¿Encontró a la persona?',
-          type: 'boolean',
-          declared: true, // Se asume que debería estar
-          status: 'pending',
-          required: true
-        },
-        {
-          id: 'location_valid',
-          label: 'Ubicación válida',
-          type: 'boolean',
-          declared: true, // Se asume que la dirección es correcta
-          status: 'pending',
-          required: true
-        }
-      ]
-    },
-
     {
       id: 'economic_activity',
       title: 'Actividad Económica',
-      description: 'Verificación del negocio y actividad comercial',
+      description: 'Información sobre el negocio y productos',
       required: true,
-      order: 3,
+      order: 2,
       status: 'pending',
       progress: { completed: 0, total: 4, percentage: 0 },
       fields: [
         {
-          id: 'business_type',
+          id: 'businessType',
+          sectionId: 'economic_activity',
+          fieldName: 'businessType',
           label: 'Tipo de negocio',
           type: 'text',
-          declared: applicationData.economicActivity.businessType,
+          declaredValue: applicationData.economicActivity.businessType,
           status: 'pending',
-          required: true
+          isRequired: true
         },
         {
-          id: 'business_active',
-          label: '¿Negocio activo?',
-          type: 'boolean',
-          declared: applicationData.economicActivity.isActive,
-          status: 'pending',
-          required: true
-        },
-        {
-          id: 'business_name',
+          id: 'businessName',
+          sectionId: 'economic_activity',
+          fieldName: 'businessName',
           label: 'Nombre del negocio',
           type: 'text',
-          declared: applicationData.economicActivity.businessName || 'Sin nombre',
+          declaredValue: applicationData.economicActivity.businessName || '',
           status: 'pending',
-          required: false
+          isRequired: false
         },
         {
-          id: 'products_match',
-          label: '¿Productos concuerdan?',
+          id: 'isActive',
+          sectionId: 'economic_activity',
+          fieldName: 'isActive',
+          label: 'Negocio activo',
           type: 'boolean',
-          declared: true, // Se asume que los productos declarados son correctos
+          declaredValue: applicationData.economicActivity.isActive,
           status: 'pending',
-          required: true
+          isRequired: true
+        },
+        {
+          id: 'products',
+          sectionId: 'economic_activity',
+          fieldName: 'products',
+          label: 'Productos/Servicios',
+          type: 'multiselect',
+          declaredValue: applicationData.economicActivity.products,
+          status: 'pending',
+          isRequired: true
         }
       ]
     },
-
     {
       id: 'financial_analysis',
       title: 'Análisis Financiero',
-      description: 'Verificación de ingresos y egresos declarados',
+      description: 'Ingresos, egresos y capacidad de pago',
       required: true,
-      order: 4,
+      order: 3,
       status: 'pending',
       progress: { completed: 0, total: 2, percentage: 0 },
       fields: [
         {
           id: 'monthly_income',
+          sectionId: 'financial_analysis',
+          fieldName: 'monthly_income',
           label: 'Ingresos mensuales',
           type: 'currency',
-          declared: applicationData.financialInfo.monthlyIncome,
+          declaredValue: applicationData.financialInfo.monthlyIncome,
           status: 'pending',
-          required: true,
-          threshold: 15 // ±15% permitido
+          isRequired: true,
+          threshold: 15
         },
         {
           id: 'monthly_expenses',
+          sectionId: 'financial_analysis',
+          fieldName: 'monthly_expenses',
           label: 'Egresos mensuales',
           type: 'currency',
-          declared: applicationData.financialInfo.monthlyExpenses,
+          declaredValue: applicationData.financialInfo.monthlyExpenses,
           status: 'pending',
-          required: true,
-          threshold: 20 // ±20% permitido
+          isRequired: true,
+          threshold: 20
         }
       ]
-    },
-
-    {
-      id: 'credit_request',
-      title: 'Solicitud de Crédito',
-      description: 'Verificación de monto y términos solicitados',
-      required: true,
-      order: 5,
-      status: 'pending',
-      progress: { completed: 0, total: 3, percentage: 0 },
-      fields: [
-        {
-          id: 'credit_amount',
-          label: 'Monto solicitado',
-          type: 'currency',
-          declared: applicationData.financialInfo.creditAmount,
-          status: 'pending',
-          required: true,
-          threshold: 10 // ±10% permitido
-        },
-        {
-          id: 'term',
-          label: 'Plazo (meses)',
-          type: 'number',
-          declared: applicationData.financialInfo.term,
-          status: 'pending',
-          required: true
-        },
-        {
-          id: 'installment',
-          label: 'Cuota mensual',
-          type: 'currency',
-          declared: applicationData.financialInfo.installment,
-          status: 'pending',
-          required: true
-        }
-      ]
-    },
-
-    {
-      id: 'guarantors',
-      title: 'Fiadores',
-      description: 'Verificación de fiadores declarados',
-      required: false,
-      order: 6,
-      status: 'pending',
-      progress: { completed: 0, total: applicationData.guarantors.length, percentage: 0 },
-      fields: applicationData.guarantors.map((guarantor, index) => ({
-        id: `guarantor_${guarantor.id}`,
-        label: `Fiador ${index + 1}: ${guarantor.fullName}`,
-        type: 'boolean' as const,
-        declared: true, // Se asume que el fiador está disponible
-        status: 'pending' as const,
-        required: index === 0 // Primer fiador es requerido
-      }))
     }
   ];
-
-  return sections;
-};
+}
 
 /**
  * Calcula el progreso de una sección
  */
-export const calculateSectionProgress = (section: INVCSection): INVCSection['progress'] => {
+export function calculateSectionProgress(section: INVCSection): INVCSection['progress'] {
   const completedFields = section.fields.filter(field => 
     field.status === 'confirmed' || field.status === 'adjusted'
   ).length;
   
-  const totalFields = section.fields.length;
-  const percentage = totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0;
-  
   return {
     completed: completedFields,
-    total: totalFields,
-    percentage
+    total: section.fields.length,
+    percentage: section.fields.length > 0 ? Math.round((completedFields / section.fields.length) * 100) : 0
   };
-};
+}
 
 /**
  * Determina el estado de una sección basado en sus campos
  */
-export const calculateSectionStatus = (section: INVCSection): INVCSection['status'] => {
-  const hasBlocked = section.fields.some(field => field.status === 'blocked');
-  if (hasBlocked) return 'blocked';
+export function calculateSectionStatus(section: INVCSection): INVCSection['status'] {
+  const { fields } = section;
   
-  const allCompleted = section.fields.every(field => 
-    field.status === 'confirmed' || field.status === 'adjusted' || !field.required
-  );
-  if (allCompleted) return 'completed';
+  if (fields.some(field => field.status === 'blocked')) return 'blocked';
   
-  const hasStarted = section.fields.some(field => field.status !== 'pending');
-  return hasStarted ? 'in_progress' : 'pending';
-};
+  const completedFields = fields.filter(field => 
+    field.status === 'confirmed' || field.status === 'adjusted'
+  ).length;
+  
+  if (completedFields === fields.length) return 'completed';
+  if (completedFields > 0) return 'in_progress';
+  return 'pending';
+}
 
 /**
  * Actualiza el progreso y estado de todas las secciones
  */
-export const updateSectionsProgress = (sections: INVCSection[]): INVCSection[] => {
+export function updateSectionsProgress(sections: INVCSection[]): INVCSection[] {
   return sections.map(section => ({
     ...section,
     progress: calculateSectionProgress(section),
     status: calculateSectionStatus(section)
   }));
-};
+}
 
 /**
- * Calcula el resumen general de la investigación
+ * Calcula un resumen general de la investigación
  */
-export const calculateInvestigationSummary = (comparison: ComparisonInvestigation): ComparisonInvestigation['summary'] => {
+export function calculateInvestigationSummary(comparison: ComparisonInvestigation): ComparisonInvestigation['summary'] {
   const allFields = comparison.sections.flatMap(section => section.fields);
   
   const totalFields = allFields.length;
-  const completedFields = allFields.filter(field => field.status === 'confirmed').length;
+  const completedFields = allFields.filter(field => 
+    field.status === 'confirmed' || field.status === 'adjusted'
+  ).length;
+  const confirmedFields = allFields.filter(field => field.status === 'confirmed').length;
   const adjustedFields = allFields.filter(field => field.status === 'adjusted').length;
   const blockedFields = allFields.filter(field => field.status === 'blocked').length;
   
+  // Determinar estado general
+  let overallStatus: 'pending' | 'in_progress' | 'completed' | 'blocked' = 'pending';
+  if (blockedFields > 0) {
+    overallStatus = 'blocked';
+  } else if (completedFields === totalFields) {
+    overallStatus = 'completed';
+  } else if (completedFields > 0) {
+    overallStatus = 'in_progress';
+  }
+  
   // Determinar riesgo general
-  let overallRisk: ComparisonInvestigation['summary']['overallRisk'] = 'low';
-  if (blockedFields > 0) overallRisk = 'critical';
-  else if (adjustedFields > totalFields * 0.3) overallRisk = 'high';
-  else if (adjustedFields > totalFields * 0.1) overallRisk = 'medium';
+  const criticalFields = allFields.filter(field => field.severity === 'critical').length;
+  const highFields = allFields.filter(field => field.severity === 'high').length;
+  
+  let overallRisk: 'low' | 'medium' | 'high' | 'critical' = 'low';
+  if (criticalFields > 0) {
+    overallRisk = 'critical';
+  } else if (highFields > 0) {
+    overallRisk = 'high';
+  } else if (adjustedFields > totalFields * 0.3) {
+    overallRisk = 'medium';
+  }
   
   // Determinar acción recomendada
-  let recommendedAction: ComparisonInvestigation['summary']['recommendedAction'] = 'approve';
-  if (overallRisk === 'critical') recommendedAction = 'reject';
-  else if (overallRisk === 'high') recommendedAction = 'review';
-  else if (overallRisk === 'medium') recommendedAction = 'approve_with_conditions';
+  let recommendedAction: 'approve' | 'approve_with_conditions' | 'review' | 'reject' | 'adjust_credit' | 'additional_verification' = 'approve';
+  if (overallRisk === 'critical' || blockedFields > 0) {
+    recommendedAction = 'reject';
+  } else if (overallRisk === 'high') {
+    recommendedAction = 'additional_verification';
+  } else if (adjustedFields > 0) {
+    recommendedAction = 'approve_with_conditions';
+  }
   
   return {
     totalFields,
     completedFields,
+    confirmedFields,
     adjustedFields,
     blockedFields,
+    overallStatus,
     overallRisk,
     recommendedAction
   };
-};
+}
 
 /**
- * Valida si una investigación puede ser finalizada
+ * Verifica si una investigación puede ser finalizada
  */
-export const canFinalizeInvestigation = (comparison: ComparisonInvestigation): boolean => {
-  // Verificar que no hay campos bloqueados críticos
-  const criticalBlocked = comparison.sections.some(section => 
-    section.required && section.status === 'blocked'
+export function canFinalizeInvestigation(comparison: ComparisonInvestigation): boolean {
+  const allFields = comparison.sections.flatMap(section => section.fields);
+  const requiredFields = allFields.filter(field => field.isRequired);
+  const completedRequiredFields = requiredFields.filter(field => 
+    field.status === 'confirmed' || field.status === 'adjusted'
   );
   
-  // Verificar que la geolocalización es válida
-  const geoValid = comparison.fotometria.geo_ok;
+  // No debe haber campos críticos bloqueados
+  const criticalBlockedFields = allFields.filter(field => 
+    field.status === 'blocked' && field.severity === 'critical'
+  );
   
-  // Verificar que todos los campos requeridos están completados
-  const requiredCompleted = comparison.sections.every(section => {
-    if (!section.required) return true;
-    return section.fields.filter(field => field.required).every(field => 
-      field.status === 'confirmed' || field.status === 'adjusted'
-    );
-  });
-  
-  return !criticalBlocked && geoValid && requiredCompleted;
-};
+  return completedRequiredFields.length === requiredFields.length && criticalBlockedFields.length === 0;
+}
 
 /**
  * Genera un reporte de discrepancias
  */
-export const generateDiscrepancyReport = (comparison: ComparisonInvestigation) => {
-  const discrepancies = Object.values(comparison.diffs);
+export function generateDiscrepancyReport(comparison: ComparisonInvestigation) {
+  const allFields = comparison.sections.flatMap(section => section.fields);
+  const adjustedFields = allFields.filter(field => field.status === 'adjusted');
   
   return {
-    total: discrepancies.length,
+    totalDiscrepancies: adjustedFields.length,
     bySeverity: {
-      low: discrepancies.filter(d => d.severity === 'low').length,
-      medium: discrepancies.filter(d => d.severity === 'medium').length,
-      high: discrepancies.filter(d => d.severity === 'high').length,
-      critical: discrepancies.filter(d => d.severity === 'critical').length
+      low: adjustedFields.filter(field => field.severity === 'low').length,
+      medium: adjustedFields.filter(field => field.severity === 'medium').length,
+      high: adjustedFields.filter(field => field.severity === 'high').length,
+      critical: adjustedFields.filter(field => field.severity === 'critical').length,
     },
-    autoDetected: discrepancies.filter(d => d.autoDetected).length,
-    manuallyAdjusted: discrepancies.filter(d => !d.autoDetected).length
+    autoDetected: adjustedFields.filter(field => {
+      const difference = calculateFieldDifference(field);
+      return difference !== null && difference > 10;
+    }).length,
+    manualAdjustments: adjustedFields.filter(field => field.comment).length
   };
-};
+}

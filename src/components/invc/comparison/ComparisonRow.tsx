@@ -11,7 +11,7 @@ interface ComparisonRowProps {
   field: ComparisonField;
   onObservedChange: (value: any) => void;
   onConfirm: () => void;
-  onAdjust: (value: any, comment: string) => void;
+  onAdjust: (reason: string) => void;
   onBlock: (reason: string) => void;
   className?: string;
   showDifference?: boolean;
@@ -26,13 +26,13 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
   className,
   showDifference = true
 }) => {
-  const [observedValue, setObservedValue] = useState(field.observed || '');
+  const [observedValue, setObservedValue] = useState(field.observedValue || '');
   const [isEditing, setIsEditing] = useState(false);
   const [comment, setComment] = useState(field.comment || '');
 
   useEffect(() => {
-    setObservedValue(field.observed || '');
-  }, [field.observed]);
+    setObservedValue(field.observedValue || '');
+  }, [field.observedValue]);
 
   const handleObservedChange = (value: any) => {
     setObservedValue(value);
@@ -50,7 +50,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
       alert('El comentario es obligatorio al realizar un ajuste');
       return;
     }
-    onAdjust(observedValue, comment);
+    onAdjust(comment);
     setIsEditing(false);
   };
 
@@ -70,7 +70,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
   const getDifferenceInfo = () => {
     if (!showDifference || field.type === 'boolean' || field.type === 'text') return null;
     
-    const declared = parseFloat(field.declared);
+    const declared = parseFloat(field.declaredValue);
     const observed = parseFloat(observedValue);
     
     if (isNaN(declared) || isNaN(observed)) return null;
@@ -164,7 +164,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-sm">{field.label}</h4>
-              {field.required && <Badge variant="outline" className="text-xs">Requerido</Badge>}
+              {field.isRequired && <Badge variant="outline" className="text-xs">Requerido</Badge>}
             </div>
             {getStatusBadge()}
           </div>
@@ -178,7 +178,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
               </label>
               <div className="p-3 bg-muted/50 rounded-md border">
                 <span className="text-sm font-medium">
-                  {formatValue(field.declared)}
+                  {formatValue(field.declaredValue)}
                 </span>
               </div>
             </div>

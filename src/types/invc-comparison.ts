@@ -3,17 +3,20 @@ import { EvidencePhoto, GeoLocation, Investigation } from './invc';
 // Campo individual para comparación declarado vs observado
 export interface ComparisonField {
   id: string;
+  sectionId: string;
+  fieldName: string;
   label: string;
-  type: 'text' | 'number' | 'currency' | 'date' | 'boolean' | 'select' | 'multiselect';
-  declared: any;                   // Valor declarado por el solicitante
-  observed?: any;                  // Valor observado por el gerente
+  type: 'text' | 'number' | 'currency' | 'date' | 'boolean' | 'select' | 'multiselect' | 'photo';
+  declaredValue: any;                  // Valor declarado por el solicitante
+  observedValue?: any;                 // Valor observado por el gerente
   status: 'pending' | 'confirmed' | 'adjusted' | 'blocked';
-  comment?: string;                // Comentario obligatorio al ajustar
-  evidence?: EvidencePhoto[];      // Evidencia fotográfica
-  threshold?: number;              // Umbral de diferencia permitida (para números)
-  required: boolean;               // Campo obligatorio
+  comment?: string;                    // Comentario obligatorio al ajustar
+  evidence?: EvidencePhoto[];          // Evidencia fotográfica
+  threshold?: number;                  // Umbral de diferencia permitida (para números)
+  isRequired: boolean;                 // Campo obligatorio
   severity?: 'low' | 'medium' | 'high' | 'critical'; // Severidad de la discrepancia
-  timestamp?: Date;                // Momento de la última modificación
+  adjustmentReason?: string;           // Razón del ajuste
+  timestamp?: Date;                    // Momento de la última modificación
 }
 
 // Sección que agrupa campos relacionados
@@ -53,6 +56,7 @@ export interface AdjustmentReason {
 // Datos de la aplicación original para comparación
 export interface ApplicationData {
   applicationId: string;
+  applicantName: string;
   applicantInfo: {
     fullName: string;
     dpi: string;
@@ -92,8 +96,15 @@ export interface ApplicationData {
 
 // Investigación extendida con capacidades de comparación
 export interface ComparisonInvestigation extends Investigation {
+  applicantName: string;
   applicationData?: ApplicationData;  // Datos originales de la solicitud
   sections: INVCSection[];           // Secciones organizadas para comparación
+  detectedDifferences: Array<{       // Diferencias detectadas
+    fieldName: string;
+    description: string;
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    autoDetected: boolean;
+  }>;
   diffs: Record<string, {           // Mapa de diferencias detectadas
     field: string;
     declaredValue: any;
@@ -118,10 +129,12 @@ export interface ComparisonInvestigation extends Investigation {
   summary: {                        // Resumen de la investigación
     totalFields: number;
     completedFields: number;
+    confirmedFields: number;
     adjustedFields: number;
     blockedFields: number;
+    overallStatus: 'pending' | 'in_progress' | 'completed' | 'blocked';
     overallRisk: 'low' | 'medium' | 'high' | 'critical';
-    recommendedAction: 'approve' | 'approve_with_conditions' | 'review' | 'reject';
+    recommendedAction: 'approve' | 'approve_with_conditions' | 'review' | 'reject' | 'adjust_credit' | 'additional_verification';
   };
 }
 

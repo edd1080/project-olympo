@@ -5,8 +5,6 @@ interface CameraState {
   isLoading: boolean;
   error: string | null;
   hasPermission: boolean;
-  capturePhoto: () => Promise<string>;
-  isCapturing: boolean;
 }
 
 export const useCamera = (facingMode: 'user' | 'environment' = 'environment') => {
@@ -16,6 +14,7 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     error: null,
     hasPermission: false
   });
+  const [isCapturing, setIsCapturing] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -162,6 +161,19 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     }
   }, []);
 
+  const capturePhoto = useCallback(async (): Promise<string> => {
+    setIsCapturing(true);
+    try {
+      const result = capture();
+      if (!result) {
+        throw new Error('Failed to capture photo');
+      }
+      return result;
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [capture]);
+
   const closeCamera = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
@@ -178,10 +190,12 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
 
   return {
     ...state,
+    isCapturing,
     videoRef,
     requestPermission,
     switchCamera,
     capture,
+    capturePhoto,
     closeCamera
   };
 };
