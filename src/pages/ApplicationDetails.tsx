@@ -582,7 +582,7 @@ const ApplicationDetails = () => {
               <Edit className="h-4 w-4 mr-1" />
               Editar
             </Button>
-            {role === 'agent' ? (
+            {role === 'manager' ? (
               <Button size="sm" onClick={handleStartINVC}>
                 <ClipboardList className="mr-2 h-4 w-4" />
                 Realizar INVC
