@@ -186,7 +186,7 @@ export default function InvestigationFlow() {
         <div className="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3">
           <div className="mobile-container flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 inline-flex items-center gap-1"><Check className="h-3 w-3" /> {progress.completed}/{progress.total}</Badge>
+              <Badge variant="outline" className="bg-info/10 text-info border-info inline-flex items-center gap-1"><Check className="h-3 w-3" /> {progress.completed}/{progress.total}</Badge>
               {discrepancies.count > 0 && (
                 <Badge variant="outline" className="inline-flex items-center gap-1"><FileWarning className="h-3 w-3" /> {discrepancies.count} discrep.</Badge>
               )}
