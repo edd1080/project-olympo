@@ -47,21 +47,21 @@ export default function PresenceCard({
   const getStatusBadge = () => {
     if (found) {
       return (
-        <Badge variant="outline" className="bg-success/10 text-success border-success">
+        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400">
           <Check className="h-3 w-3 mr-1" />
           Presente
         </Badge>
       );
     } else if (rescheduleDate) {
       return (
-        <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400">
           <Clock className="h-3 w-3 mr-1" />
           Reprogramado
         </Badge>
       );
     } else {
       return (
-        <Badge variant="secondary">
+        <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400">
           Ausente
         </Badge>
       );
