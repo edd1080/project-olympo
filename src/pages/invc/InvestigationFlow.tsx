@@ -24,17 +24,21 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useInvestigation } from "@/context/InvestigationContext";
+import { useUser } from "@/context/UserContext";
 import SwipeCard, { SwipeStatus } from "@/components/invc/SwipeCard";
 import PhotoEvidenceCard from "@/components/invc/PhotoEvidenceCard";
 import PresenceCard from "@/components/invc/PresenceCard";
 import TutorialModal from "@/components/invc/TutorialModal";
 import DynamicStatusChip from "@/components/invc/DynamicStatusChip";
-import { Camera, Check, FileWarning, Flag, MapPin, X, AlertTriangle } from "lucide-react";
+import { ComparisonView } from "@/components/invc/comparison/ComparisonView";
+import { ComparisonProvider } from "@/context/ComparisonContext";
+import { Camera, Check, FileWarning, Flag, MapPin, X, AlertTriangle, ArrowLeft } from "lucide-react";
 
 export default function InvestigationFlow() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useUser();
   const {
     getInvestigation,
     updateCardStatus,
@@ -132,6 +136,48 @@ export default function InvestigationFlow() {
     const completedPhotos = photoCards.filter(card => card.status === 'confirmed').length;
     return { completed: completedPhotos, total: photoCards.length };
   }, [investigation?.cards]);
+
+  // Si el usuario es manager, mostrar vista de comparación
+  const isManager = user?.role === 'manager';
+
+  if (isManager) {
+    return (
+      <ComparisonProvider>
+        <div className="min-h-screen bg-background">
+          {/* Header */}
+          <div className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-50">
+            <div className="container mx-auto px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/manager/invc')}
+                    className="gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Volver
+                  </Button>
+                  <div>
+                    <h1 className="font-semibold">INVC - {id}</h1>
+                    <p className="text-sm text-muted-foreground">
+                      {investigation?.applicantName || 'Cargando...'}
+                    </p>
+                  </div>
+                </div>
+                {investigation && <DynamicStatusChip investigation={investigation} />}
+              </div>
+            </div>
+          </div>
+
+          {/* Comparison View */}
+          <div className="container mx-auto px-4 py-6 max-w-6xl">
+            <ComparisonView applicationId={id!} />
+          </div>
+        </div>
+      </ComparisonProvider>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

@@ -5,6 +5,8 @@ interface CameraState {
   isLoading: boolean;
   error: string | null;
   hasPermission: boolean;
+  capturePhoto: () => Promise<string>;
+  isCapturing: boolean;
 }
 
 export const useCamera = (facingMode: 'user' | 'environment' = 'environment') => {
