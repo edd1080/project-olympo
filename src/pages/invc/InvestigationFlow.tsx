@@ -27,7 +27,9 @@ import { useInvestigation } from "@/context/InvestigationContext";
 import SwipeCard, { SwipeStatus } from "@/components/invc/SwipeCard";
 import PhotoEvidenceCard from "@/components/invc/PhotoEvidenceCard";
 import PresenceCard from "@/components/invc/PresenceCard";
-import { Camera, Check, FileWarning, Flag, MapPin } from "lucide-react";
+import TutorialModal from "@/components/invc/TutorialModal";
+import DynamicStatusChip from "@/components/invc/DynamicStatusChip";
+import { Camera, Check, FileWarning, Flag, MapPin, X, AlertTriangle } from "lucide-react";
 
 export default function InvestigationFlow() {
   const { id } = useParams<{ id: string }>();
@@ -47,11 +49,18 @@ export default function InvestigationFlow() {
   const [openSheet, setOpenSheet] = useState<null | string>(null);
   const [mismatchComment, setMismatchComment] = useState("");
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   // Initialize investigation on mount
   useEffect(() => {
     if (id) {
       initializeInvestigation(id);
+      // Show tutorial if first time
+      const tutorialCompleted = localStorage.getItem('invc_tutorial_completed');
+      if (!tutorialCompleted) {
+        setShowTutorial(true);
+      }
     }
   }, [id, initializeInvestigation]);
 
@@ -100,9 +109,45 @@ export default function InvestigationFlow() {
     toast({ variant: "success", title: "Foto capturada", description: "Evidencia guardada correctamente" });
   };
 
+  const handleExitInvestigation = () => {
+    setShowExitDialog(false);
+    navigate('/manager/invc');
+  };
+
+  const confirmExit = () => {
+    setShowExitDialog(true);
+  };
+
+  // Calculate geotag status
+  const geotagStatus = useMemo(() => {
+    if (!investigation) return 'pending';
+    const geoValid = investigation.geoValidation?.isValid;
+    return geoValid ? 'completed' : 'pending';
+  }, [investigation?.geoValidation]);
+
+  // Calculate photo status  
+  const photoStatus = useMemo(() => {
+    if (!investigation) return { completed: 0, total: 2 };
+    const photoCards = investigation.cards.filter(card => card.requiresPhoto);
+    const completedPhotos = photoCards.filter(card => card.status === 'confirmed').length;
+    return { completed: completedPhotos, total: photoCards.length };
+  }, [investigation?.cards]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Exit button overlay */}
+      <div className="absolute top-4 right-4 z-10">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={confirmExit}
+          className="rounded-full h-8 w-8 p-0 bg-background/80 backdrop-blur-sm border border-border"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
 
       <main className="mobile-container py-4">
         <header className="mb-4">
@@ -113,16 +158,22 @@ export default function InvestigationFlow() {
         <Card className="mb-4">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs inline-flex items-center gap-1">
-                  <MapPin className="h-3 w-3" /> Geotag
-                </Badge>
-                <Badge variant="secondary" className="text-xs inline-flex items-center gap-1">
-                  <Camera className="h-3 w-3" /> Fotos {Math.min(2, progress.completed)}/2
-                </Badge>
-                <Badge variant="secondary" className="text-xs inline-flex items-center gap-1">
-                  <Flag className="h-3 w-3" /> Discrepancias {discrepancies.count}
-                </Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <DynamicStatusChip 
+                  type="geotag" 
+                  status={geotagStatus}
+                />
+                <DynamicStatusChip 
+                  type="photos" 
+                  status={photoStatus.completed === photoStatus.total ? 'completed' : photoStatus.completed > 0 ? 'progress' : 'pending'}
+                  value={photoStatus.completed}
+                  maxValue={photoStatus.total}
+                />
+                <DynamicStatusChip 
+                  type="discrepancies" 
+                  status='pending'
+                  value={discrepancies.count}
+                />
               </div>
               <div className="flex-1 max-w-[40%]">
                 <Progress value={progress.percentage} className="h-2" />
@@ -247,6 +298,35 @@ export default function InvestigationFlow() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Exit confirmation dialog */}
+      <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-warning" />
+              ¿Salir de la investigación?
+            </DialogTitle>
+            <DialogDescription>
+              Si sales ahora, el progreso actual se guardará automáticamente y podrás continuar más tarde.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowExitDialog(false)}>
+              Continuar investigación
+            </Button>
+            <Button onClick={handleExitInvestigation} variant="destructive">
+              Salir
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tutorial Modal */}
+      <TutorialModal 
+        open={showTutorial} 
+        onOpenChange={setShowTutorial}
+      />
     </div>
   );
 }
