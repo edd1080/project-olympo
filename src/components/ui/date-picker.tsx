@@ -1,7 +1,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -45,8 +45,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     setCurrentMonth(newDate);
   };
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    const newDate = new Date(currentYear, currentMonthIndex + (direction === 'next' ? 1 : -1), 1);
+  const handleMonthChange = (monthIndex: string) => {
+    const newDate = new Date(currentYear, parseInt(monthIndex), 1);
     setCurrentMonth(newDate);
   };
 
@@ -115,43 +115,40 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <div className="p-4">
-          {/* Header con navegación mejorada */}
-          <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => navigateMonth('prev')}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+          {/* Header con dropdowns */}
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Select value={currentMonthIndex.toString()} onValueChange={handleMonthChange}>
+              <SelectTrigger className="w-32 h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {months.map((month, index) => (
+                  <SelectItem key={index} value={index.toString()}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             
-            <div className="flex items-center space-x-2">
-              <h4 className="font-medium text-sm min-w-[80px] text-center">
-                {months[currentMonthIndex]}
-              </h4>
-              <Select value={currentYear.toString()} onValueChange={handleYearChange}>
-                <SelectTrigger className="w-20 h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => navigateMonth('next')}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+            <Select value={currentYear.toString()} onValueChange={handleYearChange}>
+              <SelectTrigger className="w-20 h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Nombre del mes en negrita */}
+          <div className="text-center mb-2">
+            <h3 className="font-bold text-sm uppercase">
+              {months[currentMonthIndex]} {currentYear}
+            </h3>
           </div>
 
           {/* Días de la semana */}
