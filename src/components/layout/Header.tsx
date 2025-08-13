@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, X, User, Users, Edit, Plus } from 'lucide-react';
@@ -6,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 
 // Import the form context to access exit dialog functionality
 import { useFormContext } from '@/components/requestForm/RequestFormProvider';
+
 const applicationStatuses = {
   'pending': {
     label: 'Pendiente',
@@ -24,6 +26,7 @@ const applicationStatuses = {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
 };
+
 const Header = ({
   personName,
   applicationStatus,
@@ -54,14 +57,16 @@ const Header = ({
   // Get page title based on current path
   const getPageTitle = () => {
     const isEditRoute = location.pathname.includes('/edit');
-
+    
     // If we have an applicationId, show it (for application details pages)
     if (applicationId && isApplicationDetailsPage) {
       return applicationId;
     }
+    
     if (personName && isEditRoute) {
       return personName;
     }
+    
     switch (location.pathname) {
       case '/prospects':
         return 'Prospectos';
@@ -77,6 +82,7 @@ const Header = ({
         return 'Crédito Productivo';
     }
   };
+
   const handleGoBack = () => {
     // Special handling for edit routes
     if (location.pathname.includes('/edit')) {
@@ -96,6 +102,7 @@ const Header = ({
       navigate(-1);
     }
   };
+
   const handleExit = () => {
     // If we're in a form context (request form), use the form's exit handler
     if (formContext && location.pathname.includes('/edit')) {
@@ -112,19 +119,30 @@ const Header = ({
 
   // Show back button for application details and edit routes (but not main pages)
   const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login'].includes(location.pathname);
+
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;
+    
     const statusConfig = applicationStatuses[applicationStatus as keyof typeof applicationStatuses];
     if (!statusConfig) return null;
-    return <Badge className={`text-xs px-2 py-1 ${statusConfig.color}`}>
+
+    return (
+      <Badge className={`text-xs px-2 py-1 ${statusConfig.color}`}>
         {statusConfig.label}
-      </Badge>;
+      </Badge>
+    );
   };
-  return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
+
+  return (
+    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
         <div className="flex items-center gap-3 flex-1">
-          {showBackButton}
+          {showBackButton && (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Regresar">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
           
           {/* Title */}
           <h1 className="text-lg font-bold text-primary">
@@ -138,15 +156,27 @@ const Header = ({
           {getStatusBadge()}
           
           {/* Add button for applications page */}
-          {location.pathname === '/applications' && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" onClick={() => navigate('/applications/new')} aria-label="Nueva Solicitud">
+          {location.pathname === '/applications' && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" 
+              onClick={() => navigate('/applications/new')}
+              aria-label="Nueva Solicitud"
+            >
               <Plus className="h-4 w-4" />
-            </Button>}
+            </Button>
+          )}
           
-          {location.pathname.includes('/edit') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
+          {location.pathname.includes('/edit') && (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
               <X className="h-5 w-5" />
-            </Button>}
+            </Button>
+          )}
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };
+
 export default Header;

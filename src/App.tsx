@@ -6,15 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AppStateProvider } from "@/context/AppStateContext";
-import { UserProvider } from "@/context/UserContext";
-import { InvestigationProvider } from "@/context/InvestigationContext";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import React, { useState } from "react";
 
 // PWA Components
 import SplashScreen from "@/components/pwa/SplashScreen";
 import UpdatePrompt from "@/components/pwa/UpdatePrompt";
-import InstallPrompt from "@/components/pwa/InstallPrompt";
 import { usePWA } from "@/hooks/usePWA";
 
 // Pages
@@ -35,13 +31,6 @@ import PersonalInfo from "./pages/PersonalInfo";
 import ChangePassword from "./pages/ChangePassword";
 import ReportProblem from "./pages/ReportProblem";
 import ProspectDetails from "./pages/ProspectDetails";
-import InvestigationFlow from "./pages/invc/InvestigationFlow";
-
-// Manager Pages
-import INVC from "./pages/manager/INVC";
-import Authorizations from "./pages/manager/Authorizations";
-import ManagerAlerts from "./pages/manager/ManagerAlerts";
-import ManagerSettings from "./pages/manager/ManagerSettings";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -68,10 +57,8 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <UserProvider>
-          <InvestigationProvider>
-            <AppStateProvider>
-            <TooltipProvider>
+        <AppStateProvider>
+          <TooltipProvider>
             <Toaster />
             <Sonner />
             
@@ -85,134 +72,36 @@ const App = () => {
               onDismiss={handleDismissUpdate}
             />
             
-            {/* PWA Install Prompt */}
-            <InstallPrompt />
-            
             {/* Main App Content */}
             {!isLoading && (
               <BrowserRouter>
                 <Routes>
-                  {/* Public Routes */}
-                  <Route path="/login" element={<Login />} />
-                  
-                  {/* Agent Routes */}
-                  <Route path="/" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <Index />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <Applications />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/new" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <RequestForm />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/oficial/new" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <RequestFormOficial />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/exceptions" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <ApplicationExceptions />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/identity-verification" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <IdentityVerification />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id" element={
-                    <ProtectedRoute>
-                      <ApplicationDetails />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id/invc" element={
-                    <ProtectedRoute>
-                      <InvestigationFlow />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id/edit" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <RequestFormOficial />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id/guarantors/new" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <RequestForm />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id/guarantors/:guarantorId" element={
-                    <ProtectedRoute>
-                      <ApplicationDetails />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/applications/:id/guarantors/:guarantorId/edit" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <RequestForm />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/alerts" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <Alerts />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/settings" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <Settings />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/settings/personal-info" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <PersonalInfo />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/settings/change-password" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <ChangePassword />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/settings/report-problem" element={
-                    <ProtectedRoute requiredRole="agent">
-                      <ReportProblem />
-                    </ProtectedRoute>
-                  } />
-
-                  {/* Manager Routes */}
-                  <Route path="/manager/invc" element={
-                    <ProtectedRoute requiredRole="manager">
-                      <INVC />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/manager/authorizations" element={
-                    <ProtectedRoute requiredRole="manager">
-                      <Authorizations />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/manager/alerts" element={
-                    <ProtectedRoute requiredRole="manager">
-                      <ManagerAlerts />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/manager/settings" element={
-                    <ProtectedRoute requiredRole="manager">
-                      <ManagerSettings />
-                    </ProtectedRoute>
-                  } />
-
-                  {/* 404 Route */}
-                  <Route path="*" element={<NotFound />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/applications" element={<Applications />} />
+                <Route path="/applications/new" element={<RequestForm />} />
+                <Route path="/applications/oficial/new" element={<RequestFormOficial />} />
+                <Route path="/applications/exceptions" element={<ApplicationExceptions />} />
+                <Route path="/identity-verification" element={<IdentityVerification />} />
+                <Route path="/applications/:id" element={<ApplicationDetails />} />
+                <Route path="/applications/:id/edit" element={<RequestFormOficial />} />
+                <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
+                <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
+                <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+                <Route path="/alerts" element={<Alerts />} />
+                {/* Prequalifications route hidden for development 
+                <Route path="/prequalifications" element={<Prequalifications />} />
+                */}
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings/personal-info" element={<PersonalInfo />} />
+                <Route path="/settings/change-password" element={<ChangePassword />} />
+                <Route path="/settings/report-problem" element={<ReportProblem />} />
+                <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
             )}
-            </TooltipProvider>
-            </AppStateProvider>
-          </InvestigationProvider>
-        </UserProvider>
+          </TooltipProvider>
+        </AppStateProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

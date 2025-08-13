@@ -40,12 +40,8 @@
     --ring: 123 35% 52%;
 
     /* Success, Warning, Error actualizados */
-    --success: 123 50% 45%; /* Verde confirmado */
-    --success-foreground: 0 0% 100%;
-    --warning: 30 95% 58%; /* Naranja pendiente/ausente */
-    --warning-foreground: 30 95% 15%;
-    --info: 220 90% 56%; /* Azul para contadores */
-    --info-foreground: 0 0% 100%;
+    --success: 69 45% 50%; /* Verde lima más alineado con terciario */
+    --warning: 30 100% 64%; /* Naranja cálido #FF9E44 */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
 
     --radius: 0.75rem;
@@ -85,12 +81,8 @@
     --ring: 123 40% 58%;
 
     /* Success, Warning, Error actualizados */
-    --success: 123 55% 50%; /* Verde confirmado más brillante para dark */
-    --success-foreground: 123 55% 10%;
-    --warning: 30 95% 65%; /* Naranja más brillante para dark */
-    --warning-foreground: 30 95% 10%;
-    --info: 220 90% 65%; /* Azul más brillante para dark */
-    --info-foreground: 220 90% 10%;
+    --success: 69 50% 55%; /* Verde lima más brillante para dark */
+    --warning: 30 100% 70%; /* Naranja más brillante para dark */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
   }
 }
