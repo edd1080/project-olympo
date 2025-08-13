@@ -33,6 +33,7 @@ import PersonalInfo from "./pages/PersonalInfo";
 import ChangePassword from "./pages/ChangePassword";
 import ReportProblem from "./pages/ReportProblem";
 import ProspectDetails from "./pages/ProspectDetails";
+import InvestigationFlow from "./pages/invc/InvestigationFlow";
 
 // Manager Pages
 import INVC from "./pages/manager/INVC";
@@ -122,6 +123,11 @@ const App = () => {
                   <Route path="/applications/:id" element={
                     <ProtectedRoute>
                       <ApplicationDetails />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/applications/:id/invc" element={
+                    <ProtectedRoute requiredRole="agent">
+                      <InvestigationFlow />
                     </ProtectedRoute>
                   } />
                   <Route path="/applications/:id/edit" element={

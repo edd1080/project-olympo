@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/context/UserContext";
 import CircularProgress from "@/components/requestForm/CircularProgress";
 import NewGuarantorSheet from "@/components/requestForm/guarantors/NewGuarantorSheet";
 
@@ -100,6 +101,7 @@ const ApplicationDetails = () => {
   const {
     toast
   } = useToast();
+  const { role } = useUser();
   const { applications } = useAppState();
   const [application, setApplication] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -373,6 +375,10 @@ const ApplicationDetails = () => {
     navigate(`/applications/${id}/edit`);
   };
   
+  const handleStartINVC = () => {
+    navigate(`/applications/${id}/invc`);
+  };
+  
   const navigateToFormSection = (sectionId: string) => {
     // Determine the correct route based on application type
     const editRoute = application?.type === 'oficial' 
@@ -576,10 +582,17 @@ const ApplicationDetails = () => {
               <Edit className="h-4 w-4 mr-1" />
               Editar
             </Button>
-            <Button size="sm" onClick={handleSubmitApplication} disabled={!isApplicationReadyToSubmit()} className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}>
-              <Send className="mr-2 h-4 w-4" />
-              Enviar Solicitud
-            </Button>
+            {role === 'agent' ? (
+              <Button size="sm" onClick={handleStartINVC}>
+                <ClipboardList className="mr-2 h-4 w-4" />
+                Realizar INVC
+              </Button>
+            ) : (
+              <Button size="sm" onClick={handleSubmitApplication} disabled={!isApplicationReadyToSubmit()} className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}>
+                <Send className="mr-2 h-4 w-4" />
+                Enviar Solicitud
+              </Button>
+            )}
           </div>
         </div>
 
