@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AppStateProvider } from "@/context/AppStateContext";
 import { UserProvider } from "@/context/UserContext";
+import { InvestigationProvider } from "@/context/InvestigationContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import React, { useState } from "react";
 
@@ -67,7 +68,8 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <UserProvider>
-          <AppStateProvider>
+          <InvestigationProvider>
+            <AppStateProvider>
             <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -126,7 +128,7 @@ const App = () => {
                     </ProtectedRoute>
                   } />
                   <Route path="/applications/:id/invc" element={
-                    <ProtectedRoute requiredRole="agent">
+                    <ProtectedRoute>
                       <InvestigationFlow />
                     </ProtectedRoute>
                   } />
@@ -204,7 +206,8 @@ const App = () => {
               </BrowserRouter>
             )}
             </TooltipProvider>
-          </AppStateProvider>
+            </AppStateProvider>
+          </InvestigationProvider>
         </UserProvider>
       </ThemeProvider>
     </QueryClientProvider>

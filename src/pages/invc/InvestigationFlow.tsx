@@ -23,88 +23,81 @@ import {
 } from "@/components/ui/drawer";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useInvestigation } from "@/context/InvestigationContext";
 import SwipeCard, { SwipeStatus } from "@/components/invc/SwipeCard";
+import PhotoEvidenceCard from "@/components/invc/PhotoEvidenceCard";
+import PresenceCard from "@/components/invc/PresenceCard";
 import { Camera, Check, FileWarning, Flag, MapPin } from "lucide-react";
-
-interface Step {
-  id: string;
-  title: string;
-  subtitle?: string;
-  status: SwipeStatus;
-  requiresPhoto?: boolean;
-}
-
-const STORAGE_PREFIX = "invc_state_";
 
 export default function InvestigationFlow() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const {
+    getInvestigation,
+    updateCardStatus,
+    addCardComment,
+    initializeInvestigation,
+    completeInvestigation,
+    getProgress,
+    getDiscrepancies,
+    setPresence
+  } = useInvestigation();
 
-  const [steps, setSteps] = useState<Step[]>([]);
   const [openSheet, setOpenSheet] = useState<null | string>(null);
   const [mismatchComment, setMismatchComment] = useState("");
   const [reviewOpen, setReviewOpen] = useState(false);
 
-  // Load/Save local state (offline-first)
+  // Initialize investigation on mount
   useEffect(() => {
-    const key = STORAGE_PREFIX + id;
-    const raw = localStorage.getItem(key);
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as Step[];
-        setSteps(parsed);
-        return;
-      } catch {}
+    if (id) {
+      initializeInvestigation(id);
     }
-    // Default steps
-    setSteps([
-      { id: "onsite", title: "Estoy en sitio", subtitle: "Confirmar presencia o reprogramar", status: "pending" },
-      { id: "photo_business", title: "Foto del negocio/vivienda", subtitle: "Con geotag", status: "pending", requiresPhoto: true },
-      { id: "photo_applicant", title: "Foto del solicitante", subtitle: "Con geotag", status: "pending", requiresPhoto: true },
-      { id: "personal_info", title: "Información personal", subtitle: "Nombre, DPI y contactos", status: "pending" },
-      { id: "economic_activity", title: "Actividad económica", subtitle: "¿Activa?", status: "pending" },
-    ]);
-  }, [id]);
+  }, [id, initializeInvestigation]);
 
-  useEffect(() => {
-    const key = STORAGE_PREFIX + id;
-    localStorage.setItem(key, JSON.stringify(steps));
-  }, [steps, id]);
-
-  const total = steps.length || 1;
-  const confirmed = steps.filter((s) => s.status === "confirmed").length;
-  const mismatches = steps.filter((s) => s.status === "mismatch").length;
-  const progressValue = Math.round((confirmed / total) * 100);
-
-  const setStatus = (stepId: string, status: SwipeStatus) => {
-    setSteps((prev) => prev.map((s) => (s.id === stepId ? { ...s, status } : s)));
-  };
+  const investigation = id ? getInvestigation(id) : null;
+  const progress = id ? getProgress(id) : { completed: 0, total: 0, percentage: 0 };
+  const discrepancies = id ? getDiscrepancies(id) : { count: 0, critical: 0 };
 
   const currentDiscrepancies = useMemo(
-    () => steps.filter((s) => s.status === "mismatch" || s.status === "blocked"),
-    [steps]
+    () => investigation?.cards.filter((s) => s.status === "mismatch" || s.status === "blocked") || [],
+    [investigation?.cards]
   );
 
-  const handleOpenSheet = (stepId: string) => {
-    setOpenSheet(stepId);
+  const handleOpenSheet = (cardId: string) => {
+    setOpenSheet(cardId);
     setMismatchComment("");
   };
 
   const saveMismatch = () => {
-    if (!openSheet || !mismatchComment.trim()) {
+    if (!openSheet || !mismatchComment.trim() || !id) {
       toast({ variant: "warning", title: "Comentario requerido", description: "Agrega un comentario para registrar la discrepancia." });
       return;
     }
-    setStatus(openSheet, "mismatch");
+    updateCardStatus(id, openSheet, "mismatch");
+    addCardComment(id, openSheet, mismatchComment);
     setOpenSheet(null);
     toast({ variant: "default", title: "Discrepancia registrada", description: "Puedes revisarla en la revisión final." });
   };
 
   const confirmFinal = () => {
+    if (!id) return;
+    completeInvestigation(id);
     setReviewOpen(false);
     toast({ variant: "success", title: "INVC completado", description: `Se registró la investigación para ${id}.` });
     navigate(`/applications/${id}`);
+  };
+
+  const handlePresenceUpdate = (found: boolean, rescheduleDate?: Date) => {
+    if (!id) return;
+    setPresence(id, found, rescheduleDate);
+    updateCardStatus(id, "onsite", found ? "confirmed" : "mismatch");
+  };
+
+  const handlePhotoCapture = (cardId: string, photoUrl: string, geoTag?: any) => {
+    if (!id) return;
+    updateCardStatus(id, cardId, "confirmed");
+    toast({ variant: "success", title: "Foto capturada", description: "Evidencia guardada correctamente" });
   };
 
   return (
@@ -125,48 +118,67 @@ export default function InvestigationFlow() {
                   <MapPin className="h-3 w-3" /> Geotag
                 </Badge>
                 <Badge variant="secondary" className="text-xs inline-flex items-center gap-1">
-                  <Camera className="h-3 w-3" /> Fotos {Math.min(2, confirmed)}/2
+                  <Camera className="h-3 w-3" /> Fotos {Math.min(2, progress.completed)}/2
                 </Badge>
                 <Badge variant="secondary" className="text-xs inline-flex items-center gap-1">
-                  <Flag className="h-3 w-3" /> Discrepancias {mismatches}
+                  <Flag className="h-3 w-3" /> Discrepancias {discrepancies.count}
                 </Badge>
               </div>
               <div className="flex-1 max-w-[40%]">
-                <Progress value={progressValue} className="h-2" />
+                <Progress value={progress.percentage} className="h-2" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <div className="space-y-3">
-          {steps.map((s) => (
-            <SwipeCard
-              key={s.id}
-              title={s.title}
-              subtitle={s.subtitle}
-              status={s.status}
-              disabledRight={s.status === "blocked"}
-              onSwipeRight={() => {
-                setStatus(s.id, "confirmed");
-                toast({ variant: "success", title: "Confirmado", description: `${s.title} confirmado` });
-              }}
-              onSwipeLeft={() => handleOpenSheet(s.id)}
-            >
-              {/* Simple content examples */}
-              {s.id === "onsite" && (
+          {investigation?.cards.map((card) => {
+            // Special handling for specific card types
+            if (card.id === "onsite") {
+              return (
+                <PresenceCard
+                  key={card.id}
+                  onPresenceUpdate={handlePresenceUpdate}
+                  className="mb-3"
+                />
+              );
+            }
+
+            if (card.requiresPhoto) {
+              return (
+                <PhotoEvidenceCard
+                  key={card.id}
+                  title={card.title}
+                  subtitle={card.subtitle}
+                  onPhotoCapture={(photoUrl, geoTag) => handlePhotoCapture(card.id, photoUrl, geoTag)}
+                  isRequired={true}
+                  className="mb-3"
+                />
+              );
+            }
+
+            // Regular swipe cards for other types
+            return (
+              <SwipeCard
+                key={card.id}
+                title={card.title}
+                subtitle={card.subtitle}
+                status={card.status}
+                disabledRight={card.status === "blocked"}
+                onSwipeRight={() => {
+                  if (!id) return;
+                  updateCardStatus(id, card.id, "confirmed");
+                  toast({ variant: "success", title: "Confirmado", description: `${card.title} confirmado` });
+                }}
+                onSwipeLeft={() => handleOpenSheet(card.id)}
+              >
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-sm text-muted-foreground">¿Encontró a la persona?</span>
-                  <Badge variant="outline">Marcar con swipe</Badge>
+                  <span className="text-sm text-muted-foreground">Desliza para confirmar o marcar discrepancia</span>
+                  <Badge variant="outline">Swipe</Badge>
                 </div>
-              )}
-              {s.requiresPhoto && (
-                <div className="flex items-center justify-between py-2">
-                  <Button variant="outline" size="sm"><Camera className="h-4 w-4 mr-2" />Adjuntar foto</Button>
-                  <Badge variant="secondary">Geotag pendiente</Badge>
-                </div>
-              )}
-            </SwipeCard>
-          ))}
+              </SwipeCard>
+            );
+          })}
         </div>
 
         {/* Sticky footer */}
@@ -174,12 +186,12 @@ export default function InvestigationFlow() {
         <div className="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3">
           <div className="mobile-container flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="inline-flex items-center gap-1"><Check className="h-3 w-3" /> {confirmed}/{total}</Badge>
-              {mismatches > 0 && (
-                <Badge variant="outline" className="inline-flex items-center gap-1"><FileWarning className="h-3 w-3" /> {mismatches} discrep.</Badge>
+              <Badge variant="outline" className="inline-flex items-center gap-1"><Check className="h-3 w-3" /> {progress.completed}/{progress.total}</Badge>
+              {discrepancies.count > 0 && (
+                <Badge variant="outline" className="inline-flex items-center gap-1"><FileWarning className="h-3 w-3" /> {discrepancies.count} discrep.</Badge>
               )}
             </div>
-            <Button onClick={() => setReviewOpen(true)} disabled={confirmed === 0}>Revisión final</Button>
+            <Button onClick={() => setReviewOpen(true)} disabled={progress.completed === 0}>Revisión final</Button>
           </div>
         </div>
       </main>
