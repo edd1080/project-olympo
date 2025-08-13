@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon, Shield } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { validateDPI, formatDPI } from '@/utils/dpiValidation';
+import { validateDPI, formatDPI, formatNIT } from '@/utils/dpiValidation';
 
 interface PersonalDataFormProps {
   formData: any;
@@ -19,23 +19,25 @@ const PersonalDataForm: React.FC<PersonalDataFormProps> = ({ formData, updateFor
   const [nitError, setNitError] = React.useState<string>('');
 
   const handleCUIChange = (value: string) => {
-    const validation = validateDPI(value);
+    const formattedValue = formatDPI(value);
+    const validation = validateDPI(formattedValue);
     if (!validation.isValid) {
       setCuiError(validation.error || '');
     } else {
       setCuiError('');
     }
-    updateFormData('cui', value);
+    updateFormData('cui', formattedValue);
   };
 
   const handleNITChange = (value: string) => {
-    // Basic NIT validation (Guatemala format)
-    if (value && !/^\d{1,8}-?\d?$/.test(value)) {
-      setNitError('Formato de NIT inválido');
+    const formattedValue = formatNIT(value);
+    const cleanNIT = formattedValue.replace(/[\s-]/g, '');
+    if (value && cleanNIT.length > 0 && !/^\d+$/.test(cleanNIT)) {
+      setNitError('El NIT debe contener solo números');
     } else {
       setNitError('');
     }
-    updateFormData('nit', value);
+    updateFormData('nit', formattedValue);
   };
 
   const isPreFilled = formData.personalInfo?.numeroDocumento;
@@ -164,9 +166,12 @@ const PersonalDataForm: React.FC<PersonalDataFormProps> = ({ formData, updateFor
                 disabled={(date) => {
                   const today = new Date();
                   const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-                  return date > eighteenYearsAgo || date < new Date("1900-01-01");
+                  return date > eighteenYearsAgo || date < new Date("1924-01-01");
                 }}
                 initialFocus
+                captionLayout="dropdown-buttons"
+                fromYear={1924}
+                toYear={new Date().getFullYear() - 18}
                 className={cn("p-3 pointer-events-auto")}
               />
             </PopoverContent>

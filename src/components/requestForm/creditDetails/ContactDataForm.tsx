@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { MapPin, Plus } from 'lucide-react';
 import AddressModule from '../AddressModule';
-import { validatePhone } from '@/utils/dpiValidation';
+import { validatePhone, formatPhoneNumber } from '@/utils/dpiValidation';
 interface ContactDataFormProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -23,26 +23,29 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({
     setIsAddressOpen(false);
   };
   const handleMobileChange = (value: string) => {
-    const validation = validatePhone(value);
+    const formattedValue = formatPhoneNumber(value);
+    const validation = validatePhone(formattedValue);
     if (!validation.isValid) {
       setMobileError(validation.error || '');
     } else {
       setMobileError('');
     }
-    updateFormData('mobilePhone', value);
+    updateFormData('mobilePhone', formattedValue);
   };
   const handleHomePhoneChange = (value: string) => {
     if (value) {
-      const validation = validatePhone(value);
+      const formattedValue = formatPhoneNumber(value);
+      const validation = validatePhone(formattedValue);
       if (!validation.isValid) {
         setHomePhoneError(validation.error || '');
       } else {
         setHomePhoneError('');
       }
+      updateFormData('homePhone', formattedValue);
     } else {
       setHomePhoneError('');
+      updateFormData('homePhone', value);
     }
-    updateFormData('homePhone', value);
   };
   return <div className="space-y-6">
       {/* Subtitle */}
@@ -83,7 +86,13 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({
           <Label htmlFor="homePhone" className="text-label">
             Teléfono casa
           </Label>
-          <Input id="homePhone" value={formData.homePhone || ''} onChange={e => handleHomePhoneChange(e.target.value)} placeholder="0000-0000" />
+          <Input 
+            id="homePhone" 
+            inputMode="numeric"
+            value={formData.homePhone || ''} 
+            onChange={e => handleHomePhoneChange(e.target.value)} 
+            placeholder="0000-0000" 
+          />
           {homePhoneError && <p className="text-sm text-destructive">{homePhoneError}</p>}
         </div>
 
@@ -91,7 +100,13 @@ const ContactDataForm: React.FC<ContactDataFormProps> = ({
           <Label htmlFor="mobilePhone" className="text-label">
             Número celular *
           </Label>
-          <Input id="mobilePhone" value={formData.mobilePhone || ''} onChange={e => handleMobileChange(e.target.value)} placeholder="0000-0000" />
+          <Input 
+            id="mobilePhone" 
+            inputMode="numeric"
+            value={formData.mobilePhone || ''} 
+            onChange={e => handleMobileChange(e.target.value)} 
+            placeholder="0000-0000" 
+          />
           {mobileError && <p className="text-sm text-destructive">{mobileError}</p>}
         </div>
       </div>

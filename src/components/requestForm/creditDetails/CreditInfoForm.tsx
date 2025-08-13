@@ -12,6 +12,24 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
   formData,
   updateFormData
 }) => {
+  // Product-based configurations
+  const productConfigs = {
+    'credifacil': { interestRate: 18, termMonths: 24 },
+    'crediamiga': { interestRate: 15, termMonths: 24 },
+    'credicasa': { interestRate: 12, termMonths: 36 },
+    'credinegocio': { interestRate: 20, termMonths: 18 },
+    'crediemergencia': { interestRate: 25, termMonths: 12 }
+  };
+
+  // Auto-update interest rate and term when product changes
+  const handleProductTypeChange = (value: string) => {
+    updateFormData('productType', value);
+    const config = productConfigs[value as keyof typeof productConfigs];
+    if (config) {
+      updateFormData('interestRate', config.interestRate.toString());
+      updateFormData('termMonths', config.termMonths.toString());
+    }
+  };
   return <div className="space-y-6">
       {/* Subtitle */}
       <h3 className="text-subtitle text-secondary-foreground">Información del crédito</h3>
@@ -25,18 +43,21 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
       </div>
 
       {/* Product information grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="productType" className="text-label">
             Tipo de producto *
           </Label>
-          <Select onValueChange={value => updateFormData('productType', value)} value={formData.productType || ''}>
+          <Select onValueChange={handleProductTypeChange} value={formData.productType || ''}>
             <SelectTrigger>
-              <SelectValue placeholder="Seleccionar tipo" />
+              <SelectValue placeholder="Seleccionar producto" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="colectivo">Colectivo</SelectItem>
+              <SelectItem value="credifacil">CrediFácil</SelectItem>
+              <SelectItem value="crediamiga">CrediAmiga</SelectItem>
+              <SelectItem value="credicasa">CrediCasa</SelectItem>
+              <SelectItem value="credinegocio">CrediNegocio</SelectItem>
+              <SelectItem value="crediemergencia">CrediEmergencia</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -50,25 +71,8 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
               <SelectValue placeholder="Seleccionar modalidad" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="normal">Normal</SelectItem>
-              <SelectItem value="especial">Especial</SelectItem>
-              <SelectItem value="emergencia">Emergencia</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="product" className="text-label">
-            Producto *
-          </Label>
-          <Select onValueChange={value => updateFormData('product', value)} value={formData.product || ''}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar producto" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="credito-comercial">Crédito Comercial</SelectItem>
-              <SelectItem value="credito-personal">Crédito Personal</SelectItem>
-              <SelectItem value="microcredito">Microcrédito</SelectItem>
+              <SelectItem value="individual">Individual</SelectItem>
+              <SelectItem value="grupo">En Grupo</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -78,14 +82,35 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="requestedAmount" className="text-label">Monto solicitado (Q) *</Label>
-          <Input id="requestedAmount" type="number" min="0" step="0.01" value={formData.requestedAmount || ''} onChange={e => updateFormData('requestedAmount', e.target.value)} placeholder="0.00" />
+          <Input 
+            id="requestedAmount" 
+            type="number" 
+            inputMode="numeric"
+            min="0" 
+            step="0.01" 
+            value={formData.requestedAmount || ''} 
+            onChange={e => updateFormData('requestedAmount', e.target.value)} 
+            placeholder="0.00" 
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="interestRate" className="text-label">
             Tasa de interés (%) *
           </Label>
-          <Input id="interestRate" type="number" min="0" max="100" step="0.01" value={formData.interestRate || ''} onChange={e => updateFormData('interestRate', e.target.value)} placeholder="0.00" readOnly={formData.product ? true : false} className={formData.product ? "bg-muted" : ""} />
+          <Input 
+            id="interestRate" 
+            type="number" 
+            inputMode="numeric"
+            min="0" 
+            max="100" 
+            step="0.01" 
+            value={formData.interestRate || ''} 
+            onChange={e => updateFormData('interestRate', e.target.value)} 
+            placeholder="0.00" 
+            readOnly 
+            className="bg-muted" 
+          />
         </div>
       </div>
 
@@ -95,7 +120,18 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
           <Label htmlFor="termMonths" className="text-label">
             Plazo (meses) *
           </Label>
-          <Input id="termMonths" type="number" min="1" max="120" value={formData.termMonths || ''} onChange={e => updateFormData('termMonths', e.target.value)} placeholder="12" />
+          <Input 
+            id="termMonths" 
+            type="number" 
+            inputMode="numeric"
+            min="1" 
+            max="120" 
+            value={formData.termMonths || ''} 
+            onChange={e => updateFormData('termMonths', e.target.value)} 
+            placeholder="24" 
+            readOnly 
+            className="bg-muted" 
+          />
         </div>
 
         <div className="space-y-2">
@@ -112,7 +148,18 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
           <Label htmlFor="guarantee" className="text-label">
             Garantía
           </Label>
-          <Input id="guarantee" value={formData.guarantee || ''} onChange={e => updateFormData('guarantee', e.target.value)} placeholder="Tipo de garantía" />
+          <Select onValueChange={value => updateFormData('guarantee', value)} value={formData.guarantee || ''}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar garantía" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hipotecaria">Garantía Hipotecaria</SelectItem>
+              <SelectItem value="prendaria">Garantía Prendaria</SelectItem>
+              <SelectItem value="fiador">Fiador Solidario</SelectItem>
+              <SelectItem value="aval">Aval</SelectItem>
+              <SelectItem value="sin-garantia">Sin Garantía</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
