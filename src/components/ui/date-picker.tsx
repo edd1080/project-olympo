@@ -37,16 +37,16 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const handleDateSelect = (selectedDate: Date) => {
     onSelect?.(selectedDate);
-    setIsOpen(false); // Cerrar automáticamente al seleccionar
-  };
-
-  const handleMonthChange = (monthIndex: string) => {
-    const newDate = new Date(currentYear, parseInt(monthIndex), 1);
-    setCurrentMonth(newDate);
+    setIsOpen(false);
   };
 
   const handleYearChange = (year: string) => {
     const newDate = new Date(parseInt(year), currentMonthIndex, 1);
+    setCurrentMonth(newDate);
+  };
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentYear, currentMonthIndex + (direction === 'next' ? 1 : -1), 1);
     setCurrentMonth(newDate);
   };
 
@@ -75,14 +75,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
         date.getDate() === day && 
         date.getMonth() === currentMonthIndex && 
         date.getFullYear() === currentYear;
+      
+      const isToday = new Date().toDateString() === dayDate.toDateString();
 
       days.push(
         <Button
           key={day}
           variant={isSelected ? "default" : "ghost"}
           className={cn(
-            "h-9 w-9 p-0 font-normal",
-            isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+            "h-9 w-9 p-0 font-normal transition-colors",
+            isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+            isToday && !isSelected && "bg-accent text-accent-foreground font-semibold"
           )}
           onClick={() => handleDateSelect(dayDate)}
         >
@@ -107,29 +110,28 @@ const DatePicker: React.FC<DatePickerProps> = ({
           disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : placeholder}
+          {date ? format(date, "dd/MM/yyyy") : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-3">
-          {/* Header con navegación de mes y año */}
+        <div className="p-4">
+          {/* Header con navegación mejorada */}
           <div className="flex items-center justify-between mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => navigateMonth('prev')}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
             <div className="flex items-center space-x-2">
-              <Select value={currentMonthIndex.toString()} onValueChange={handleMonthChange}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {months.map((month, index) => (
-                    <SelectItem key={index} value={index.toString()}>
-                      {month}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
+              <h4 className="font-medium text-sm min-w-[80px] text-center">
+                {months[currentMonthIndex]}
+              </h4>
               <Select value={currentYear.toString()} onValueChange={handleYearChange}>
-                <SelectTrigger className="w-20">
+                <SelectTrigger className="w-20 h-8">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -141,12 +143,21 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 </SelectContent>
               </Select>
             </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => navigateMonth('next')}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Días de la semana */}
           <div className="grid grid-cols-7 gap-1 mb-2">
-            {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((day) => (
-              <div key={day} className="h-9 w-9 flex items-center justify-center text-sm font-medium text-muted-foreground">
+            {["D", "L", "M", "M", "J", "V", "S"].map((day, index) => (
+              <div key={index} className="h-8 w-8 flex items-center justify-center text-xs font-medium text-muted-foreground">
                 {day}
               </div>
             ))}
