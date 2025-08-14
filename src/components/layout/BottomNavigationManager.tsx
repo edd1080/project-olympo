@@ -13,8 +13,7 @@ const BottomNavigationManager = () => {
     { path: '/manager', icon: Home, label: 'Inicio', exactMatch: true },
     { path: '/manager/invc', icon: ClipboardList, label: 'INVC' },
     { path: '/manager/authorizations', icon: CheckCircle, label: 'Autorizar' },
-    { path: '/alerts', icon: AlertCircle, label: 'Alertas' },
-    { path: '/settings', icon: Settings, label: 'Ajustes' }
+    { path: '/manager/settings', icon: Settings, label: 'Ajustes' }
   ];
   
   const isActive = (path: string, exactMatch?: boolean): boolean => {

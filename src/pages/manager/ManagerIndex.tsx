@@ -6,7 +6,8 @@ import BottomNavigationManager from '@/components/layout/BottomNavigationManager
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ClipboardList, CheckCircle, AlertTriangle, Clock, TrendingUp, Users } from 'lucide-react';
+import { ClipboardList, CheckCircle, AlertTriangle, Clock, TrendingUp, Users, ChevronRight } from 'lucide-react';
+import ManagerMetricsCard from '@/components/dashboard/ManagerMetricsCard';
 
 const ManagerIndex = () => {
   const { user } = useAuth();
@@ -84,114 +85,101 @@ const ManagerIndex = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className="card-hover">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <ClipboardList className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">INVC Pendientes</p>
-                  <p className="text-2xl font-semibold">{stats.pendingINVC}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-hover">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-success/10 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Completadas Hoy</p>
-                  <p className="text-2xl font-semibold">{stats.completedToday}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-hover">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-warning/10 rounded-lg">
-                  <Clock className="h-5 w-5 text-warning" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Autorizaciones</p>
-                  <p className="text-2xl font-semibold">{stats.pendingAuthorizations}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-hover">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-error/10 rounded-lg">
-                  <AlertTriangle className="h-5 w-5 text-error" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Alertas Críticas</p>
-                  <p className="text-2xl font-semibold">{stats.criticalAlerts}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ManagerMetricsCard
+            icon={ClipboardList}
+            title="INVC Pendientes"
+            value={stats.pendingINVC}
+            colorClass="bg-blue-500/10"
+            iconColorClass="text-blue-500"
+          />
+          
+          <ManagerMetricsCard
+            icon={CheckCircle}
+            title="Completadas Hoy"
+            value={stats.completedToday}
+            colorClass="bg-green-500/10"
+            iconColorClass="text-green-500"
+          />
+          
+          <ManagerMetricsCard
+            icon={Clock}
+            title="Autorizaciones"
+            description="Pendientes"
+            value={stats.pendingAuthorizations}
+            colorClass="bg-amber-500/10"
+            iconColorClass="text-amber-500"
+          />
+          
+          <ManagerMetricsCard
+            icon={AlertTriangle}
+            title="Alertas Críticas"
+            description="Requieren atención"
+            value={stats.criticalAlerts}
+            colorClass="bg-red-500/10"
+            iconColorClass="text-red-500"
+          />
         </div>
 
         {/* Quick Actions */}
         <div className="space-y-4">
           <h3 className="text-section-title">Acciones Rápidas</h3>
           <div className="grid gap-3">
-            <Button 
-              onClick={() => navigate('/manager/invc')}
-              className="w-full justify-start h-auto p-4"
-              variant="outline"
-            >
-              <div className="flex items-center gap-3 w-full">
-                <ClipboardList className="h-5 w-5" />
-                <div className="text-left">
-                  <p className="font-medium">Gestionar INVC</p>
-                  <p className="text-sm text-muted-foreground">
-                    Investigaciones y validaciones de campo
-                  </p>
+            <Card className="card-hover cursor-pointer" onClick={() => navigate('/manager/invc')}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-blue-500/10 rounded-lg">
+                      <ClipboardList className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Gestionar INVC</p>
+                      <p className="text-sm text-muted-foreground">
+                        Investigaciones y validaciones de campo
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </div>
-              </div>
-            </Button>
+              </CardContent>
+            </Card>
 
-            <Button 
-              onClick={() => navigate('/manager/authorizations')}
-              className="w-full justify-start h-auto p-4"
-              variant="outline"
-            >
-              <div className="flex items-center gap-3 w-full">
-                <CheckCircle className="h-5 w-5" />
-                <div className="text-left">
-                  <p className="font-medium">Autorizar Créditos</p>
-                  <p className="text-sm text-muted-foreground">
-                    {stats.pendingAuthorizations} solicitudes esperando aprobación
-                  </p>
+            <Card className="card-hover cursor-pointer" onClick={() => navigate('/manager/authorizations')}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-green-500/10 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Autorizar Créditos</p>
+                      <p className="text-sm text-muted-foreground">
+                        {stats.pendingAuthorizations} solicitudes esperando aprobación
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </div>
-              </div>
-            </Button>
+              </CardContent>
+            </Card>
 
-            <Button 
-              onClick={() => navigate('/alerts')}
-              className="w-full justify-start h-auto p-4"
-              variant="outline"
-            >
-              <div className="flex items-center gap-3 w-full">
-                <AlertTriangle className="h-5 w-5" />
-                <div className="text-left">
-                  <p className="font-medium">Ver Alertas</p>
-                  <p className="text-sm text-muted-foreground">
-                    {stats.criticalAlerts} alertas críticas activas
-                  </p>
+            <Card className="card-hover cursor-pointer" onClick={() => navigate('/alerts')}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-red-500/10 rounded-lg">
+                      <AlertTriangle className="h-5 w-5 text-red-500" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Ver Alertas</p>
+                      <p className="text-sm text-muted-foreground">
+                        {stats.criticalAlerts} alertas críticas activas
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </div>
-              </div>
-            </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
