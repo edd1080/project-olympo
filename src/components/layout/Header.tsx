@@ -79,6 +79,8 @@ const Header = ({
         return 'INVC';
       case '/manager/authorizations':
         return 'Autorizar';
+      case '/manager/settings':
+        return 'Ajustes y Configuración';
       default:
         // Handle INVC routes
         if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/comparison')) {
