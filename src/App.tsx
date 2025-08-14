@@ -24,6 +24,8 @@ import { ManagerOnlyGuard } from "@/components/auth/RoleGuard";
 import ManagerIndex from "./pages/manager/ManagerIndex";
 import INVCList from "./pages/manager/INVCList";
 import INVCDetails from "./pages/manager/INVCDetails";
+import INVCComparison from "./pages/manager/INVCComparison";
+import INVCFinalReview from "./pages/manager/INVCFinalReview";
 import Authorizations from "./pages/manager/Authorizations";
 
 // Pages
@@ -116,11 +118,13 @@ const App = () => {
                     <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
                     <Route path="/alerts" element={<Alerts />} />
                     
-                    {/* Manager Routes */}
-                    <Route path="/manager" element={<ManagerOnlyGuard><ManagerIndex /></ManagerOnlyGuard>} />
-                    <Route path="/manager/invc" element={<ManagerOnlyGuard><INVCList /></ManagerOnlyGuard>} />
-                    <Route path="/manager/invc/:id" element={<ManagerOnlyGuard><INVCDetails /></ManagerOnlyGuard>} />
-                    <Route path="/manager/authorizations" element={<ManagerOnlyGuard><Authorizations /></ManagerOnlyGuard>} />
+                     {/* Manager Routes */}
+                     <Route path="/manager" element={<ManagerOnlyGuard><ManagerIndex /></ManagerOnlyGuard>} />
+                     <Route path="/manager/invc" element={<ManagerOnlyGuard><INVCList /></ManagerOnlyGuard>} />
+                     <Route path="/manager/invc/:id" element={<ManagerOnlyGuard><INVCDetails /></ManagerOnlyGuard>} />
+                     <Route path="/manager/invc/:id/comparison" element={<ManagerOnlyGuard><INVCComparison /></ManagerOnlyGuard>} />
+                     <Route path="/manager/invc/:id/review" element={<ManagerOnlyGuard><INVCFinalReview /></ManagerOnlyGuard>} />
+                     <Route path="/manager/authorizations" element={<ManagerOnlyGuard><Authorizations /></ManagerOnlyGuard>} />
                     
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/settings/personal-info" element={<PersonalInfo />} />

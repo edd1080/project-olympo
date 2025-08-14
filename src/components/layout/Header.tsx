@@ -78,14 +78,38 @@ const Header = ({
         return 'Ajustes';
       case '/login':
         return 'Iniciar Sesión';
+      case '/manager/invc':
+        return 'INVC - Lista';
       default:
+        // Handle INVC routes
+        if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/comparison')) {
+          const id = location.pathname.split('/')[3];
+          return `INVC - Solicitud #${id}`;
+        }
+        if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/review')) {
+          return 'Revisión Final - INVC';
+        }
+        if (location.pathname.includes('/manager/invc/')) {
+          const id = location.pathname.split('/')[3];
+          return `INVC - Detalles #${id}`;
+        }
         return 'Crédito Productivo';
     }
   };
 
   const handleGoBack = () => {
+    // Special handling for INVC routes
+    if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/comparison')) {
+      const id = location.pathname.split('/')[3];
+      navigate(`/manager/invc/${id}`);
+    } else if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/review')) {
+      const id = location.pathname.split('/')[3];
+      navigate(`/manager/invc/${id}/comparison`);
+    } else if (location.pathname.match(/^\/manager\/invc\/[^\/]+$/)) {
+      navigate('/manager/invc');
+    } 
     // Special handling for edit routes
-    if (location.pathname.includes('/edit')) {
+    else if (location.pathname.includes('/edit')) {
       // Extract application ID from path like "/applications/SCO_884214/edit"
       const pathParts = location.pathname.split('/');
       const appId = pathParts[2];
@@ -118,7 +142,7 @@ const Header = ({
   };
 
   // Show back button for application details and edit routes (but not main pages)
-  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login'].includes(location.pathname);
+  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager/invc'].includes(location.pathname);
 
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;

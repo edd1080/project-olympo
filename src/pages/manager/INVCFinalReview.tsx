@@ -125,11 +125,7 @@ const INVCFinalReviewContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
-        title="Revisión Final - INVC"
-        showBack
-        onBack={() => navigate(`/manager/invc/${invcData.solicitudId}/comparison`)}
-      />
+      <Header />
 
       <div className="p-4 pb-20 space-y-6">
         {/* Resumen General */}

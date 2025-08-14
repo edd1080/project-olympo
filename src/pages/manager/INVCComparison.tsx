@@ -99,11 +99,7 @@ const INVCComparisonContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
-        title={`INVC - Solicitud #${invcData.solicitudId}`}
-        showBack
-        onBack={() => navigate(`/manager/invc/${invcData.solicitudId}`)}
-      />
+      <Header />
 
       <div className="p-4 pb-20">
         <INVCStickySummary onFinalize={handleFinalize} />
