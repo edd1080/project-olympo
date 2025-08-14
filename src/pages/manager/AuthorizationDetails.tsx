@@ -6,6 +6,7 @@ import { SectionNavigation } from '@/components/authorization/SectionNavigation'
 import { SectionContent } from '@/components/authorization/SectionContent';
 import { ActionButtons } from '@/components/authorization/ActionButtons';
 import { ValidationChecklist } from '@/components/authorization/ValidationChecklist';
+import { ConfirmationModal } from '@/components/authorization/ConfirmationModal';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { AuthorizationRequest, AuthorizationAction, ValidationResult } from '@/types/authorization';
@@ -20,6 +21,7 @@ const AuthorizationDetails = () => {
   const [authorizationRequest, setAuthorizationRequest] = useState<AuthorizationRequest | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult>({ isValid: false, blockedReasons: [], warnings: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
   // Mock data - in real app this would come from API
   useEffect(() => {
@@ -96,6 +98,16 @@ const AuthorizationDetails = () => {
 
     loadAuthorizationRequest();
   }, [id]);
+
+  // Listen for exit event from Header
+  useEffect(() => {
+    const handleAuthorizationExit = () => {
+      setShowExitConfirmation(true);
+    };
+
+    window.addEventListener('authorizationExit', handleAuthorizationExit);
+    return () => window.removeEventListener('authorizationExit', handleAuthorizationExit);
+  }, []);
 
   const validateAuthorizationReadiness = (request: AuthorizationRequest): ValidationResult => {
     const blockedReasons = [];
@@ -195,6 +207,14 @@ const AuthorizationDetails = () => {
     }
   };
 
+  const handleExitConfirmation = () => {
+    navigate('/manager/authorizations');
+  };
+
+  const handleCancelExit = () => {
+    setShowExitConfirmation(false);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -272,6 +292,18 @@ const AuthorizationDetails = () => {
           />
         </div>
       </main>
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirmation && (
+        <ConfirmationModal
+          title="Cerrar revisión de autorización"
+          message="¿Está seguro que desea salir de la revisión de autorización? Los cambios no guardados se perderán."
+          confirmText="Salir"
+          confirmVariant="destructive"
+          onConfirm={handleExitConfirmation}
+          onCancel={handleCancelExit}
+        />
+      )}
     </div>
   );
 };

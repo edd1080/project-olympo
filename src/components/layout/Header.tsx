@@ -102,6 +102,14 @@ const Header = ({
   };
 
   const handleGoBack = () => {
+    // Special handling for authorization routes - show confirmation modal
+    if (location.pathname.match(/^\/manager\/authorizations\/[^\/]+$/)) {
+      // This will be handled by the parent component (AuthorizationDetails)
+      // We'll emit a custom event to trigger the confirmation modal
+      window.dispatchEvent(new CustomEvent('authorizationExit'));
+      return;
+    }
+    
     // Special handling for INVC routes
     if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/comparison')) {
       const id = location.pathname.split('/')[3];
@@ -147,6 +155,9 @@ const Header = ({
 
   // Show back button for application details and edit routes (but not main pages)
   const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager', '/manager/invc', '/manager/authorizations'].includes(location.pathname);
+  
+  // Show X button for authorization routes instead of back arrow
+  const showExitButton = location.pathname.match(/^\/manager\/authorizations\/[^\/]+$/);
 
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;
@@ -166,7 +177,11 @@ const Header = ({
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
         <div className="flex items-center gap-3 flex-1">
-          {showBackButton && (
+          {showExitButton ? (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Cerrar">
+              <X className="h-5 w-5" />
+            </Button>
+          ) : showBackButton && (
             <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Regresar">
               <ArrowLeft className="h-5 w-5" />
             </Button>

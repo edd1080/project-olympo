@@ -3,9 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthorizationRequest, ValidationResult } from '@/types/authorization';
-import { DollarSign, Calendar, User, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { DollarSign, Calendar, User, FileText, CheckCircle, AlertTriangle, TrendingDown } from 'lucide-react';
 
 interface AuthorizationSummaryProps {
   request: AuthorizationRequest;
@@ -120,18 +120,22 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onSectionChange(0)}
-            className="flex-1"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Ver Dictamen
-          </Button>
-        </div>
+        {/* Alert Message for Manager Attention */}
+        <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-950/10 dark:border-amber-800">
+          <TrendingDown className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800 dark:text-amber-200">
+            <span className="font-medium">Atención requerida:</span> Se requiere revisión detallada del Análisis Financiero. 
+            Revisar ratios de liquidez y capacidad de pago antes de proceder con la autorización.
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => onSectionChange(3)}
+              className="ml-2 p-0 h-auto text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100"
+            >
+              Ir a Análisis Financiero →
+            </Button>
+          </AlertDescription>
+        </Alert>
       </CardContent>
     </Card>
   );
