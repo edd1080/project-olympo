@@ -1,5 +1,6 @@
 
 import React from 'react';
+// Using public folder image directly
 
 interface SplashScreenProps {
   isVisible: boolean;
@@ -12,26 +13,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-background to-primary/5">
       {/* Logo/Icon Container */}
       <div className="relative mb-8">
-        <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="text-white"
-          >
-            <path
-              d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
-              fill="currentColor"
-            />
-            <path
-              d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
+        <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+          <img 
+            src="/creprologo.jpg" 
+            alt="Créditos Productivos Logo" 
+            className="w-20 h-20 object-contain"
+          />
         </div>
         
         {/* Pulse animation ring */}
