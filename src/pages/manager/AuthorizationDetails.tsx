@@ -46,14 +46,14 @@ const AuthorizationDetails = () => {
         createdDate: '2025-01-14',
         assignedManager: 'Gerente Pérez',
         sections: [
+          { id: 'dictamen', name: 'Dictamen', status: 'completed', completionPercentage: 100, required: true, order: 0 },
           { id: 'personal', name: 'Datos Personales', status: 'completed', completionPercentage: 100, required: true, order: 1 },
           { id: 'character', name: 'Carácter', status: 'completed', completionPercentage: 100, required: true, order: 2 },
           { id: 'financial', name: 'Información Financiera', status: 'completed', completionPercentage: 100, required: true, order: 3 },
           { id: 'additional_financial', name: 'Info Financiera Adicional', status: 'completed', completionPercentage: 100, required: false, order: 4 },
           { id: 'documents', name: 'Documentos/Imágenes', status: 'completed', completionPercentage: 100, required: true, order: 5 },
           { id: 'signature', name: 'Cláusula/Firma', status: 'completed', completionPercentage: 100, required: true, order: 6 },
-          { id: 'invc', name: 'INVC', status: 'completed', completionPercentage: 100, required: true, order: 7 },
-          { id: 'dictamen', name: 'Dictamen', status: 'completed', completionPercentage: 100, required: true, order: 8 }
+          { id: 'invc', name: 'INVC', status: 'completed', completionPercentage: 100, required: true, order: 7 }
         ],
         dictamen: {
           creditAmount: 15000,
@@ -239,6 +239,7 @@ const AuthorizationDetails = () => {
           <AuthorizationSummary 
             request={authorizationRequest}
             validationResult={validationResult}
+            onSectionChange={handleSectionChange}
           />
         </div>
 

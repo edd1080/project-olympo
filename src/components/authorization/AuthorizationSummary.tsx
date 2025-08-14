@@ -10,13 +10,14 @@ import { useNavigate } from 'react-router-dom';
 interface AuthorizationSummaryProps {
   request: AuthorizationRequest;
   validationResult: ValidationResult;
+  onSectionChange: (sectionIndex: number) => void;
 }
 
 export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
   request,
-  validationResult
+  validationResult,
+  onSectionChange
 }) => {
-  const navigate = useNavigate();
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -124,7 +125,7 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate(`/manager/authorizations/${request.id}/dictamen`)}
+            onClick={() => onSectionChange(0)}
             className="flex-1"
           >
             <FileText className="h-4 w-4 mr-2" />
