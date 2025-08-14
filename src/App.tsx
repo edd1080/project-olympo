@@ -27,6 +27,7 @@ import INVCDetails from "./pages/manager/INVCDetails";
 import INVCComparison from "./pages/manager/INVCComparison";
 import INVCFinalReview from "./pages/manager/INVCFinalReview";
 import Authorizations from "./pages/manager/Authorizations";
+import AuthorizationDetails from "./pages/manager/AuthorizationDetails";
 
 // Pages
 import Index from "./pages/Index";
@@ -125,6 +126,7 @@ const App = () => {
                      <Route path="/manager/invc/:id/comparison" element={<ManagerOnlyGuard><INVCComparison /></ManagerOnlyGuard>} />
                      <Route path="/manager/invc/:id/review" element={<ManagerOnlyGuard><INVCFinalReview /></ManagerOnlyGuard>} />
                      <Route path="/manager/authorizations" element={<ManagerOnlyGuard><Authorizations /></ManagerOnlyGuard>} />
+                     <Route path="/manager/authorizations/:id" element={<ManagerOnlyGuard><AuthorizationDetails /></ManagerOnlyGuard>} />
                     
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/settings/personal-info" element={<PersonalInfo />} />

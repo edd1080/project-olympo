@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const Authorizations = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Mock data for authorizations
@@ -261,7 +263,7 @@ const Authorizations = () => {
                       {authorization.status === 'pending' && (
                         <div className="flex gap-2">
                           <Button 
-                            onClick={() => window.location.href = `/manager/authorizations/${authorization.id}`}
+                            onClick={() => navigate(`/manager/authorizations/${authorization.id}`)}
                             className="flex-1"
                             size="sm"
                           >
