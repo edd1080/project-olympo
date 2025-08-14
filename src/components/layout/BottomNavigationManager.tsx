@@ -1,27 +1,27 @@
-import React, { useMemo, useCallback } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, ClipboardList, CheckCircle, AlertCircle, Settings } from 'lucide-react';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const BottomNavigationManager = React.memo(() => {
+const BottomNavigationManager = () => {
   const location = useLocation();
   const { isVisible } = useScrollDirection();
   const isMobile = useIsMobile();
   
-  const tabs = useMemo(() => [
+  const tabs = [
     { path: '/manager', icon: Home, label: 'Inicio', exactMatch: true },
     { path: '/manager/invc', icon: ClipboardList, label: 'INVC' },
     { path: '/manager/authorizations', icon: CheckCircle, label: 'Autorizar' },
     { path: '/manager/settings', icon: Settings, label: 'Ajustes' }
-  ], []);
+  ];
   
-  const isActive = useCallback((path: string, exactMatch?: boolean): boolean => {
+  const isActive = (path: string, exactMatch?: boolean): boolean => {
     if (exactMatch) {
       return location.pathname === path;
     }
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
-  }, [location.pathname]);
+  };
 
   return (
     <div className={`fixed bottom-1 left-0 right-0 z-50 flex justify-center pb-2 ${isMobile ? 'px-2' : 'px-4'} transition-transform duration-300 ${
@@ -52,8 +52,6 @@ const BottomNavigationManager = React.memo(() => {
       </nav>
     </div>
   );
-});
-
-BottomNavigationManager.displayName = 'BottomNavigationManager';
+};
 
 export default BottomNavigationManager;
