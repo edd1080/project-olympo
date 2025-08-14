@@ -11,7 +11,10 @@ import React, { useState } from "react";
 // PWA Components
 import SplashScreen from "@/components/pwa/SplashScreen";
 import UpdatePrompt from "@/components/pwa/UpdatePrompt";
+import InstallPrompt from "@/components/pwa/InstallPrompt";
+import OfflineIndicator from "@/components/pwa/OfflineIndicator";
 import { usePWA } from "@/hooks/usePWA";
+import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
 // Auth Components
 import { AuthProvider } from "@/context/AuthContext";
@@ -46,7 +49,8 @@ import ProspectDetails from "./pages/ProspectDetails";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoading, updateAvailable, updateApp } = usePWA();
+  const { isLoading, updateAvailable, isOnline, updateApp } = usePWA();
+  const { showPrompt: showInstallPrompt, installApp, dismissPrompt } = useInstallPrompt();
   const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
 
   React.useEffect(() => {
@@ -64,6 +68,13 @@ const App = () => {
     setShowUpdatePrompt(false);
   };
 
+  const handleInstall = async () => {
+    const success = await installApp();
+    if (success) {
+      console.log('App installed successfully');
+    }
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -74,14 +85,18 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 
-                {/* PWA Splash Screen */}
+                {/* PWA Components */}
                 <SplashScreen isVisible={isLoading} />
-                
-                {/* PWA Update Prompt */}
+                <OfflineIndicator isOnline={isOnline} />
                 <UpdatePrompt 
                   isVisible={showUpdatePrompt}
                   onUpdate={handleUpdate}
                   onDismiss={handleDismissUpdate}
+                />
+                <InstallPrompt 
+                  isVisible={showInstallPrompt}
+                  onInstall={handleInstall}
+                  onDismiss={dismissPrompt}
                 />
                 
                 {/* Main App Content */}

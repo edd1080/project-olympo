@@ -5,9 +5,11 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle } from 'lucide-react';
+import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle, Download, Smartphone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import { useInstallPrompt } from '@/hooks/useInstallPrompt';
+import { usePWA } from '@/hooks/usePWA';
 // DeviceInfo commented out but preserved for future use
 // import DeviceInfo from '@/components/settings/DeviceInfo';
 import NotificationSettings from '@/components/settings/NotificationSettings';
@@ -20,6 +22,8 @@ const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const { canInstall, isInstalled, installApp } = useInstallPrompt();
+  const { isOnline } = usePWA();
 
   // DeviceInfo data commented out but preserved for future use
   /*
@@ -63,6 +67,22 @@ const Settings = () => {
 
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
+  };
+
+  const handleInstallApp = async () => {
+    const success = await installApp();
+    if (success) {
+      toast({
+        title: "¡Aplicación instalada!",
+        description: "La aplicación se ha instalado correctamente en tu dispositivo"
+      });
+    } else {
+      toast({
+        title: "Error al instalar",
+        description: "No se pudo instalar la aplicación. Inténtalo de nuevo.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -174,6 +194,61 @@ const Settings = () => {
           {/* SecuritySettings component commented out but preserved for future use
            <SecuritySettings />
            */}
+
+          {/* PWA Installation Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Smartphone className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold">Aplicación</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">Instala la aplicación en tu dispositivo para un acceso más rápido</p>
+            
+            <div className="space-y-4">
+              {isInstalled ? (
+                <div className="flex items-center justify-between py-4 px-4 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-800">
+                  <div>
+                    <p className="font-medium text-green-700 dark:text-green-400">Aplicación instalada</p>
+                    <p className="text-sm text-green-600 dark:text-green-500">La aplicación está instalada en tu dispositivo</p>
+                  </div>
+                  <div className="w-8 h-8 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
+                    <Download size={16} className="text-green-600 dark:text-green-400" />
+                  </div>
+                </div>
+              ) : canInstall ? (
+                <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-accent/50 rounded-md px-4" onClick={handleInstallApp}>
+                  <div>
+                    <p className="font-medium">Instalar aplicación</p>
+                    <p className="text-sm text-muted-foreground">Agregar a pantalla de inicio</p>
+                  </div>
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Download size={16} className="text-primary" />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between py-4 px-4 bg-muted/50 rounded-md">
+                  <div>
+                    <p className="font-medium text-muted-foreground">Instalación no disponible</p>
+                    <p className="text-sm text-muted-foreground">Ya está instalada o no es compatible</p>
+                  </div>
+                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                    <Download size={16} className="text-muted-foreground" />
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between py-4 px-4 rounded-md">
+                <div>
+                  <p className="font-medium">Estado de conexión</p>
+                  <p className="text-sm text-muted-foreground">
+                    {isOnline ? 'Conectado a internet' : 'Sin conexión - modo offline'}
+                  </p>
+                </div>
+                <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+            </div>
+          </div>
+          
+          <Separator />
           
           {/* Help and Support - Clean Version */}
           <div className="space-y-4">

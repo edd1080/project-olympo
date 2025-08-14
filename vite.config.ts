@@ -35,31 +35,52 @@ export default defineConfig(({ mode }) => ({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'CreditFlow Mobile Agent',
-        short_name: 'CreditFlow',
-        description: 'Aplicación móvil para gestión de créditos',
-        theme_color: '#7142C5',
+        name: 'Créditos Productivos',
+        short_name: 'Créditos',
+        description: 'Aplicación móvil para gestión de créditos productivos',
+        theme_color: '#22c55e',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        categories: ['finance', 'business', 'productivity'],
+        lang: 'es',
+        dir: 'ltr',
         icons: [
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'any'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ],
+        shortcuts: [
+          {
+            name: 'Nueva Solicitud',
+            short_name: 'Solicitud',
+            description: 'Crear nueva solicitud de crédito',
+            url: '/request-form',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Mis Aplicaciones',
+            short_name: 'Aplicaciones',
+            description: 'Ver mis aplicaciones de crédito',
+            url: '/applications',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
           }
         ]
       }
