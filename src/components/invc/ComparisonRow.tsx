@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Check, Edit3, AlertTriangle } from 'lucide-react';
+import { Check, Edit3, AlertTriangle, Copy, CheckCircle } from 'lucide-react';
 import { useINVC } from '@/context/INVCContext';
 import { DifferenceBottomSheet } from './DifferenceBottomSheet';
 
@@ -127,107 +127,110 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
 
   return (
     <>
-      <Card className={`p-4 transition-all duration-200 ${
-        status === 'confirmed' ? 'border-primary bg-primary/5' :
+      <Card className={`bg-white dark:bg-card p-4 transition-all duration-200 ${
+        status === 'confirmed' ? 'border-green-500 bg-green-50 dark:bg-green-900/20' :
         status === 'difference' ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' :
         status === 'pending-difference' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' :
         'border-border'
       }`}>
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
-              <h4 className="font-medium text-sm">{label}</h4>
+        <div className="space-y-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h4 className="font-bold text-lg">{label}</h4>
+            <div className="flex items-center gap-2">
               {status === 'confirmed' && (
-                <Badge variant="default" className="text-xs">
-                  <Check className="w-3 h-3 mr-1" />
-                  Confirmado
+                <Badge className="text-xs bg-green-600 text-white">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Completado
                 </Badge>
               )}
               {hasDifference && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs bg-orange-500 text-white">
                   <AlertTriangle className="w-3 h-3 mr-1" />
-                  Discrepancia {getDifferencePercentage() !== 0 && `(${getDifferencePercentage() > 0 ? '+' : ''}${getDifferencePercentage()}%)`}
+                  Discrepancia
+                </Badge>
+              )}
+              {status === 'pending-difference' && (
+                <Badge className="text-xs bg-yellow-500 text-white">
+                  Pendiente
                 </Badge>
               )}
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* Declarado */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Declarado
-                </label>
-                <div className="mt-1 p-2 bg-muted rounded text-sm">
-                  {formatValue(declaredValue)}
-                </div>
-              </div>
-
-              {/* Observado */}
-              <div>
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Observado
-                  </label>
-                  {!localObserved && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={copyDeclaredValue}
-                      className="text-xs h-auto p-1"
-                    >
-                      Copiar
-                    </Button>
-                  )}
-                </div>
-                <div className="mt-1">
-                  {isEditable && !isConfirmed ? (
-                    <Input
-                      type={type === 'number' || type === 'currency' ? 'number' : 'text'}
-                      value={localObserved}
-                      onChange={(e) => handleInputChange(e.target.value)}
-                      placeholder={`Ingrese ${label.toLowerCase()}`}
-                      className="text-sm"
-                    />
-                  ) : (
-                    <div className="p-2 bg-muted rounded text-sm">
-                      {formatValue(localObserved) || formatValue(declaredValue)}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Comentario de discrepancia existente */}
-            {hasDifference && existingDiff?.comentario && (
-              <div className="mt-3 p-2 bg-muted rounded text-xs">
-                <span className="font-medium">Comentario:</span> {existingDiff.comentario}
-              </div>
-            )}
           </div>
 
-          {/* Acciones */}
-          <div className="ml-4 flex flex-col gap-2">
+          {/* Values Display in 2 Columns */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                DECLARADO
+              </label>
+              <div className="mt-1 p-3 bg-muted/50 rounded text-sm font-medium">
+                {formatValue(declaredValue)}
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                OBSERVADO
+              </label>
+              <div className="mt-1">
+                {isEditable && !isConfirmed ? (
+                  <Input
+                    type={type === 'number' || type === 'currency' ? 'number' : 'text'}
+                    value={localObserved}
+                    onChange={(e) => handleInputChange(e.target.value)}
+                    placeholder={`Ingrese ${label.toLowerCase()}`}
+                    className="text-sm font-medium"
+                  />
+                ) : (
+                  <div className="p-3 bg-muted/50 rounded text-sm font-medium min-h-[40px] flex items-center">
+                    {formatValue(localObserved) || formatValue(declaredValue)}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Comentario de discrepancia existente */}
+          {hasDifference && existingDiff?.comentario && (
+            <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded text-xs border border-orange-200 dark:border-orange-800">
+              <span className="font-medium text-orange-700 dark:text-orange-300">Comentario:</span> 
+              <span className="ml-1 text-orange-600 dark:text-orange-400">{existingDiff.comentario}</span>
+            </div>
+          )}
+
+          {/* Actions Below Columns */}
+          <div className="flex gap-2 pt-2">
             {!isConfirmed && isEditable && (
               <Button
                 size="sm"
                 onClick={handleConfirm}
                 disabled={!localObserved}
-                className="min-w-[80px]"
+                className="flex-1"
               >
-                <Check className="w-4 h-4 mr-1" />
+                <Check className="w-4 h-4 mr-2" />
                 {hasSignificantDifference() ? 'Ajustar' : 'Confirmar'}
               </Button>
             )}
+            
+            <Button
+              size="sm"
+              onClick={copyDeclaredValue}
+              variant="outline"
+              className="flex-1 text-primary border-primary hover:bg-primary/10"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copiar
+            </Button>
             
             {isConfirmed && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsConfirmed(false)}
-                className="min-w-[80px]"
+                className="flex-1"
               >
-                <Edit3 className="w-4 h-4 mr-1" />
+                <Edit3 className="w-4 h-4 mr-2" />
                 Editar
               </Button>
             )}

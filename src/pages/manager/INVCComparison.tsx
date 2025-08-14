@@ -16,12 +16,14 @@ import { INVCStickySummary } from '@/components/invc/INVCStickySummary';
 import { ComparisonRow } from '@/components/invc/ComparisonRow';
 import { INVCCalculator } from '@/components/invc/INVCCalculator';
 import { GeolocationCapture } from '@/components/invc/GeolocationCapture';
+import { PhotoViewerModal } from '@/components/invc/PhotoViewerModal';
 
 const INVCComparisonContent: React.FC = () => {
   const navigate = useNavigate();
   const { invcData, updateObservedData, addDifference } = useINVC();
   const [showCalculator, setShowCalculator] = useState(false);
   const [generalComment, setGeneralComment] = useState('');
+  const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string; geotag?: any; timestamp?: string } | null>(null);
 
   if (!invcData) {
     return <div>Cargando datos...</div>;
@@ -330,27 +332,32 @@ const INVCComparisonContent: React.FC = () => {
 
           <TabsContent value="evidence" className="space-y-6">
             {/* Fotos de Referencia */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="bg-white dark:bg-card p-4">
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                 <Camera className="w-5 h-5" />
                 Fotos de Referencia (Agente)
               </h3>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 {invcData.evidencias.fotosPrevias.map((foto, index) => (
-                  <img
+                  <div
                     key={index}
-                    src={foto}
-                    alt={`Referencia ${index + 1}`}
-                    className="w-full h-24 object-cover rounded border"
-                  />
+                    onClick={() => setSelectedPhoto({ url: foto, title: `Referencia ${index + 1}` })}
+                    className="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-colors"
+                  >
+                    <img
+                      src={foto}
+                      alt={`Referencia ${index + 1}`}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                    />
+                  </div>
                 ))}
               </div>
             </Card>
 
             {/* Nuevas Capturas */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4">Nuevas Capturas (Gerente)</h3>
+            <Card className="bg-white dark:bg-card p-4">
+              <h3 className="font-bold text-lg mb-4">Nuevas Capturas (Gerente)</h3>
               
               <div className="space-y-4">
                 <GeolocationCapture
@@ -422,6 +429,15 @@ const INVCComparisonContent: React.FC = () => {
         currentAmount={invcData.declarado.producto.monto}
         currentTerm={invcData.declarado.producto.plazo}
         currentQuota={invcData.declarado.producto.cuota}
+      />
+
+      <PhotoViewerModal
+        isOpen={!!selectedPhoto}
+        onClose={() => setSelectedPhoto(null)}
+        photoUrl={selectedPhoto?.url || ''}
+        title={selectedPhoto?.title || ''}
+        geotag={selectedPhoto?.geotag}
+        timestamp={selectedPhoto?.timestamp}
       />
 
       <BottomNavigationManager />
