@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ClipboardList, CheckCircle, AlertTriangle, Clock, TrendingUp, Users, ChevronRight } from 'lucide-react';
 import ManagerMetricsCard from '@/components/dashboard/ManagerMetricsCard';
-
 const ManagerIndex = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
 
   // Mock data for dashboard
@@ -18,58 +19,65 @@ const ManagerIndex = () => {
     pendingINVC: 12,
     completedToday: 8,
     pendingAuthorizations: 5,
-    criticalAlerts: 2,
+    criticalAlerts: 2
   };
-
-  const recentINVC = [
-    {
-      id: 'INVC-001',
-      applicantName: 'María García',
-      amount: 15000,
-      status: 'pending',
-      priority: 'high',
-      assignedDate: '2025-01-14',
-    },
-    {
-      id: 'INVC-002',
-      applicantName: 'Carlos Rodríguez',
-      amount: 25000,
-      status: 'in_progress',
-      priority: 'medium',
-      assignedDate: '2025-01-13',
-    },
-    {
-      id: 'INVC-003',
-      applicantName: 'Ana López',
-      amount: 10000,
-      status: 'pending',
-      priority: 'high',
-      assignedDate: '2025-01-14',
-    },
-  ];
-
+  const recentINVC = [{
+    id: 'INVC-001',
+    applicantName: 'María García',
+    amount: 15000,
+    status: 'pending',
+    priority: 'high',
+    assignedDate: '2025-01-14'
+  }, {
+    id: 'INVC-002',
+    applicantName: 'Carlos Rodríguez',
+    amount: 25000,
+    status: 'in_progress',
+    priority: 'medium',
+    assignedDate: '2025-01-13'
+  }, {
+    id: 'INVC-003',
+    applicantName: 'Ana López',
+    amount: 10000,
+    status: 'pending',
+    priority: 'high',
+    assignedDate: '2025-01-14'
+  }];
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: { variant: 'destructive' as const, label: 'Pendiente' },
-      in_progress: { variant: 'default' as const, label: 'En Proceso' },
-      completed: { variant: 'secondary' as const, label: 'Completada' },
+      pending: {
+        variant: 'destructive' as const,
+        label: 'Pendiente'
+      },
+      in_progress: {
+        variant: 'default' as const,
+        label: 'En Proceso'
+      },
+      completed: {
+        variant: 'secondary' as const,
+        label: 'Completada'
+      }
     };
-    
     return variants[status as keyof typeof variants] || variants.pending;
   };
-
   const getPriorityBadge = (priority: string) => {
     const variants = {
-      high: { variant: 'destructive' as const, label: 'Alta' },
-      medium: { variant: 'default' as const, label: 'Media' },
-      low: { variant: 'secondary' as const, label: 'Baja' },
+      high: {
+        variant: 'destructive' as const,
+        label: 'Alta'
+      },
+      medium: {
+        variant: 'default' as const,
+        label: 'Media'
+      },
+      low: {
+        variant: 'secondary' as const,
+        label: 'Baja'
+      }
     };
-    
     return variants[priority as keyof typeof variants] || variants.medium;
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Header />
       
       <main className="mobile-container pt-4 space-y-6">
@@ -78,45 +86,20 @@ const ManagerIndex = () => {
           <h1 className="text-title">
             Bienvenido, {user?.fullName}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Panel de control para gestión de investigaciones y autorizaciones
           </p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <ManagerMetricsCard
-            icon={ClipboardList}
-            title="INVC Pendientes"
-            value={stats.pendingINVC}
-            colorClass="bg-blue-500/10"
-            iconColorClass="text-blue-500"
-          />
+          <ManagerMetricsCard icon={ClipboardList} title="INVC Pendientes" value={stats.pendingINVC} colorClass="bg-blue-500/10" iconColorClass="text-blue-500" />
           
-          <ManagerMetricsCard
-            icon={CheckCircle}
-            title="INVC Completas"
-            description="Hoy"
-            value={stats.completedToday}
-            colorClass="bg-green-500/10"
-            iconColorClass="text-green-500"
-          />
+          <ManagerMetricsCard icon={CheckCircle} title="Completadas Hoy" value={stats.completedToday} colorClass="bg-green-500/10" iconColorClass="text-green-500" />
           
-          <ManagerMetricsCard
-            icon={Clock}
-            title="Autorizaciones Pendientes"
-            value={stats.pendingAuthorizations}
-            colorClass="bg-amber-500/10"
-            iconColorClass="text-amber-500"
-          />
+          <ManagerMetricsCard icon={Clock} title="Autorizaciones" description="Pendientes" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-500" />
           
-          <ManagerMetricsCard
-            icon={AlertTriangle}
-            title="INVC Pendientes"
-            value={stats.criticalAlerts}
-            colorClass="bg-red-500/10"
-            iconColorClass="text-red-500"
-          />
+          <ManagerMetricsCard icon={AlertTriangle} title="Alertas Críticas" description="Requieren atención" value={stats.criticalAlerts} colorClass="bg-red-500/10" iconColorClass="text-red-500" />
         </div>
 
         {/* Quick Actions */}
@@ -131,7 +114,7 @@ const ManagerIndex = () => {
                       <ClipboardList className="h-5 w-5 text-blue-500" />
                     </div>
                     <div>
-                      <p className="font-semibold">Gestionar INVC</p>
+                      <p className="font-medium">Gestionar INVC</p>
                       <p className="text-sm text-muted-foreground">
                         Investigaciones y validaciones de campo
                       </p>
@@ -150,7 +133,7 @@ const ManagerIndex = () => {
                       <CheckCircle className="h-5 w-5 text-green-500" />
                     </div>
                     <div>
-                      <p className="font-semibold">Autorizar Créditos</p>
+                      <p className="font-medium">Autorizar Créditos</p>
                       <p className="text-sm text-muted-foreground">
                         {stats.pendingAuthorizations} solicitudes esperando aprobación
                       </p>
@@ -169,7 +152,7 @@ const ManagerIndex = () => {
                       <AlertTriangle className="h-5 w-5 text-red-500" />
                     </div>
                     <div>
-                      <p className="font-semibold">Ver Alertas</p>
+                      <p className="font-medium">Ver Alertas</p>
                       <p className="text-sm text-muted-foreground">
                         {stats.criticalAlerts} alertas críticas activas
                       </p>
@@ -184,8 +167,6 @@ const ManagerIndex = () => {
       </main>
 
       <BottomNavigationManager />
-    </div>
-  );
+    </div>;
 };
-
 export default ManagerIndex;
