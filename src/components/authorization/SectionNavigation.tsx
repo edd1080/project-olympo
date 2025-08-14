@@ -44,43 +44,42 @@ export const SectionNavigation: React.FC<SectionNavigationProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Current Section Header */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {getSectionIcon(currentSectionData)}
-              <div>
-                <h3 className="font-medium">{currentSectionData.name}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Sección {currentSection + 1} de {sections.length}
-                  {currentSectionData.required && ' (Requerida)'}
-                </p>
-              </div>
+      {/* Integrated Section Header and Navigation */}
+      <div className="space-y-4">
+        {/* Current Section Info */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {getSectionIcon(currentSectionData)}
+            <div>
+              <h3 className="font-medium">{currentSectionData.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                Sección {currentSection + 1} de {sections.length}
+                {currentSectionData.required && ' (Requerida)'}
+              </p>
             </div>
-            <Badge {...getSectionBadge(currentSectionData)}>
-              {getSectionBadge(currentSectionData).label}
-            </Badge>
           </div>
-        </CardContent>
-      </Card>
+          <Badge {...getSectionBadge(currentSectionData)}>
+            {getSectionBadge(currentSectionData).label}
+          </Badge>
+        </div>
 
-      {/* Section Tabs - Horizontal scroll */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
-          {sections.map((section, index) => (
-            <Button
-              key={section.id}
-              variant={index === currentSection ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onSectionChange(index)}
-              className="shrink-0"
-            >
-              <span className="mr-2">{index + 1}</span>
-              {getSectionIcon(section)}
-              <span className="ml-2 hidden sm:inline">{section.name}</span>
-            </Button>
-          ))}
+        {/* Section Tabs - Horizontal scroll */}
+        <div className="overflow-x-auto">
+          <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
+            {sections.map((section, index) => (
+              <Button
+                key={section.id}
+                variant={index === currentSection ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => onSectionChange(index)}
+                className="shrink-0"
+              >
+                <span className="mr-2">{index + 1}</span>
+                {getSectionIcon(section)}
+                <span className="ml-2 hidden sm:inline">{section.name}</span>
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 

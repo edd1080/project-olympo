@@ -234,8 +234,8 @@ const AuthorizationDetails = () => {
       <Header />
       
       <main className="mobile-container pt-4 space-y-4">
-        {/* Authorization Summary - Sticky */}
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm border-b pb-4">
+        {/* Authorization Summary */}
+        <div className="pb-4">
           <AuthorizationSummary 
             request={authorizationRequest}
             validationResult={validationResult}

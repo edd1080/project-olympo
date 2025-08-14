@@ -185,6 +185,12 @@ export const SectionContent: React.FC<SectionContentProps> = ({
     }
   };
 
+  // For dictamen section, render without Card wrapper
+  if (section.id === 'dictamen') {
+    return renderSectionContent();
+  }
+
+  // For all other sections, keep the Card wrapper
   return (
     <Card>
       <CardHeader>
