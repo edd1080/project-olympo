@@ -99,7 +99,7 @@ const ManagerIndex = () => {
           
           <ManagerMetricsCard icon={Clock} title="Autorizaciones" description="Pendientes" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-500" />
           
-          <ManagerMetricsCard icon={AlertTriangle} title="Alertas Críticas" description="Requieren atención" value={stats.criticalAlerts} colorClass="bg-red-500/10" iconColorClass="text-red-500" />
+          <ManagerMetricsCard icon={AlertTriangle} title="Alertas Críticas" value={stats.criticalAlerts} colorClass="bg-red-500/10" iconColorClass="text-red-500" />
         </div>
 
         {/* Quick Actions */}
@@ -114,7 +114,7 @@ const ManagerIndex = () => {
                       <ClipboardList className="h-5 w-5 text-blue-500" />
                     </div>
                     <div>
-                      <p className="font-medium">Gestionar INVC</p>
+                      <p className="font-semibold">Gestionar INVC</p>
                       <p className="text-sm text-muted-foreground">
                         Investigaciones y validaciones de campo
                       </p>
@@ -133,7 +133,7 @@ const ManagerIndex = () => {
                       <CheckCircle className="h-5 w-5 text-green-500" />
                     </div>
                     <div>
-                      <p className="font-medium">Autorizar Créditos</p>
+                      <p className="font-semibold">Autorizar Créditos</p>
                       <p className="text-sm text-muted-foreground">
                         {stats.pendingAuthorizations} solicitudes esperando aprobación
                       </p>
@@ -152,7 +152,7 @@ const ManagerIndex = () => {
                       <AlertTriangle className="h-5 w-5 text-red-500" />
                     </div>
                     <div>
-                      <p className="font-medium">Ver Alertas</p>
+                      <p className="font-semibold">Ver Alertas</p>
                       <p className="text-sm text-muted-foreground">
                         {stats.criticalAlerts} alertas críticas activas
                       </p>
