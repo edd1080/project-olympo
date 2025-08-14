@@ -17,7 +17,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
           <img 
             src="/creprologo.jpg" 
             alt="Créditos Productivos Logo" 
-            className="w-20 h-20 object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
         
@@ -25,24 +25,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible }) => {
         <div className="absolute inset-0 w-24 h-24 border-2 border-primary/30 rounded-2xl animate-ping"></div>
       </div>
 
-      {/* App Name */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Crédito Productivo
-        </h1>
-      </div>
-
-      {/* Animated Loader */}
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex space-x-1">
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-        </div>
-        <p className="text-sm text-muted-foreground animate-pulse">
-          Cargando aplicación...
-        </p>
-      </div>
     </div>
   );
 };
