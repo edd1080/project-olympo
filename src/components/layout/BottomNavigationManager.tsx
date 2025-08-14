@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ClipboardList, CheckCircle, AlertCircle, Settings } from 'lucide-react';
+import { Home, ClipboardList, CheckCircle, AlertCircle, Settings } from 'lucide-react';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 
 const BottomNavigationManager = () => {
@@ -8,8 +8,9 @@ const BottomNavigationManager = () => {
   const { isVisible } = useScrollDirection();
   
   const tabs = [
-    { path: '/manager', icon: ClipboardList, label: 'INVC', exactMatch: true },
-    { path: '/manager/authorizations', icon: CheckCircle, label: 'Autorizaciones' },
+    { path: '/manager', icon: Home, label: 'Inicio', exactMatch: true },
+    { path: '/manager/invc', icon: ClipboardList, label: 'INVC' },
+    { path: '/manager/authorizations', icon: CheckCircle, label: 'Autorizar' },
     { path: '/alerts', icon: AlertCircle, label: 'Alertas' },
     { path: '/settings', icon: Settings, label: 'Ajustes' }
   ];

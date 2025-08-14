@@ -153,9 +153,9 @@ const ManagerIndex = () => {
               <div className="flex items-center gap-3 w-full">
                 <ClipboardList className="h-5 w-5" />
                 <div className="text-left">
-                  <p className="font-medium">Ver Investigaciones INVC</p>
+                  <p className="font-medium">Gestionar INVC</p>
                   <p className="text-sm text-muted-foreground">
-                    {stats.pendingINVC} investigaciones pendientes
+                    Investigaciones y validaciones de campo
                   </p>
                 </div>
               </div>
@@ -176,49 +176,22 @@ const ManagerIndex = () => {
                 </div>
               </div>
             </Button>
-          </div>
-        </div>
 
-        {/* Recent INVC Activities */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-section-title">Investigaciones Recientes</h3>
             <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/manager/invc')}
+              onClick={() => navigate('/alerts')}
+              className="w-full justify-start h-auto p-4"
+              variant="outline"
             >
-              Ver todas
+              <div className="flex items-center gap-3 w-full">
+                <AlertTriangle className="h-5 w-5" />
+                <div className="text-left">
+                  <p className="font-medium">Ver Alertas</p>
+                  <p className="text-sm text-muted-foreground">
+                    {stats.criticalAlerts} alertas críticas activas
+                  </p>
+                </div>
+              </div>
             </Button>
-          </div>
-          
-          <div className="space-y-3">
-            {recentINVC.map((invc) => {
-              const statusBadge = getStatusBadge(invc.status);
-              const priorityBadge = getPriorityBadge(invc.priority);
-              
-              return (
-                <Card key={invc.id} className="card-hover">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium">{invc.applicantName}</p>
-                          <Badge {...priorityBadge}>{priorityBadge.label}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Q{invc.amount.toLocaleString()} • {invc.id}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <Badge {...statusBadge}>{statusBadge.label}</Badge>
-                        <p className="text-xs text-muted-foreground">{invc.assignedDate}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
           </div>
         </div>
       </main>

@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         role: access.type,
         permissions: ROLE_PERMISSIONS[access.type],
         agencyId: 'dev-agency',
-        fullName: access.type === 'manager' ? 'Gerente (Desarrollo)' : 'Agente (Desarrollo)',
+        fullName: access.type === 'manager' ? 'Gerente' : 'Agente',
       };
 
       // Store in localStorage

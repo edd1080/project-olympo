@@ -78,8 +78,12 @@ const Header = ({
         return 'Ajustes';
       case '/login':
         return 'Iniciar Sesión';
+      case '/manager':
+        return 'Inicio';
       case '/manager/invc':
-        return 'INVC - Lista';
+        return 'INVC';
+      case '/manager/authorizations':
+        return 'Autorizar';
       default:
         // Handle INVC routes
         if (location.pathname.includes('/manager/invc/') && location.pathname.includes('/comparison')) {
@@ -142,7 +146,7 @@ const Header = ({
   };
 
   // Show back button for application details and edit routes (but not main pages)
-  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager/invc'].includes(location.pathname);
+  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager', '/manager/invc', '/manager/authorizations'].includes(location.pathname);
 
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;
