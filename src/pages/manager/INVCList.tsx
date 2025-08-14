@@ -61,10 +61,10 @@ const INVCList = () => {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: { className: 'bg-orange-100 text-orange-700 text-xs px-2 py-1', label: 'Pendiente' },
-      in_progress: { className: 'bg-blue-100 text-blue-700 text-xs px-2 py-1', label: 'En Proceso' },
-      completed: { className: 'bg-green-100 text-green-700 text-xs px-2 py-1', label: 'Completada' },
-      overdue: { className: 'bg-red-100 text-red-700 text-xs px-2 py-1', label: 'Vencida' },
+      pending: { className: 'bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-full', label: 'Pendiente' },
+      in_progress: { className: 'bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full', label: 'En Proceso' },
+      completed: { className: 'bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full', label: 'Completada' },
+      overdue: { className: 'bg-red-100 text-red-700 text-xs font-semibold px-2 py-1 rounded-full', label: 'Vencida' },
     };
     
     return variants[status as keyof typeof variants] || variants.pending;
@@ -98,20 +98,15 @@ const INVCList = () => {
             </p>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nombre, ID o negocio..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button variant="outline" size="icon">
-              <Filter className="h-4 w-4" />
-            </Button>
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nombre, ID o negocio..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </div>
 
@@ -119,16 +114,16 @@ const INVCList = () => {
         <Tabs defaultValue="all" onValueChange={setStatusFilter}>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="all">
-              Todas ({investigations.length})
+              Todas
             </TabsTrigger>
             <TabsTrigger value="pending">
-              Pendientes ({pendingCount})
+              Pend.
             </TabsTrigger>
             <TabsTrigger value="in_progress">
-              En Proceso ({inProgressCount})
+              Proceso
             </TabsTrigger>
             <TabsTrigger value="completed">
-              Completadas ({completedCount})
+              Compl.
             </TabsTrigger>
           </TabsList>
 
