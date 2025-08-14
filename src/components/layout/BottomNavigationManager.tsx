@@ -54,4 +54,6 @@ const BottomNavigationManager = React.memo(() => {
   );
 });
 
+BottomNavigationManager.displayName = 'BottomNavigationManager';
+
 export default BottomNavigationManager;
