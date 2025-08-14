@@ -257,25 +257,15 @@ const Authorizations = () => {
                         </div>
                       )}
 
-                      {/* Action Buttons for Pending */}
+                      {/* Action Button for Pending - Navigate to Details */}
                       {authorization.status === 'pending' && (
                         <div className="flex gap-2">
                           <Button 
-                            onClick={() => handleApprove(authorization.id, authorization.amount)}
+                            onClick={() => window.location.href = `/manager/authorizations/${authorization.id}`}
                             className="flex-1"
                             size="sm"
                           >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Aprobar
-                          </Button>
-                          <Button 
-                            onClick={() => handleReject(authorization.id)}
-                            variant="destructive"
-                            className="flex-1"
-                            size="sm"
-                          >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            Rechazar
+                            Iniciar Autorización
                           </Button>
                         </div>
                       )}
