@@ -57,8 +57,10 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AppStateProvider>
-          <TooltipProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <AppStateProvider>
+              <TooltipProvider>
             <Toaster />
             <Sonner />
             
@@ -74,7 +76,6 @@ const App = () => {
             
             {/* Main App Content */}
             {!isLoading && (
-              <BrowserRouter>
                 <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />

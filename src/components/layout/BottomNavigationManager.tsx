@@ -1,22 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, FileSpreadsheet, AlertCircle, Settings } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import BottomNavigationManager from './BottomNavigationManager';
-import { isRoleBasedNavigationEnabled } from '@/utils/featureFlags';
+import { ClipboardList, CheckCircle, AlertCircle, Settings } from 'lucide-react';
 
-const BottomNavigation = () => {
-  const { user, isAuthenticated } = useAuth();
+const BottomNavigationManager = () => {
   const location = useLocation();
-
-  // Show manager navigation if user is manager and feature is enabled
-  if (isAuthenticated && user?.role === 'manager' && isRoleBasedNavigationEnabled()) {
-    return <BottomNavigationManager />;
-  }
   
   const tabs = [
-    { path: '/', icon: User, label: 'Inicio', exactMatch: true },
-    { path: '/applications', icon: FileSpreadsheet, label: 'Solicitudes' },
+    { path: '/manager', icon: ClipboardList, label: 'INVC', exactMatch: true },
+    { path: '/manager/authorizations', icon: CheckCircle, label: 'Autorizaciones' },
     { path: '/alerts', icon: AlertCircle, label: 'Alertas' },
     { path: '/settings', icon: Settings, label: 'Ajustes' }
   ];
@@ -41,15 +32,15 @@ const BottomNavigation = () => {
                 key={tab.path}
                 to={tab.path}
                 className={`
-                  flex flex-col items-center justify-center px-3 py-1.5 rounded-full 
+                  flex flex-col items-center justify-center px-3 py-1.5 rounded-full transition-all duration-200
                   ${active 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'text-muted-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                   }
                 `}
               >
-                <Icon className="h-4 w-4" />
-                <span className="text-[10px] mt-0 font-medium">
+                <Icon className={`h-4 w-4 ${active ? 'animate-icon-bounce' : ''}`} />
+                <span className={`text-[10px] mt-0 font-medium ${active ? 'font-semibold' : ''}`}>
                   {tab.label}
                 </span>
               </Link>
@@ -61,4 +52,4 @@ const BottomNavigation = () => {
   );
 };
 
-export default BottomNavigation;
+export default BottomNavigationManager;
