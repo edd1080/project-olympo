@@ -31,7 +31,7 @@ const BottomNavigation = () => {
   };
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2 px-4 transition-transform duration-300 ${
+    <div className={`fixed bottom-8 left-0 right-0 z-50 flex justify-center pb-2 px-4 transition-transform duration-300 ${
       isVisible ? 'translate-y-0' : 'translate-y-full'
     }`}>
       <div className="bg-background/80 backdrop-blur-md border border-border/20 rounded-full shadow-lg">
