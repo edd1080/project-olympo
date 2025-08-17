@@ -6,6 +6,8 @@ interface CameraState {
   error: string | null;
   hasPermission: boolean;
   isVideoReady: boolean;
+  currentFacing: 'user' | 'environment';
+  availableCameras: number;
 }
 
 export const useCamera = (facingMode: 'user' | 'environment' = 'environment') => {
@@ -14,7 +16,9 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     isLoading: false,
     error: null,
     hasPermission: false,
-    isVideoReady: false
+    isVideoReady: false,
+    currentFacing: facingMode,
+    availableCameras: 0
   });
   
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,13 +28,33 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     setState(prev => ({ ...prev, isLoading: true, error: null }));
     
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode,
+      // Check available cameras first
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      
+      let constraints: MediaStreamConstraints = {
+        video: {
           width: { ideal: 1280 },
           height: { ideal: 720 }
-        } 
-      });
+        }
+      };
+
+      // Try with exact facingMode first
+      if (facingMode === 'environment') {
+        (constraints.video as any).facingMode = { exact: 'environment' };
+      } else {
+        (constraints.video as any).facingMode = { exact: 'user' };
+      }
+
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (error) {
+        console.log('Exact facingMode failed, trying ideal:', error);
+        // Fallback to ideal if exact fails
+        (constraints.video as any).facingMode = { ideal: facingMode };
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      }
       
       streamRef.current = stream;
       
@@ -93,7 +117,9 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
         ...prev, 
         isOpen: true, 
         isLoading: false, 
-        hasPermission: true 
+        hasPermission: true,
+        currentFacing: facingMode,
+        availableCameras: videoDevices.length
       }));
       
       return true;
@@ -108,19 +134,37 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     }
   }, [facingMode]);
 
-  const switchCamera = useCallback(async (facingMode: 'user' | 'environment') => {
+  const switchCamera = useCallback(async (newFacingMode: 'user' | 'environment') => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
     }
 
+    setState(prev => ({ ...prev, isLoading: true, error: null, isVideoReady: false }));
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode,
+      let constraints: MediaStreamConstraints = {
+        video: {
           width: { ideal: 1280 },
           height: { ideal: 720 }
-        } 
-      });
+        }
+      };
+
+      // Try with exact facingMode first
+      if (newFacingMode === 'environment') {
+        (constraints.video as any).facingMode = { exact: 'environment' };
+      } else {
+        (constraints.video as any).facingMode = { exact: 'user' };
+      }
+
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (error) {
+        console.log('Exact facingMode failed, trying ideal:', error);
+        // Fallback to ideal if exact fails
+        (constraints.video as any).facingMode = { ideal: newFacingMode };
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      }
       
       streamRef.current = stream;
       
@@ -128,11 +172,26 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
         videoRef.current.srcObject = stream;
         videoRef.current.playsInline = true;
         videoRef.current.muted = true;
-        setState(prev => ({ ...prev, isVideoReady: true }));
+        
+        await new Promise((resolve) => {
+          const handleLoadedMetadata = () => {
+            videoRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            setState(prev => ({ 
+              ...prev, 
+              isVideoReady: true, 
+              isLoading: false,
+              currentFacing: newFacingMode 
+            }));
+            resolve(true);
+          };
+          videoRef.current?.addEventListener('loadedmetadata', handleLoadedMetadata);
+        });
       }
     } catch (error) {
+      console.error('Camera switch error:', error);
       setState(prev => ({ 
         ...prev, 
+        isLoading: false,
         error: 'No se pudo cambiar la cámara.' 
       }));
     }
@@ -192,7 +251,9 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
       isLoading: false,
       error: null,
       hasPermission: false,
-      isVideoReady: false
+      isVideoReady: false,
+      currentFacing: 'environment',
+      availableCameras: 0
     });
   }, []);
 

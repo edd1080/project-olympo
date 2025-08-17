@@ -29,6 +29,8 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
     error,
     hasPermission,
     isVideoReady,
+    currentFacing,
+    availableCameras,
     videoRef,
     requestPermission,
     switchCamera,
@@ -225,17 +227,20 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
               
               <div className="flex items-center justify-between">
                 <div className="px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground">
-                  Cámara Trasera
+                  {currentFacing === 'environment' ? 'Cámara Trasera' : 'Cámara Frontal'}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => switchCamera('user')}
-                  className="flex items-center gap-2"
-                >
-                  <FlipHorizontal className="h-4 w-4" />
-                  Cambiar
-                </Button>
+                {availableCameras > 1 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => switchCamera(currentFacing === 'environment' ? 'user' : 'environment')}
+                    className="flex items-center gap-2"
+                    disabled={isLoading}
+                  >
+                    <FlipHorizontal className="h-4 w-4" />
+                    Cambiar
+                  </Button>
+                )}
               </div>
               
               <Button 
