@@ -89,7 +89,7 @@ const Index = () => {
           </Card>
         </div>
         
-        <div className="hover:bg-accent/30 transition-colors cursor-pointer px-4 py-6" onClick={handleCreateNewApplication}>
+        <div className="cursor-pointer py-6" onClick={handleCreateNewApplication}>
           <div className="mb-4">
             <h3 className="text-xl font-bold mb-1">Nueva Solicitud</h3>
             <p className="text-muted-foreground">Crear una nueva solicitud de crédito</p>
