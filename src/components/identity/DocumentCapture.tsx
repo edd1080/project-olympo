@@ -28,6 +28,7 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
     isLoading,
     error,
     hasPermission,
+    isVideoReady,
     videoRef,
     requestPermission,
     switchCamera,
@@ -207,24 +208,41 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
                   autoPlay
                   playsInline
                   muted
-                  className="w-full rounded-lg"
+                  className="w-full h-80 rounded-lg object-cover"
                 />
                 <div className="absolute inset-4 border-2 border-white rounded-lg pointer-events-none">
                   <div className="absolute inset-0 border-2 border-dashed border-primary/50 rounded-lg"></div>
                 </div>
+                {!isVideoReady && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                    <div className="text-white text-center">
+                      <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
+                      <p className="text-sm">Cargando cámara...</p>
+                    </div>
+                  </div>
+                )}
               </div>
               
-              <div className="flex justify-center">
+              <div className="flex items-center justify-between">
                 <div className="px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground">
                   Cámara Trasera
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => switchCamera('user')}
+                  className="flex items-center gap-2"
+                >
+                  <FlipHorizontal className="h-4 w-4" />
+                  Cambiar
+                </Button>
               </div>
               
               <Button 
                 onClick={handleCapture} 
                 className="w-full" 
                 size="lg"
-                disabled={!videoRef.current || videoRef.current.readyState < 2}
+                disabled={!isVideoReady}
               >
                 <Camera className="h-4 w-4 mr-2" />
                 Tomar Foto

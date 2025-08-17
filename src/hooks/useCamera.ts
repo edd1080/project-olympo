@@ -5,6 +5,7 @@ interface CameraState {
   isLoading: boolean;
   error: string | null;
   hasPermission: boolean;
+  isVideoReady: boolean;
 }
 
 export const useCamera = (facingMode: 'user' | 'environment' = 'environment') => {
@@ -12,7 +13,8 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
     isOpen: false,
     isLoading: false,
     error: null,
-    hasPermission: false
+    hasPermission: false,
+    isVideoReady: false
   });
   
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,6 +36,8 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.playsInline = true;
+        videoRef.current.muted = true;
         
         // Esperar a que el video esté completamente cargado
         await new Promise((resolve, reject) => {
@@ -45,11 +49,18 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
             clearTimeout(timeout);
             videoRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
             videoRef.current?.removeEventListener('error', handleError);
+            videoRef.current?.removeEventListener('playing', handlePlaying);
+            
+            setState(prev => ({ ...prev, isVideoReady: true }));
+            console.log('Video metadata loaded, setting ready state');
             
             // Asegurar que el video esté reproduciéndose
             if (videoRef.current) {
               videoRef.current.play()
-                .then(() => resolve(true))
+                .then(() => {
+                  console.log('Video is playing');
+                  resolve(true);
+                })
                 .catch((err) => {
                   console.error('Error playing video:', err);
                   resolve(true); // Continuar aunque el play falle
@@ -58,15 +69,22 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
               resolve(true);
             }
           };
+
+          const handlePlaying = () => {
+            setState(prev => ({ ...prev, isVideoReady: true }));
+            console.log('Video is playing, setting ready state');
+          };
           
           const handleError = (error: Event) => {
             clearTimeout(timeout);
             videoRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
             videoRef.current?.removeEventListener('error', handleError);
+            videoRef.current?.removeEventListener('playing', handlePlaying);
             reject(error);
           };
           
           videoRef.current?.addEventListener('loadedmetadata', handleLoadedMetadata);
+          videoRef.current?.addEventListener('playing', handlePlaying);
           videoRef.current?.addEventListener('error', handleError);
         });
       }
@@ -108,6 +126,9 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.playsInline = true;
+        videoRef.current.muted = true;
+        setState(prev => ({ ...prev, isVideoReady: true }));
       }
     } catch (error) {
       setState(prev => ({ 
@@ -170,7 +191,8 @@ export const useCamera = (facingMode: 'user' | 'environment' = 'environment') =>
       isOpen: false,
       isLoading: false,
       error: null,
-      hasPermission: false
+      hasPermission: false,
+      isVideoReady: false
     });
   }, []);
 
