@@ -53,44 +53,44 @@ const Index = () => {
         <div className="grid grid-cols-2 gap-4 mb-8">
           {/* Solicitudes Activas */}
           <Card className="h-24">
-            <CardContent className="p-4">
+            <CardContent className="px-4 pt-3 pb-6">
               <div className="flex flex-col justify-center h-full text-center">
                 <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Activas</p>
-                <p className="text-xl font-bold my-1">24</p>
+                <p className="text-xl font-bold mt-1 mb-2">24</p>
               </div>
             </CardContent>
           </Card>
           
           {/* Solicitudes Aprobadas */}
           <Card className="h-24">
-            <CardContent className="p-4">
+            <CardContent className="px-4 pt-3 pb-6">
               <div className="flex flex-col justify-center h-full text-center">
                 <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Aprobadas</p>
-                <p className="text-xl font-bold my-1">12</p>
+                <p className="text-xl font-bold mt-1 mb-2">12</p>
               </div>
             </CardContent>
           </Card>
           
           {/* Solicitudes Pendientes */}
           <Card className="h-24">
-            <CardContent className="p-4">
+            <CardContent className="px-4 pt-3 pb-6">
               <div className="flex flex-col justify-center h-full text-center">
                 <Clock className="h-6 w-6 text-amber-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Pendientes</p>
-                <p className="text-xl font-bold my-1">8</p>
+                <p className="text-xl font-bold mt-1 mb-2">8</p>
               </div>
             </CardContent>
           </Card>
           
           {/* Solicitudes Observadas */}
           <Card className="h-24">
-            <CardContent className="p-4">
+            <CardContent className="px-4 pt-3 pb-6">
               <div className="flex flex-col justify-center h-full text-center">
                 <AlertTriangle className="h-6 w-6 text-red-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Observadas</p>
-                <p className="text-xl font-bold my-1">4</p>
+                <p className="text-xl font-bold mt-1 mb-2">4</p>
               </div>
             </CardContent>
           </Card>
