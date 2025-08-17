@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import CircularProgress from '@/components/requestForm/CircularProgress';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const MonthlyGoalCard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<'W' | 'M' | 'Y'>('M');
+  const isMobile = useIsMobile();
   
   // Mock data - in real app this would come from props or API
   const currentValue = 750000;
@@ -29,7 +31,7 @@ const MonthlyGoalCard = () => {
   return (
     <Card className="mb-6">
       <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-6">
+        <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'justify-between items-start'} mb-6`}>
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-1">
               Meta de Colocación
@@ -39,38 +41,40 @@ const MonthlyGoalCard = () => {
             </p>
           </div>
           
-          {/* Period Toggle */}
-          <div className="flex bg-muted rounded-lg p-1">
-            {periods.map((period) => (
-              <Button
-                key={period.key}
-                variant={selectedPeriod === period.key ? "default" : "ghost"}
-                size="sm"
-                className="px-3 py-1 h-8 text-xs font-medium"
-                onClick={() => setSelectedPeriod(period.key)}
-              >
-                {period.label}
-              </Button>
-            ))}
-          </div>
+          {/* Period Toggle - Hidden on mobile */}
+          {!isMobile && (
+            <div className="flex bg-muted rounded-lg p-1">
+              {periods.map((period) => (
+                <Button
+                  key={period.key}
+                  variant={selectedPeriod === period.key ? "default" : "ghost"}
+                  size="sm"
+                  className="px-3 py-1 h-8 text-xs font-medium"
+                  onClick={() => setSelectedPeriod(period.key)}
+                >
+                  {period.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
         
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center ${isMobile ? 'flex-col space-y-4' : 'justify-between'}`}>
           {/* Progress Circle */}
-          <div className="flex items-center gap-6">
+          <div className={`flex items-center ${isMobile ? 'flex-col space-y-4' : 'gap-6'}`}>
             <CircularProgress 
               progress={progress} 
-              size={120} 
-              strokeWidth={8}
+              size={isMobile ? 80 : 120} 
+              strokeWidth={isMobile ? 6 : 8}
             />
             
             {/* Values */}
-            <div className="space-y-3">
+            <div className={`space-y-3 ${isMobile ? 'text-center' : ''}`}>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   ACTUAL
                 </p>
-                <p className="text-2xl font-bold text-foreground">
+                <p className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>
                   {formatCurrency(currentValue)}
                 </p>
               </div>
@@ -79,7 +83,7 @@ const MonthlyGoalCard = () => {
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   META
                 </p>
-                <p className="text-lg font-semibold text-muted-foreground">
+                <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground`}>
                   {formatCurrency(targetValue)}
                 </p>
               </div>
@@ -88,7 +92,7 @@ const MonthlyGoalCard = () => {
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   RESTANTE
                 </p>
-                <p className="text-lg font-semibold text-amber-600">
+                <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-amber-600`}>
                   {formatCurrency(targetValue - currentValue)}
                 </p>
               </div>
