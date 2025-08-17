@@ -57,7 +57,7 @@ const Index = () => {
           
           {/* Solicitudes Aprobadas */}
           <Card className="h-24">
-            <CardContent className="px-4 pt-2 pb-3">
+            <CardContent className="p-0">
               <div className="flex flex-col justify-center h-full text-center">
                 <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Aprobadas</p>
