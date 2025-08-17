@@ -57,7 +57,7 @@ const Index = () => {
               <div className="flex flex-col justify-center h-full text-center">
                 <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Activas</p>
-                <p className="text-xl font-bold">24</p>
+                <p className="text-xl font-bold my-1">24</p>
               </div>
             </CardContent>
           </Card>
@@ -68,7 +68,7 @@ const Index = () => {
               <div className="flex flex-col justify-center h-full text-center">
                 <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Aprobadas</p>
-                <p className="text-xl font-bold">12</p>
+                <p className="text-xl font-bold my-1">12</p>
               </div>
             </CardContent>
           </Card>
@@ -79,7 +79,7 @@ const Index = () => {
               <div className="flex flex-col justify-center h-full text-center">
                 <Clock className="h-6 w-6 text-amber-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Pendientes</p>
-                <p className="text-xl font-bold">8</p>
+                <p className="text-xl font-bold my-1">8</p>
               </div>
             </CardContent>
           </Card>
@@ -90,7 +90,7 @@ const Index = () => {
               <div className="flex flex-col justify-center h-full text-center">
                 <AlertTriangle className="h-6 w-6 text-red-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Observadas</p>
-                <p className="text-xl font-bold">4</p>
+                <p className="text-xl font-bold my-1">4</p>
               </div>
             </CardContent>
           </Card>
