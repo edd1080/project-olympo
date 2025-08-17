@@ -59,44 +59,44 @@ const MonthlyGoalCard = () => {
           )}
         </div>
         
-        <div className={`flex items-center ${isMobile ? 'flex-col space-y-4' : 'justify-between'}`}>
-          {/* Progress Circle */}
-          <div className={`flex items-center ${isMobile ? 'flex-col space-y-4' : 'gap-6'}`}>
+        <div className={`flex items-center ${isMobile ? 'flex-col space-y-6' : 'justify-between gap-8'}`}>
+          {/* Metrics on left */}
+          <div className={`space-y-4 ${isMobile ? 'text-center order-2' : 'flex-1'}`}>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                ACTUAL
+              </p>
+              <p className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>
+                {formatCurrency(currentValue)}
+              </p>
+            </div>
+            
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                META
+              </p>
+              <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground`}>
+                {formatCurrency(targetValue)}
+              </p>
+            </div>
+            
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                RESTANTE
+              </p>
+              <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-amber-600`}>
+                {formatCurrency(targetValue - currentValue)}
+              </p>
+            </div>
+          </div>
+
+          {/* Progress Circle on right */}
+          <div className={`${isMobile ? 'order-1' : ''}`}>
             <CircularProgress 
               progress={progress} 
-              size={isMobile ? 80 : 120} 
-              strokeWidth={isMobile ? 6 : 8}
+              size={isMobile ? 100 : 140} 
+              strokeWidth={isMobile ? 8 : 10}
             />
-            
-            {/* Values */}
-            <div className={`space-y-3 ${isMobile ? 'text-center' : ''}`}>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  ACTUAL
-                </p>
-                <p className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>
-                  {formatCurrency(currentValue)}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  META
-                </p>
-                <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground`}>
-                  {formatCurrency(targetValue)}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  RESTANTE
-                </p>
-                <p className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-amber-600`}>
-                  {formatCurrency(targetValue - currentValue)}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </CardContent>
