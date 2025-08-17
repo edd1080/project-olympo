@@ -2,32 +2,32 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import CircularProgress from '@/components/requestForm/CircularProgress';
-
 const MonthlyGoalCard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<'W' | 'M' | 'Y'>('M');
-  
+
   // Mock data - in real app this would come from props or API
   const currentValue = 750000;
   const targetValue = 1000000;
-  const progress = (currentValue / targetValue) * 100;
-  
+  const progress = currentValue / targetValue * 100;
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('es-GT', {
       style: 'currency',
       currency: 'GTQ',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(value);
   };
-
-  const periods = [
-    { key: 'W' as const, label: 'W' },
-    { key: 'M' as const, label: 'M' },
-    { key: 'Y' as const, label: 'Y' },
-  ];
-
-  return (
-    <Card className="mb-6">
+  const periods = [{
+    key: 'W' as const,
+    label: 'W'
+  }, {
+    key: 'M' as const,
+    label: 'M'
+  }, {
+    key: 'Y' as const,
+    label: 'Y'
+  }];
+  return <Card className="mb-6">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-6">
           <div>
@@ -40,29 +40,13 @@ const MonthlyGoalCard = () => {
           </div>
           
           {/* Period Toggle */}
-          <div className="flex bg-muted rounded-lg p-1">
-            {periods.map((period) => (
-              <Button
-                key={period.key}
-                variant={selectedPeriod === period.key ? "default" : "ghost"}
-                size="sm"
-                className="px-3 py-1 h-8 text-xs font-medium"
-                onClick={() => setSelectedPeriod(period.key)}
-              >
-                {period.label}
-              </Button>
-            ))}
-          </div>
+          
         </div>
         
         <div className="flex items-center justify-between">
           {/* Progress Circle */}
           <div className="flex items-center gap-6">
-            <CircularProgress 
-              progress={progress} 
-              size={120} 
-              strokeWidth={8}
-            />
+            <CircularProgress progress={progress} size={120} strokeWidth={8} />
             
             {/* Values */}
             <div className="space-y-3">
@@ -96,8 +80,6 @@ const MonthlyGoalCard = () => {
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default MonthlyGoalCard;
