@@ -18,7 +18,7 @@ const ManagerMetricsCard = ({
   iconColorClass
 }: ManagerMetricsCardProps) => {
   return <Card className="card-hover h-28">
-      <CardContent className="px-[8px] py-4">
+      <CardContent className="p-4">
         <div className="flex items-center gap-3 h-full">
           <div className={`flex h-12 w-12 items-center justify-center rounded-full ${colorClass}`}>
             <Icon className={`h-6 w-6 ${iconColorClass}`} />
