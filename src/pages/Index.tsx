@@ -57,7 +57,7 @@ const Index = () => {
           
           {/* Solicitudes Aprobadas */}
           <Card className="h-24">
-            <CardContent className="px-4 pt-2 pb-3">
+            <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Aprobadas</p>
@@ -68,7 +68,7 @@ const Index = () => {
           
           {/* Solicitudes Pendientes */}
           <Card className="h-24">
-            <CardContent className="px-4 pt-2 pb-3">
+            <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <Clock className="h-6 w-6 text-amber-600 mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Pendientes</p>
@@ -79,10 +79,10 @@ const Index = () => {
           
           {/* Solicitudes Observadas */}
           <Card className="h-24">
-            <CardContent className="px-4 pt-2 pb-3">
+            <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <AlertTriangle className="h-6 w-6 text-red-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Observadas</p>
+                <p className="text-xs text-muted-foreground mb-1 px-0">Observadas</p>
                 <p className="text-xl font-bold my-1">4</p>
               </div>
             </CardContent>
