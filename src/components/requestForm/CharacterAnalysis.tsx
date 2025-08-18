@@ -276,24 +276,6 @@ const RadioRow = ({
           />
         </CharacterSection>
 
-        <div className="border-t border-border/30"></div>
-
-        {/* Referencias y récord de pago */}
-        <CharacterSection title="Referencias y récord de pago" icon={FileText} complete={referencesComplete}>
-          <ToggleRow
-            id="hasSatisfactorySIBReferences"
-            label="¿El solicitante posee referencias satisfactorias en la SIB?"
-            checked={!!formData.hasSatisfactorySIBReferences}
-            onChange={(checked) => updateFormData('hasSatisfactorySIBReferences', checked)}
-          />
-
-          <ToggleRow
-            id="hasInternalRatingAB"
-            label="¿El solicitante tiene calificación interna de pago A o B?"
-            checked={!!formData.hasInternalRatingAB}
-            onChange={(checked) => updateFormData('hasInternalRatingAB', checked)}
-          />
-        </CharacterSection>
       </div>
     </div>
   );
