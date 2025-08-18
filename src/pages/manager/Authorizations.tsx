@@ -76,22 +76,19 @@ const Authorizations = () => {
   const getStatusBadge = (status: string) => {
     const variants = {
       pending: {
-        variant: 'secondary' as const,
+        variant: 'default' as const,
         label: 'Pendiente',
-        icon: null,
-        className: 'bg-orange-100 text-orange-800 hover:bg-orange-100'
+        icon: null
       },
       approved: {
         variant: 'secondary' as const,
         label: 'Aprobada',
-        icon: CheckCircle,
-        className: 'bg-green-100 text-green-800 hover:bg-green-100'
+        icon: CheckCircle
       },
       rejected: {
         variant: 'destructive' as const,
         label: 'Rechazada',
-        icon: XCircle,
-        className: ''
+        icon: XCircle
       }
     };
     return variants[status as keyof typeof variants] || variants.pending;
@@ -175,17 +172,17 @@ const Authorizations = () => {
 
         {/* Status Tabs */}
         <Tabs defaultValue="all">
-          <TabsList className="flex sm:grid w-full sm:grid-cols-4 gap-2 overflow-x-auto">
-            <TabsTrigger value="all" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="all">
               Todas ({authorizations.length})
             </TabsTrigger>
-            <TabsTrigger value="pending" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
+            <TabsTrigger value="pending">
               Pendientes ({pendingCount})
             </TabsTrigger>
-            <TabsTrigger value="approved" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
+            <TabsTrigger value="approved">
               Aprobadas ({approvedCount})
             </TabsTrigger>
-            <TabsTrigger value="rejected" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
+            <TabsTrigger value="rejected">
               Rechazadas ({rejectedCount})
             </TabsTrigger>
           </TabsList>
@@ -208,10 +205,7 @@ const Authorizations = () => {
                             {authorization.id} • {authorization.businessType}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                          <Badge {...statusBadge} className={statusBadge.className}>{statusBadge.label}</Badge>
-                        </div>
+                        
                       </div>
                     </CardHeader>
 
@@ -223,12 +217,16 @@ const Authorizations = () => {
                           <span>Q{authorization.amount.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
+                          
+                          <span>Score: {authorization.creditScore}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
                           <User className="h-4 w-4 text-muted-foreground" />
                           <span>{authorization.investigator}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                          <span>INVC: {authorization.invcResult}</span>
+                          
                         </div>
                       </div>
 
