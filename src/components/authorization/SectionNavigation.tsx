@@ -41,6 +41,7 @@ export const SectionNavigation: React.FC<SectionNavigationProps> = ({
 
   const currentSectionData = sections[currentSection];
   const isLastSection = currentSection === sections.length - 1;
+  const isDictamenSection = currentSectionData?.name === 'Dictamen';
 
   return (
     <div className="space-y-4">
@@ -89,6 +90,7 @@ export const SectionNavigation: React.FC<SectionNavigationProps> = ({
           variant="outline"
           disabled={currentSection === 0}
           onClick={() => onSectionChange(currentSection - 1)}
+          className={isDictamenSection ? "border-green-600 text-green-600 bg-white hover:bg-green-50" : ""}
         >
           Anterior
         </Button>
@@ -98,6 +100,7 @@ export const SectionNavigation: React.FC<SectionNavigationProps> = ({
             <Button
               variant="outline"
               onClick={() => onSectionChange(currentSection + 1)}
+              className={isDictamenSection ? "border-green-600 text-green-600 bg-white hover:bg-green-50" : ""}
             >
               Siguiente
             </Button>
