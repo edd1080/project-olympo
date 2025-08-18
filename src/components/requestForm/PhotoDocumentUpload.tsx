@@ -395,8 +395,9 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
                           size="sm"
                           onClick={() => handleRemoveFile(document.id)}
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          aria-label="Eliminar"
                         >
-                          <X className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     ) : null}

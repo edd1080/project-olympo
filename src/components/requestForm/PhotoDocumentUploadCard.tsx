@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Check } from 'lucide-react';
+import { Upload, X, Check, Trash2 } from 'lucide-react';
 
 interface DocumentCardProps {
   title: string;
@@ -69,8 +69,9 @@ const PhotoDocumentUploadCard: React.FC<DocumentCardProps> = ({
               size="sm"
               variant="ghost"
               className="text-destructive hover:text-destructive h-8 w-8 p-0"
+              aria-label="Eliminar"
             >
-              <X className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         )}

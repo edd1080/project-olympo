@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Upload, X, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, X, FileText, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 
 interface DocumentsSectionProps {
   formData: any;
@@ -175,8 +175,9 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ formData, updateFor
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-destructive"
                     onClick={() => removeFile(document.id)}
+                    aria-label="Eliminar"
                   >
-                    <X className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               )}
