@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Camera, RotateCcw, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { validateDPIImage } from '@/utils/dpiExtraction';
@@ -20,6 +20,14 @@ const DocumentCapture: React.FC<DocumentCaptureProps> = ({
   const [isValidating, setIsValidating] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPreviewImage(capturedImage ?? null);
+    setValidationMessage('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [documentType, capturedImage]);
 
   const handleCameraClick = () => {
     fileInputRef.current?.click();
