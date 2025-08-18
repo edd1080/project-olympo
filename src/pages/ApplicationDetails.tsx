@@ -46,7 +46,7 @@ const getFormSections = (applicationType: string) => {
     }, {
       id: 'character',
       icon: <Users size={18} />,
-      name: 'Análisis de Carácter'
+      name: 'Analisis de Caracter'
     }, {
       id: 'business-financial',
       icon: <Building2 size={18} />,
