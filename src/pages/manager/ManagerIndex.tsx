@@ -99,7 +99,7 @@ const ManagerIndex = () => {
           
           <ManagerMetricsCard icon={Clock} title="Autorizaciones" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-600" />
           
-          <ManagerMetricsCard icon={XCircle} title="Solicitudes Canceladas" value={stats.cancelledRequests} colorClass="bg-red-500/10" iconColorClass="text-red-600" />
+          <ManagerMetricsCard icon={XCircle} title="Canceladas" value={stats.cancelledRequests} colorClass="bg-red-500/10" iconColorClass="text-red-600" />
         </div>
 
         {/* Quick Actions */}
