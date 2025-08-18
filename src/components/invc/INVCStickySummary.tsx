@@ -74,9 +74,22 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
     return completed;
   }
 
+  // Get person's name (prioritize observed, fallback to declared)
+  const personName = invcData.observado.datosPersonales?.nombre || invcData.declarado.datosPersonales.nombre;
+
   return (
     <Card className="mb-6 border-primary/20 bg-card">
       <div className="p-4 space-y-4">
+        {/* Person Name */}
+        {personName && (
+          <div className="border-b border-border pb-3">
+            <h3 className="text-lg font-semibold text-foreground truncate" title={personName}>
+              {personName}
+            </h3>
+            <p className="text-xs text-muted-foreground">Investigación en progreso</p>
+          </div>
+        )}
+
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
