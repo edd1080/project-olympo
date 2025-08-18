@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft, Save, Check } from 'lucide-react';
 import { useFormContext } from './RequestFormProvider';
+import { ConfirmationModal } from '@/components/authorization/ConfirmationModal';
 
 interface FormActionBarProps {
   steps: {
@@ -24,6 +25,8 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
     handleSubPrevious,
     handleSubmit
   } = useFormContext();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Check if we're at the very first step
   const isFirstStep = activeStep === 0 && subStep === 0;
@@ -63,13 +66,7 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
           <div className="flex-1 flex justify-end">
             {isLastStep && isLastSubStep ? (
               <Button 
-                onClick={handleSubmit}
-                disabled={
-                  !formData.termsAccepted || 
-                  !formData.dataProcessingAccepted || 
-                  !formData.creditCheckAccepted ||
-                  !formData.digitalSignatureAccepted
-                }
+                onClick={() => setShowConfirmModal(true)}
               >
                 <Check className="mr-2 h-4 w-4" />
                 Enviar solicitud
@@ -85,6 +82,20 @@ const FormActionBar: React.FC<FormActionBarProps> = ({ steps }) => {
           </div>
         </div>
       </div>
+      
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <ConfirmationModal
+          title="Enviar solicitud"
+          message="¿Confirmas que deseas enviar esta solicitud? Podrás revisarla en la lista de solicitudes."
+          confirmText="Enviar"
+          onConfirm={() => {
+            setShowConfirmModal(false);
+            handleSubmit();
+          }}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </div>
   );
 };

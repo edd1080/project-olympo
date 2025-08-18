@@ -465,7 +465,9 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
     });
     
     setTimeout(() => {
-      navigate('/applications');
+      navigate('/applications/submitted', { 
+        state: { applicationId: formData.applicationCode || `BVM_${Date.now()}` }
+      });
     }, 1000);
   };
   

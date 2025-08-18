@@ -52,6 +52,7 @@ import PersonalInfo from "./pages/PersonalInfo";
 import ChangePassword from "./pages/ChangePassword";
 import ReportProblem from "./pages/ReportProblem";
 import ProspectDetails from "./pages/ProspectDetails";
+import ApplicationSubmitted from "./pages/ApplicationSubmitted";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -114,6 +115,7 @@ const App = () => {
                       <Route path="/" element={<Index />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/applications" element={<Applications />} />
+                      <Route path="/applications/submitted" element={<ApplicationSubmitted />} />
                       <Route path="/applications/new" element={<RequestForm />} />
                       <Route path="/applications/oficial/new" element={<RequestFormOficial />} />
                       <Route path="/applications/exceptions" element={<ApplicationExceptions />} />
