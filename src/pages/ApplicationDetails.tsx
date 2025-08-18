@@ -611,7 +611,7 @@ const ApplicationDetails = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-6 border-primary/20 bg-primary/5">
+        <Card className="mb-6 border-primary/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
               <FileText className="h-4 w-4 mr-2 text-primary" />
