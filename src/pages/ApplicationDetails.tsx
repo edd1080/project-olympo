@@ -42,7 +42,7 @@ const getFormSections = (applicationType: string) => {
     return [{
       id: 'credit-details',
       icon: <DollarSign size={18} />,
-      name: 'Detalles del Crédito'
+      name: 'Detalles del Credito e Info Personal'
     }, {
       id: 'character',
       icon: <Users size={18} />,
