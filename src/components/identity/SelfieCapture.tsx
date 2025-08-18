@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Camera, RotateCcw, User } from 'lucide-react';
+import { Camera, RotateCcw, User, Loader2 } from 'lucide-react';
 import { useCamera } from '@/hooks/useCamera';
 import { validateSelfieImage } from '@/utils/dpiExtraction';
 
@@ -21,12 +21,14 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   const [isValidating, setIsValidating] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string>('');
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
 
   const {
     isOpen,
     isLoading,
     error,
     hasPermission,
+    isVideoReady,
     videoRef,
     requestPermission,
     capture,
@@ -41,10 +43,10 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   }, [capturedImage]);
 
   const handleStartCamera = async () => {
+    setIsCameraActive(true);
     const success = await requestPermission();
-    if (success) {
-      // Iniciar con cámara frontal para selfie
-      // switchCamera('user');
+    if (!success) {
+      setIsCameraActive(false);
     }
   };
 
@@ -164,63 +166,90 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({
         <CardHeader className="text-center">
           <CardTitle className="text-lg">Escaneo Facial</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Coloca tu rostro dentro del círculo y mantente quieto
+            {!isCameraActive 
+              ? "Prepárate para tomar tu selfie de verificación" 
+              : "Coloca tu rostro dentro del óvalo y mantente quieto"
+            }
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!hasPermission ? (
+          {!isCameraActive ? (
             <div className="text-center space-y-4">
-              <div className="mx-auto h-32 w-full bg-muted rounded-lg flex items-center justify-center">
-                <User className="h-12 w-12 text-muted-foreground" />
+              <div 
+                className="mx-auto aspect-[3/4] w-full max-w-xs bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30 cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={handleStartCamera}
+              >
+                <div className="text-center">
+                  <User className="h-16 w-16 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">Toca para activar cámara</p>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Necesitamos acceso a tu cámara frontal para el escaneo facial
+                Usaremos tu cámara frontal para verificar tu identidad
               </p>
-              <Button onClick={handleStartCamera} disabled={isLoading}>
-                {isLoading ? 'Solicitando permisos...' : 'Iniciar Escaneo Facial'}
+              <Button onClick={handleStartCamera} disabled={isLoading} size="lg" className="w-full">
+                <Camera className="h-4 w-4 mr-2" />
+                {isLoading ? 'Activando cámara...' : 'Iniciar Escaneo Facial'}
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="relative">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full rounded-lg scale-x-[-1]"
-                />
-                {/* Círculo guía para selfie */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-48 h-48 border-4 border-white rounded-full opacity-80">
-                    <div className="w-full h-full border-4 border-dashed border-primary/70 rounded-full"></div>
+              {isLoading || !isVideoReady ? (
+                <div className="aspect-[3/4] w-full bg-muted rounded-lg flex items-center justify-center">
+                  <div className="text-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Cargando cámara...</p>
                   </div>
                 </div>
-                
-                {countdown && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-48 h-48 rounded-full bg-black/50 flex items-center justify-center">
-                      <div className="text-white text-6xl font-bold animate-pulse">
-                        {countdown}
+              ) : (
+                <div className="relative">
+                  <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-black">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover scale-x-[-1]"
+                    />
+                  </div>
+                  
+                  {/* Óvalo guía para selfie - solo se muestra cuando la cámara está lista */}
+                  {isVideoReady && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-56 h-72 border-4 border-white rounded-full opacity-90 shadow-lg">
+                        <div className="w-full h-full border-4 border-dashed border-primary/80 rounded-full animate-pulse"></div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                  
+                  {countdown && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-56 h-72 rounded-full bg-black/60 flex items-center justify-center">
+                        <div className="text-white text-6xl font-bold animate-pulse">
+                          {countdown}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Asegúrate de que tu rostro esté centrado y bien iluminado
+                  {isVideoReady 
+                    ? "Centra tu rostro en el óvalo y presiona el botón" 
+                    : "Preparando cámara frontal..."
+                  }
                 </p>
                 
                 <Button 
                   onClick={handleStartCountdown} 
                   className="w-full" 
                   size="lg"
-                  disabled={countdown !== null}
+                  disabled={countdown !== null || !isVideoReady}
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  {countdown ? `Escaneando en ${countdown}...` : 'Iniciar Escaneo Facial'}
+                  {countdown ? `Escaneando en ${countdown}...` : 'Capturar Rostro'}
                 </Button>
               </div>
             </div>
