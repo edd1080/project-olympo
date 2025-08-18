@@ -56,36 +56,18 @@ const ApplicationSubmitted = () => {
         </div>
       </div>
 
-      <style>{`
-        .confetti-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          overflow: hidden;
-        }
-        
-        .confetti-piece {
-          position: absolute;
-          width: 10px;
-          height: 10px;
-          background: #f39c12;
-          animation: confetti-fall 3s linear infinite;
-        }
-        
-        @keyframes confetti-fall {
-          0% {
-            transform: translateY(-100vh) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-      `}</style>
+      {/* Global styles for confetti animation */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `
+            linear-gradient(135deg, 
+              hsl(var(--background)) 0%, 
+              hsl(var(--secondary) / 0.2) 100%
+            )
+          `
+        }}
+      />
     </div>
   );
 };
