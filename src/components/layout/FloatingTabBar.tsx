@@ -12,8 +12,23 @@ const FloatingTabBar = () => {
   const { isVisible } = useScrollDirection();
   const isMobile = useIsMobile();
 
-  // Don't show on login page
-  if (location.pathname === '/login') {
+  // Helper function to check if we should hide the tab bar for request forms
+  const shouldHideForRequestForms = () => {
+    const pathname = location.pathname;
+    
+    // Hide on request form routes
+    const formRoutes = [
+      /^\/request-form$/,
+      /^\/request-form-oficial$/,
+      /^\/applications\/[^/]+\/edit$/,
+      /^\/applications\/[^/]+\/guarantor/,
+    ];
+    
+    return formRoutes.some(route => route.test(pathname));
+  };
+
+  // Don't show on login page or request form routes
+  if (location.pathname === '/login' || shouldHideForRequestForms()) {
     return null;
   }
 
