@@ -20,6 +20,9 @@ import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { AuthProvider } from "@/context/AuthContext";
 import { ManagerOnlyGuard } from "@/components/auth/RoleGuard";
 
+// Layout Components
+import FloatingTabBar from "@/components/layout/FloatingTabBar";
+
 // Manager Pages
 import ManagerIndex from "./pages/manager/ManagerIndex";
 import INVCList from "./pages/manager/INVCList";
@@ -106,38 +109,43 @@ const App = () => {
                 
                 {/* Main App Content */}
                 {!isLoading && (
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/applications" element={<Applications />} />
-                    <Route path="/applications/new" element={<RequestForm />} />
-                    <Route path="/applications/oficial/new" element={<RequestFormOficial />} />
-                    <Route path="/applications/exceptions" element={<ApplicationExceptions />} />
-                    <Route path="/identity-verification" element={<IdentityVerification />} />
-                    <Route path="/applications/:id" element={<ApplicationDetails />} />
-                    <Route path="/applications/:id/edit" element={<RequestFormOficial />} />
-                    <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
-                    <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
-                    <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
-                    <Route path="/alerts" element={<Alerts />} />
+                  <>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/applications" element={<Applications />} />
+                      <Route path="/applications/new" element={<RequestForm />} />
+                      <Route path="/applications/oficial/new" element={<RequestFormOficial />} />
+                      <Route path="/applications/exceptions" element={<ApplicationExceptions />} />
+                      <Route path="/identity-verification" element={<IdentityVerification />} />
+                      <Route path="/applications/:id" element={<ApplicationDetails />} />
+                      <Route path="/applications/:id/edit" element={<RequestFormOficial />} />
+                      <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
+                      <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
+                      <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+                      <Route path="/alerts" element={<Alerts />} />
+                      
+                       {/* Manager Routes */}
+                       <Route path="/manager" element={<ManagerOnlyGuard><ManagerIndex /></ManagerOnlyGuard>} />
+                       <Route path="/manager/invc" element={<ManagerOnlyGuard><INVCList /></ManagerOnlyGuard>} />
+                       <Route path="/manager/invc/:id" element={<ManagerOnlyGuard><INVCDetails /></ManagerOnlyGuard>} />
+                       <Route path="/manager/invc/:id/comparison" element={<ManagerOnlyGuard><INVCComparison /></ManagerOnlyGuard>} />
+                       <Route path="/manager/invc/:id/review" element={<ManagerOnlyGuard><INVCFinalReview /></ManagerOnlyGuard>} />
+                       <Route path="/manager/authorizations" element={<ManagerOnlyGuard><Authorizations /></ManagerOnlyGuard>} />
+                       <Route path="/manager/authorizations/:id" element={<ManagerOnlyGuard><AuthorizationDetails /></ManagerOnlyGuard>} />
+                       <Route path="/manager/settings" element={<ManagerOnlyGuard><ManagerSettings /></ManagerOnlyGuard>} />
+                       <Route path="/manager/settings/personal-info" element={<ManagerOnlyGuard><ManagerPersonalInfo /></ManagerOnlyGuard>} />
+                      
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/settings/personal-info" element={<PersonalInfo />} />
+                      <Route path="/settings/change-password" element={<ChangePassword />} />
+                      <Route path="/settings/report-problem" element={<ReportProblem />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
                     
-                     {/* Manager Routes */}
-                     <Route path="/manager" element={<ManagerOnlyGuard><ManagerIndex /></ManagerOnlyGuard>} />
-                     <Route path="/manager/invc" element={<ManagerOnlyGuard><INVCList /></ManagerOnlyGuard>} />
-                     <Route path="/manager/invc/:id" element={<ManagerOnlyGuard><INVCDetails /></ManagerOnlyGuard>} />
-                     <Route path="/manager/invc/:id/comparison" element={<ManagerOnlyGuard><INVCComparison /></ManagerOnlyGuard>} />
-                     <Route path="/manager/invc/:id/review" element={<ManagerOnlyGuard><INVCFinalReview /></ManagerOnlyGuard>} />
-                     <Route path="/manager/authorizations" element={<ManagerOnlyGuard><Authorizations /></ManagerOnlyGuard>} />
-                     <Route path="/manager/authorizations/:id" element={<ManagerOnlyGuard><AuthorizationDetails /></ManagerOnlyGuard>} />
-                     <Route path="/manager/settings" element={<ManagerOnlyGuard><ManagerSettings /></ManagerOnlyGuard>} />
-                     <Route path="/manager/settings/personal-info" element={<ManagerOnlyGuard><ManagerPersonalInfo /></ManagerOnlyGuard>} />
-                    
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/settings/personal-info" element={<PersonalInfo />} />
-                    <Route path="/settings/change-password" element={<ChangePassword />} />
-                    <Route path="/settings/report-problem" element={<ReportProblem />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
+                    {/* Floating Tab Bar */}
+                    <FloatingTabBar />
+                  </>
                 )}
               </TooltipProvider>
             </AppStateProvider>

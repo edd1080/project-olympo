@@ -17,6 +17,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
   const [countdown, setCountdown] = useState(0);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   
   const { 
     isOpen, 
@@ -70,6 +71,9 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
     setIsCameraActive(false);
     setIsVideoReady(false);
 
+    // Store captured image locally
+    setPreviewImage(imageData);
+
     // Validate the captured image
     const validationResult = validateSelfieImage(imageData);
     setValidation({
@@ -83,7 +87,8 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
   };
 
   // Show preview with captured image
-  if (showPreview && capturedImage) {
+  if (showPreview && (previewImage || capturedImage)) {
+    const imageToShow = previewImage || capturedImage;
     return (
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="text-center">
@@ -105,7 +110,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
         <CardContent className="space-y-4">
           <div className="relative mx-auto max-w-xs">
             <img 
-              src={capturedImage} 
+              src={imageToShow} 
               alt="Selfie capturada" 
               className="w-full h-auto rounded-lg border-2 border-border scale-x-[-1]"
             />
@@ -118,6 +123,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
               onClick={() => {
                 setShowPreview(false);
                 setValidation(null);
+                setPreviewImage(null);
                 onRetry();
               }}
             >
@@ -126,7 +132,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
             </Button>
             <Button 
               className="flex-1"
-              onClick={() => onCapture(capturedImage)}
+              onClick={() => onCapture(imageToShow!)}
               disabled={validation && !validation.isValid}
             >
               <Check className="mr-2 h-4 w-4" />
@@ -214,7 +220,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
           {/* Oval guide overlay - only show when video is ready */}
           {isVideoReady && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-52 border-4 border-white border-dashed rounded-full opacity-80"></div>
+              <div className="w-48 h-60 border-4 border-white border-dashed rounded-full opacity-80"></div>
             </div>
           )}
           
