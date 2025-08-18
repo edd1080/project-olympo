@@ -30,13 +30,6 @@ const AppPreferences = () => {
             onCheckedChange={toggleTheme} 
           />
         </div>
-        <div className="flex items-center justify-between py-2">
-          <div>
-            <p className="font-medium">Alta resolución</p>
-            <p className="text-sm text-muted-foreground">Mejora la calidad visual</p>
-          </div>
-          <Switch defaultChecked />
-        </div>
       </CardContent>
     </Card>
   );

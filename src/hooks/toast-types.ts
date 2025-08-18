@@ -8,12 +8,12 @@ import type {
 export const TOAST_LIMIT = 1
 export const TOAST_REMOVE_DELAY = 1000
 
-// Duraciones por defecto según el tipo de toast
+// Duraciones por defecto según el tipo de toast (reducidas)
 export const DEFAULT_DURATIONS = {
-  success: 3000,    // 3 segundos
-  default: 4000,    // 4 segundos  
-  warning: 5000,    // 5 segundos
-  destructive: 6000 // 6 segundos
+  success: 2000,    // 2 segundos
+  default: 2500,    // 2.5 segundos  
+  warning: 3000,    // 3 segundos
+  destructive: 4000 // 4 segundos
 } as const
 
 export type ToasterToast = ToastProps & {

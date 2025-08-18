@@ -16,10 +16,16 @@ export const useInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
+    // Check if already installed - improved detection
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isInWebAppiOS = (window.navigator as any).standalone === true;
-    setIsInstalled(isStandalone || isInWebAppiOS);
+    const isInFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+    const isPWAInstalled = isStandalone || isInWebAppiOS || isInFullscreen;
+    
+    // Additional check for Android PWA
+    const isAndroidPWA = window.matchMedia('(display-mode: minimal-ui)').matches;
+    
+    setIsInstalled(isPWAInstalled || isAndroidPWA);
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
