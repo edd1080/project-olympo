@@ -79,10 +79,10 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Progreso de investigación</span>
-            <span className="text-sm font-semibold">{progressPercentage}%</span>
+            <span className="text-xs font-medium text-muted-foreground">Progreso de investigación</span>
+            <span className="text-xs font-medium">{progressPercentage}%</span>
           </div>
-          <Progress value={progressPercentage} className="h-2" />
+          <Progress value={progressPercentage} className="h-1" />
         </div>
 
         {/* Status and Actions */}
@@ -127,37 +127,70 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
           </Button>
         </div>
 
-        {/* Location Check */}
-        {isAtLocation === true && (
-          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-            <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
-              <CheckCircle className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                Se encuentra en la ubicación del negocio registrada por el agente
+        {/* Location and Photos Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Location Panel */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span className="text-sm font-medium">Verificación de Ubicación</span>
+            </div>
+            {geoLoading ? (
+              <p className="text-xs text-muted-foreground">Verificando ubicación...</p>
+            ) : isAtLocation === true ? (
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <CheckCircle className="w-3 h-3" />
+                  <span className="text-xs font-medium">
+                    Estás en la ubicación registrada del negocio
+                  </span>
+                </div>
+              </div>
+            ) : isAtLocation === false ? (
+              <p className="text-xs text-muted-foreground">
+                No estás en la ubicación del negocio
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Permisos de ubicación denegados
+              </p>
+            )}
+          </div>
+
+          {/* Photos Panel */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Camera className="w-4 h-4" />
+              <span className="text-sm font-medium">Fotos nuevas:</span>
+              <span className="text-sm font-semibold">
+                {Object.keys(invcData.evidencias.fotosNuevas).filter(k => invcData.evidencias.fotosNuevas[k as keyof typeof invcData.evidencias.fotosNuevas]).length}/2
               </span>
             </div>
-          </div>
-        )}
-
-        {/* Details Row */}
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Camera className="w-4 h-4" />
-            <span className="font-medium">Fotos:</span>
-            <Badge variant="outline" className="text-xs">
-              {Object.keys(invcData.evidencias.fotosNuevas).filter(k => invcData.evidencias.fotosNuevas[k as keyof typeof invcData.evidencias.fotosNuevas]).length}/2
-            </Badge>
-          </div>
-          
-          {/* Discrepancies */}
-          {invcData.diffs.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Discrepancias:</span>
-              <Badge className="bg-orange-500 text-white text-xs">
-                {invcData.diffs.length}
-              </Badge>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <div className="flex justify-between">
+                <span>Negocio:</span>
+                <span className={invcData.evidencias.fotosNuevas.negocio ? 'text-green-600' : ''}>
+                  {invcData.evidencias.fotosNuevas.negocio ? 'OK' : 'Pendiente'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Solicitante:</span>
+                <span className={invcData.evidencias.fotosNuevas.solicitante ? 'text-green-600' : ''}>
+                  {invcData.evidencias.fotosNuevas.solicitante ? 'OK' : 'Pendiente'}
+                </span>
+              </div>
             </div>
-          )}
+            
+            {/* Discrepancies */}
+            {invcData.diffs.length > 0 && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-xs font-medium">Discrepancias:</span>
+                <Badge className="bg-orange-500 text-white text-xs">
+                  {invcData.diffs.length}
+                </Badge>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Validation Errors */}

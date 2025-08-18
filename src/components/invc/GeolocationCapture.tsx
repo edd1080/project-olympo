@@ -139,27 +139,6 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
     handleOpenCamera();
   };
 
-  const getStatusBadge = () => {
-    if (!existingPhoto) {
-      return <Badge variant="secondary">Pendiente</Badge>;
-    }
-    
-    if (isPhotoValid) {
-      return (
-        <Badge variant="default" className="bg-green-600">
-          <CheckCircle className="w-3 h-3 mr-1" />
-          OK
-        </Badge>
-      );
-    }
-    
-    return (
-      <Badge variant="destructive">
-        <AlertCircle className="w-3 h-3 mr-1" />
-        Fuera de rango
-      </Badge>
-    );
-  };
 
   return (
     <>
@@ -168,9 +147,8 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
         existingPhoto && !isPhotoValid ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
         'border-border'
       }`}>
-        <div className="flex items-center justify-between mb-3">
+        <div className="mb-3">
           <h4 className="font-medium">{title}</h4>
-          {getStatusBadge()}
         </div>
 
         {existingPhoto ? (

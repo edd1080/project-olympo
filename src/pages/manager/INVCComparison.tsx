@@ -327,14 +327,18 @@ const INVCComparisonContent: React.FC = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="evidence" className="space-y-6">
+          <TabsContent value="evidence" className="space-y-8">
             {/* Evidence Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Column: Geolocation and Captures */}
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Nuevas Capturas */}
                 <Card className="p-6">
                   <h3 className="font-bold text-lg mb-6">Nuevas Capturas (Gerente)</h3>
+                  
+                  <div className="text-sm text-muted-foreground mb-6">
+                    Toma las 2 fotos con geolocalización. La de negocio validará que estás en la ubicación guardada por el agente.
+                  </div>
                   
                   <div className="space-y-6">
                     <GeolocationCapture
