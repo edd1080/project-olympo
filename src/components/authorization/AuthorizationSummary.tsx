@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthorizationRequest, ValidationResult } from '@/types/authorization';
-import { DollarSign, Calendar, User, FileText, CheckCircle, AlertTriangle, TrendingDown } from 'lucide-react';
+import { DollarSign, Calendar, FileText, CheckCircle, AlertTriangle, TrendingDown } from 'lucide-react';
 
 interface AuthorizationSummaryProps {
   request: AuthorizationRequest;
@@ -21,29 +21,22 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: { variant: 'default' as const, label: 'Pendiente' },
-      approved: { variant: 'secondary' as const, label: 'Aprobada' },
-      rejected: { variant: 'destructive' as const, label: 'Rechazada' },
-      returned: { variant: 'outline' as const, label: 'Devuelta' },
-      recommended: { variant: 'secondary' as const, label: 'Recomendada' },
-      not_recommended: { variant: 'destructive' as const, label: 'No Recomendada' },
+      pending: { 
+        variant: 'outline' as const, 
+        label: 'Pendiente',
+        className: 'border-amber-500 text-amber-700 bg-amber-50 dark:border-amber-700 dark:text-amber-300 dark:bg-amber-950/20'
+      },
+      approved: { variant: 'secondary' as const, label: 'Aprobada', className: '' },
+      rejected: { variant: 'destructive' as const, label: 'Rechazada', className: '' },
+      returned: { variant: 'outline' as const, label: 'Devuelta', className: '' },
+      recommended: { variant: 'secondary' as const, label: 'Recomendada', className: '' },
+      not_recommended: { variant: 'destructive' as const, label: 'No Recomendada', className: '' },
     };
     
     return variants[status as keyof typeof variants] || variants.pending;
   };
 
-  const getRiskBadge = (risk: string) => {
-    const variants = {
-      high: { variant: 'destructive' as const, label: 'Alto Riesgo' },
-      medium: { variant: 'default' as const, label: 'Riesgo Medio' },
-      low: { variant: 'secondary' as const, label: 'Bajo Riesgo' },
-    };
-    
-    return variants[risk as keyof typeof variants] || variants.medium;
-  };
-
   const statusBadge = getStatusBadge(request.status);
-  const riskBadge = getRiskBadge(request.riskLevel);
 
   return (
     <Card>
@@ -53,12 +46,21 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
           <div className="space-y-1 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="font-semibold text-lg">{request.applicantName}</h2>
-              <Badge {...statusBadge}>{statusBadge.label}</Badge>
-              <Badge {...riskBadge}>{riskBadge.label}</Badge>
+              <Badge {...statusBadge} className={statusBadge.className}>
+                {statusBadge.label}
+              </Badge>
             </div>
             <p className="text-sm text-muted-foreground">
               {request.id} • DPI: {request.dpi}
             </p>
+            {/* Progress - moved here below the name */}
+            <div className="space-y-2 mt-3">
+              <div className="flex items-center justify-between text-sm">
+                <span>Progreso del expediente</span>
+                <span className="font-medium">{request.completionPercentage}%</span>
+              </div>
+              <Progress value={request.completionPercentage} className="h-2" />
+            </div>
           </div>
         </div>
 
@@ -79,9 +81,9 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
+            <FileText className="h-4 w-4 text-muted-foreground" />
             <div>
-              <p className="font-medium">Score: {request.creditScore}</p>
+              <p className="font-medium">Recomendacion: Aprobar.</p>
               <p className="text-xs text-muted-foreground">{request.businessType}</p>
             </div>
           </div>
@@ -92,15 +94,6 @@ export const AuthorizationSummary: React.FC<AuthorizationSummaryProps> = ({
               <p className="text-xs text-muted-foreground">Verificación</p>
             </div>
           </div>
-        </div>
-
-        {/* Progress */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span>Progreso del expediente</span>
-            <span className="font-medium">{request.completionPercentage}%</span>
-          </div>
-          <Progress value={request.completionPercentage} className="h-2" />
         </div>
 
         {/* Validation Status */}

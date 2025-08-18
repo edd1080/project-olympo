@@ -53,7 +53,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
           {/* Direct approval for amounts <= 20k */}
           {canApproveDirectly && (
             <Button
-              onClick={() => setActiveForm('approve')}
+              onClick={() => window.location.href = `/manager/authorizations/${request.id}/approve`}
               className="w-full"
               size="lg"
             >

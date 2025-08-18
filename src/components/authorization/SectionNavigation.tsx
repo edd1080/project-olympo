@@ -95,13 +95,6 @@ export const SectionNavigation: React.FC<SectionNavigationProps> = ({
         
         <div className="flex gap-2">
           {!isLastSection && (
-            <Button onClick={onContinue}>
-              Continuar
-              <ChevronRight className="h-4 w-4 ml-2" />
-            </Button>
-          )}
-          
-          {!isLastSection && (
             <Button
               variant="outline"
               onClick={() => onSectionChange(currentSection + 1)}

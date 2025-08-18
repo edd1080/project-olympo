@@ -156,6 +156,7 @@ const Header = ({
   
   // Show X button for INVC comparison routes
   const showINVCExitButton = location.pathname.match(/^\/manager\/invc\/[^\/]+\/comparison$/);
+  
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;
     const statusConfig = applicationStatuses[applicationStatus as keyof typeof applicationStatuses];
@@ -164,13 +165,16 @@ const Header = ({
         {statusConfig.label}
       </Badge>;
   };
+  
   return <header className="bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
         <div className="flex items-center gap-3 flex-1">
-          {showExitButton ? <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Cerrar">
-              <X className="h-5 w-5" />
-            </Button> : showBackButton}
+          {showBackButton && !showExitButton && (
+            <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Volver">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
           
           {/* Title */}
           <h1 className="text-lg font-bold text-primary">
@@ -186,6 +190,11 @@ const Header = ({
           {/* Add button for applications page */}
           {location.pathname === '/applications' && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" onClick={() => navigate('/identity-verification')} aria-label="Nueva Solicitud">
               <Plus className="h-4 w-4" />
+            </Button>}
+          
+          {/* X button for authorization routes */}
+          {showExitButton && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleGoBack} aria-label="Cerrar">
+              <X className="h-5 w-5" />
             </Button>}
           
           {/* X button for INVC comparison */}

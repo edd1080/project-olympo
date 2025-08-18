@@ -283,7 +283,7 @@ const AuthorizationDetails = () => {
         />
 
         {/* Action Buttons - Sticky Footer */}
-        <div className="sticky bottom-0 z-10 bg-background/95 backdrop-blur-sm border-t pt-4 pb-safe">
+        <div className="sticky bottom-0 z-10 bg-background/95 backdrop-blur-sm border-t pt-4 pb-4">
           <ActionButtons
             request={authorizationRequest}
             validationResult={validationResult}
