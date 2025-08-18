@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, CheckCircle, XCircle, Clock, DollarSign, User, AlertTriangle } from 'lucide-react';
+import { Search, CheckCircle, XCircle, DollarSign, User, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 const Authorizations = () => {
   const {
@@ -96,40 +96,6 @@ const Authorizations = () => {
     };
     return variants[status as keyof typeof variants] || variants.pending;
   };
-  const getRiskBadge = (risk: string) => {
-    const variants = {
-      high: {
-        variant: 'destructive' as const,
-        label: 'Alto Riesgo'
-      },
-      medium: {
-        variant: 'default' as const,
-        label: 'Riesgo Medio'
-      },
-      low: {
-        variant: 'secondary' as const,
-        label: 'Bajo Riesgo'
-      }
-    };
-    return variants[risk as keyof typeof variants] || variants.medium;
-  };
-  const getRecommendationBadge = (action: string) => {
-    const variants = {
-      approve: {
-        variant: 'secondary' as const,
-        label: 'Aprobar'
-      },
-      approve_with_conditions: {
-        variant: 'default' as const,
-        label: 'Aprobar con Condiciones'
-      },
-      reject: {
-        variant: 'destructive' as const,
-        label: 'Rechazar'
-      }
-    };
-    return variants[action as keyof typeof variants] || variants.approve;
-  };
   const handleApprove = (id: string, amount: number) => {
     toast({
       title: "Crédito Aprobado",
@@ -193,17 +159,12 @@ const Authorizations = () => {
           {['all', 'pending', 'approved', 'rejected'].map(status => <TabsContent key={status} value={status} className="mt-4 space-y-3">
               {filterAuthorizations(status).map(authorization => {
             const statusBadge = getStatusBadge(authorization.status);
-            const riskBadge = getRiskBadge(authorization.riskLevel);
-            const recommendationBadge = getRecommendationBadge(authorization.recommendedAction);
             const StatusIcon = statusBadge.icon;
             return <Card key={authorization.id} className="card-hover">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
-                            <Badge {...riskBadge}>{riskBadge.label}</Badge>
-                          </div>
+                          <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
                           <p className="text-sm text-muted-foreground">
                             {authorization.id} • {authorization.businessType}
                           </p>
@@ -232,11 +193,6 @@ const Authorizations = () => {
                         </div>
                       </div>
 
-                      {/* Recommendation */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">Recomendación:</span>
-                        <Badge {...recommendationBadge}>{recommendationBadge.label}</Badge>
-                      </div>
 
                       {/* Additional Info for Completed */}
                       {authorization.status === 'approved' && <div className="p-3 bg-secondary/50 rounded-lg">
