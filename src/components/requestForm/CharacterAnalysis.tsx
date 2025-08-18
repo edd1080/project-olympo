@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -86,24 +85,22 @@ const CharacterSection = ({
   complete?: boolean;
   children: React.ReactNode;
 }) => (
-  <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-    <CardContent className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
-          <h4 className="font-semibold text-lg text-foreground">{title}</h4>
+  <div className="px-4 sm:px-6">
+    <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <div className="p-1.5 rounded-lg bg-primary/10">
+          <Icon className="h-4 w-4 text-primary" />
         </div>
-        {complete && (
-          <CheckCircle className="h-5 w-5 text-[hsl(var(--success))]" aria-label="Subformulario completo" />
-        )}
+        <h4 className="font-semibold text-base text-foreground">{title}</h4>
       </div>
-      <div className="divide-y divide-border">
-        {children}
-      </div>
-    </CardContent>
-  </Card>
+      {complete && (
+        <CheckCircle className="h-4 w-4 text-[hsl(var(--success))]" aria-label="Subformulario completo" />
+      )}
+    </div>
+    <div className="space-y-3">
+      {children}
+    </div>
+  </div>
 );
 
   const ToggleRow = ({ 
@@ -117,13 +114,13 @@ const CharacterSection = ({
     checked: boolean;
     onChange: (checked: boolean) => void;
   }) => (
-    <div className="py-4 flex items-center justify-between gap-4">
-      <Label htmlFor={id} className="text-sm font-medium leading-5 cursor-pointer">
+    <div className="py-3 flex items-start justify-between gap-3">
+      <Label htmlFor={id} className="text-sm font-medium leading-tight cursor-pointer flex-1 pr-2">
         {label}
       </Label>
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-muted-foreground hidden sm:inline-block">{checked ? 'Sí' : 'No'}</span>
-        <Switch id={id} checked={checked} onCheckedChange={onChange} className="shrink-0" />
+      <div className="flex items-center gap-2 shrink-0">
+        <span className="text-xs text-muted-foreground hidden sm:inline-block min-w-[20px]">{checked ? 'Sí' : 'No'}</span>
+        <Switch id={id} checked={checked} onCheckedChange={onChange} className="scale-90 sm:scale-100" />
       </div>
     </div>
   );
@@ -141,21 +138,21 @@ const RadioRow = ({
   onChange: (val: string) => void;
   options: { value: string; label: string }[];
 }) => (
-  <div className="py-4">
-    <Label htmlFor={id} className="block text-sm font-medium leading-5 mb-3">
+  <div className="py-3">
+    <Label htmlFor={id} className="block text-sm font-medium leading-tight mb-3">
       {label}
     </Label>
-    <RadioGroup value={value} onValueChange={onChange} className="grid grid-cols-3 gap-2">
+    <RadioGroup value={value} onValueChange={onChange} className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {options.map((opt) => {
         const isSelected = value === opt.value;
         const isDimmed = value !== undefined && !isSelected;
         return (
           <div
             key={opt.value}
-            className={`flex items-center justify-center gap-2 rounded-md border px-3 py-2 transition-colors ${isSelected ? 'border-primary bg-primary/10' : 'border-border'} ${isDimmed ? 'opacity-50' : ''}`}
+            className={`flex items-center gap-1.5 rounded-md border px-2 py-1.5 transition-colors text-center ${isSelected ? 'border-primary bg-primary/10' : 'border-border'} ${isDimmed ? 'opacity-50' : ''}`}
           >
-            <RadioGroupItem id={`${id}-${opt.value}`} value={opt.value} />
-            <Label htmlFor={`${id}-${opt.value}`} className="text-sm cursor-pointer">
+            <RadioGroupItem id={`${id}-${opt.value}`} value={opt.value} className="shrink-0" />
+            <Label htmlFor={`${id}-${opt.value}`} className="text-xs sm:text-sm cursor-pointer leading-tight text-center flex-1 break-words">
               {opt.label}
             </Label>
           </div>
@@ -167,15 +164,15 @@ const RadioRow = ({
 
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
-        <h3 className="font-bold text-2xl text-foreground">Análisis de carácter</h3>
-        <p className="text-muted-foreground">
+    <div className="space-y-6 sm:space-y-8 px-2 sm:px-0">
+      <div className="space-y-3 px-2 sm:px-0">
+        <h3 className="font-bold text-xl sm:text-2xl text-foreground">Análisis de carácter</h3>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Responde cada pregunta con Sí/No o selecciona el nivel correspondiente. No se requiere escritura en esta sección.
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 bg-card/30 rounded-lg border border-border/30">
         {/* Aspectos personales */}
         <CharacterSection title="Aspectos personales" icon={User} complete={personalComplete}>
           <ToggleRow
@@ -223,6 +220,8 @@ const RadioRow = ({
             ]}
           />
         </CharacterSection>
+
+        <div className="border-t border-border/30"></div>
 
         {/* Sobre el proyecto */}
         <CharacterSection title="Sobre el proyecto" icon={Building2} complete={projectComplete}>
@@ -276,6 +275,8 @@ const RadioRow = ({
             ]}
           />
         </CharacterSection>
+
+        <div className="border-t border-border/30"></div>
 
         {/* Referencias y récord de pago */}
         <CharacterSection title="Referencias y récord de pago" icon={FileText} complete={referencesComplete}>
