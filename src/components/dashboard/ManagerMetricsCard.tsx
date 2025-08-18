@@ -17,17 +17,13 @@ const ManagerMetricsCard = ({
   colorClass,
   iconColorClass
 }: ManagerMetricsCardProps) => {
-  return <Card className="card-hover h-28">
+  return <Card className="h-32">
       <CardContent className="p-4">
-        <div className="flex items-center gap-3 h-full">
-          <div className={`flex h-12 w-12 items-center justify-center rounded-full ${colorClass}`}>
-            <Icon className={`h-6 w-6 ${iconColorClass}`} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-muted-foreground leading-tight font-semibold text-xs">{title}</p>
-            {description && <p className="text-xs text-muted-foreground/80 leading-tight">{description}</p>}
-            <p className="text-2xl font-bold leading-none mt-1">{value}</p>
-          </div>
+        <div className="flex flex-col justify-center h-full text-center">
+          <Icon className={`h-6 w-6 mx-auto mb-2 ${iconColorClass}`} />
+          <p className="text-muted-foreground mb-1 text-base">{title}</p>
+          {description && <p className="text-xs text-muted-foreground/80 leading-tight">{description}</p>}
+          <p className="font-bold my-1 text-3xl">{value}</p>
         </div>
       </CardContent>
     </Card>;

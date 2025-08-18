@@ -6,7 +6,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ClipboardList, CheckCircle, AlertTriangle, Clock, TrendingUp, Users, ChevronRight } from 'lucide-react';
+import { ClipboardList, CheckCircle, AlertTriangle, Clock, TrendingUp, Users, ChevronRight, XCircle } from 'lucide-react';
 import ManagerMetricsCard from '@/components/dashboard/ManagerMetricsCard';
 const ManagerIndex = () => {
   const {
@@ -19,7 +19,7 @@ const ManagerIndex = () => {
     pendingINVC: 12,
     completedToday: 8,
     pendingAuthorizations: 5,
-    criticalAlerts: 2
+    cancelledRequests: 2
   };
   const recentINVC = [{
     id: 'INVC-001',
@@ -93,13 +93,13 @@ const ManagerIndex = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <ManagerMetricsCard icon={ClipboardList} title="INVC Pendientes" value={stats.pendingINVC} colorClass="bg-blue-500/10" iconColorClass="text-blue-500" />
+          <ManagerMetricsCard icon={ClipboardList} title="INVC Pendientes" value={stats.pendingINVC} colorClass="bg-blue-500/10" iconColorClass="text-blue-600" />
           
-          <ManagerMetricsCard icon={CheckCircle} title="Completadas Hoy" value={stats.completedToday} colorClass="bg-green-500/10" iconColorClass="text-green-500" />
+          <ManagerMetricsCard icon={CheckCircle} title="Completadas Hoy" value={stats.completedToday} colorClass="bg-green-500/10" iconColorClass="text-green-600" />
           
-          <ManagerMetricsCard icon={Clock} title="Autorizaciones" description="Pendientes" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-500" />
+          <ManagerMetricsCard icon={Clock} title="Autorizaciones" description="Pendientes" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-600" />
           
-          <ManagerMetricsCard icon={AlertTriangle} title="Alertas Críticas" value={stats.criticalAlerts} colorClass="bg-red-500/10" iconColorClass="text-red-500" />
+          <ManagerMetricsCard icon={XCircle} title="Solicitudes Canceladas" value={stats.cancelledRequests} colorClass="bg-red-500/10" iconColorClass="text-red-600" />
         </div>
 
         {/* Quick Actions */}
@@ -136,25 +136,6 @@ const ManagerIndex = () => {
                       <p className="font-semibold">Autorizar Créditos</p>
                       <p className="text-sm text-muted-foreground">
                         {stats.pendingAuthorizations} solicitudes esperando aprobación
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="card-hover cursor-pointer" onClick={() => navigate('/alerts')}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-red-500/10 rounded-lg">
-                      <AlertTriangle className="h-5 w-5 text-red-500" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">Ver Alertas</p>
-                      <p className="text-sm text-muted-foreground">
-                        {stats.criticalAlerts} alertas críticas activas
                       </p>
                     </div>
                   </div>
