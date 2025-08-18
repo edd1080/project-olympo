@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, CheckCircle, XCircle, Clock, DollarSign, User, AlertTriangle } from 'lucide-react';
+import { Search, CheckCircle, XCircle, DollarSign, User, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Authorizations = () => {
@@ -81,23 +81,14 @@ const Authorizations = () => {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: { variant: 'default' as const, label: 'Pendiente', icon: null },
-      approved: { variant: 'secondary' as const, label: 'Aprobada', icon: CheckCircle },
-      rejected: { variant: 'destructive' as const, label: 'Rechazada', icon: XCircle },
+      pending: { variant: 'outline' as const, label: 'Pendiente', icon: null, className: 'border-amber-500 text-amber-700 bg-amber-50 dark:border-amber-700 dark:text-amber-300 dark:bg-amber-950/20' },
+      approved: { variant: 'secondary' as const, label: 'Aprobada', icon: CheckCircle, className: '' },
+      rejected: { variant: 'destructive' as const, label: 'Rechazada', icon: XCircle, className: '' },
     };
     
     return variants[status as keyof typeof variants] || variants.pending;
   };
 
-  const getRiskBadge = (risk: string) => {
-    const variants = {
-      high: { variant: 'destructive' as const, label: 'Alto Riesgo' },
-      medium: { variant: 'default' as const, label: 'Riesgo Medio' },
-      low: { variant: 'secondary' as const, label: 'Bajo Riesgo' },
-    };
-    
-    return variants[risk as keyof typeof variants] || variants.medium;
-  };
 
   const getRecommendationBadge = (action: string) => {
     const variants = {
@@ -166,17 +157,17 @@ const Authorizations = () => {
 
         {/* Status Tabs */}
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">
+          <TabsList className="flex w-full overflow-x-auto gap-2">
+            <TabsTrigger value="all" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
               Todas ({authorizations.length})
             </TabsTrigger>
-            <TabsTrigger value="pending">
+            <TabsTrigger value="pending" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
               Pendientes ({pendingCount})
             </TabsTrigger>
-            <TabsTrigger value="approved">
+            <TabsTrigger value="approved" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
               Aprobadas ({approvedCount})
             </TabsTrigger>
-            <TabsTrigger value="rejected">
+            <TabsTrigger value="rejected" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
               Rechazadas ({rejectedCount})
             </TabsTrigger>
           </TabsList>
@@ -185,7 +176,6 @@ const Authorizations = () => {
             <TabsContent key={status} value={status} className="mt-4 space-y-3">
               {filterAuthorizations(status).map((authorization) => {
                 const statusBadge = getStatusBadge(authorization.status);
-                const riskBadge = getRiskBadge(authorization.riskLevel);
                 const recommendationBadge = getRecommendationBadge(authorization.recommendedAction);
                 const StatusIcon = statusBadge.icon;
                 
@@ -194,17 +184,14 @@ const Authorizations = () => {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
-                            <Badge {...riskBadge}>{riskBadge.label}</Badge>
-                          </div>
+                          <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
                           <p className="text-sm text-muted-foreground">
                             {authorization.id} • {authorization.businessType}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                          <Badge {...statusBadge}>{statusBadge.label}</Badge>
+                          <Badge {...statusBadge} className={statusBadge.className}>{statusBadge.label}</Badge>
                         </div>
                       </div>
                     </CardHeader>
@@ -217,8 +204,7 @@ const Authorizations = () => {
                           <span>Q{authorization.amount.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span>Score: {authorization.creditScore}</span>
+                          <span>Recomendacion: Aprobar</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4 text-muted-foreground" />
