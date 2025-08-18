@@ -1,136 +1,156 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, CheckCircle, XCircle, DollarSign, User, AlertTriangle } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Clock, DollarSign, User, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
 const Authorizations = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Mock data for authorizations
-  const authorizations = [
-    {
-      id: 'AUTH-001',
-      applicationId: 'APP-2024-001',
-      applicantName: 'María García Pérez',
-      amount: 15000,
-      status: 'pending',
-      completedDate: '2025-01-14',
-      investigator: 'Gerente Pérez',
-      creditScore: 720,
-      riskLevel: 'medium',
-      businessType: 'Tienda de Abarrotes',
-      recommendedAction: 'approve',
-      invcResult: 'verified',
-    },
-    {
-      id: 'AUTH-002',
-      applicationId: 'APP-2024-002',
-      applicantName: 'Carlos Rodríguez López',
-      amount: 25000,
-      status: 'pending',
-      completedDate: '2025-01-13',
-      investigator: 'Gerente Morales',
-      creditScore: 680,
-      riskLevel: 'high',
-      businessType: 'Panadería',
-      recommendedAction: 'approve_with_conditions',
-      invcResult: 'partial_verified',
-    },
-    {
-      id: 'AUTH-003',
-      applicationId: 'APP-2024-003',
-      applicantName: 'Ana López Rivera',
-      amount: 10000,
-      status: 'approved',
-      completedDate: '2025-01-12',
-      investigator: 'Gerente González',
-      creditScore: 750,
-      riskLevel: 'low',
-      businessType: 'Ferretería',
-      recommendedAction: 'approve',
-      invcResult: 'verified',
-      approvedDate: '2025-01-14',
-      approvedAmount: 10000,
-    },
-    {
-      id: 'AUTH-004',
-      applicationId: 'APP-2024-004',
-      applicantName: 'Luis Martínez Soto',
-      amount: 30000,
-      status: 'rejected',
-      completedDate: '2025-01-11',
-      investigator: 'Gerente Ruiz',
-      creditScore: 580,
-      riskLevel: 'high',
-      businessType: 'Restaurante',
-      recommendedAction: 'reject',
-      invcResult: 'discrepancies_found',
-      rejectedDate: '2025-01-13',
-      rejectionReason: 'Discrepancias en información financiera',
-    },
-  ];
-
+  const authorizations = [{
+    id: 'AUTH-001',
+    applicationId: 'APP-2024-001',
+    applicantName: 'María García Pérez',
+    amount: 15000,
+    status: 'pending',
+    completedDate: '2025-01-14',
+    investigator: 'Gerente Pérez',
+    creditScore: 720,
+    riskLevel: 'medium',
+    businessType: 'Tienda de Abarrotes',
+    recommendedAction: 'approve',
+    invcResult: 'verified'
+  }, {
+    id: 'AUTH-002',
+    applicationId: 'APP-2024-002',
+    applicantName: 'Carlos Rodríguez López',
+    amount: 25000,
+    status: 'pending',
+    completedDate: '2025-01-13',
+    investigator: 'Gerente Morales',
+    creditScore: 680,
+    riskLevel: 'high',
+    businessType: 'Panadería',
+    recommendedAction: 'approve_with_conditions',
+    invcResult: 'partial_verified'
+  }, {
+    id: 'AUTH-003',
+    applicationId: 'APP-2024-003',
+    applicantName: 'Ana López Rivera',
+    amount: 10000,
+    status: 'approved',
+    completedDate: '2025-01-12',
+    investigator: 'Gerente González',
+    creditScore: 750,
+    riskLevel: 'low',
+    businessType: 'Ferretería',
+    recommendedAction: 'approve',
+    invcResult: 'verified',
+    approvedDate: '2025-01-14',
+    approvedAmount: 10000
+  }, {
+    id: 'AUTH-004',
+    applicationId: 'APP-2024-004',
+    applicantName: 'Luis Martínez Soto',
+    amount: 30000,
+    status: 'rejected',
+    completedDate: '2025-01-11',
+    investigator: 'Gerente Ruiz',
+    creditScore: 580,
+    riskLevel: 'high',
+    businessType: 'Restaurante',
+    recommendedAction: 'reject',
+    invcResult: 'discrepancies_found',
+    rejectedDate: '2025-01-13',
+    rejectionReason: 'Discrepancias en información financiera'
+  }];
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: { variant: 'outline' as const, label: 'Pendiente', icon: null, className: 'border-amber-500 text-amber-700 bg-amber-50 dark:border-amber-700 dark:text-amber-300 dark:bg-amber-950/20' },
-      approved: { variant: 'secondary' as const, label: 'Aprobada', icon: CheckCircle, className: '' },
-      rejected: { variant: 'destructive' as const, label: 'Rechazada', icon: XCircle, className: '' },
+      pending: {
+        variant: 'default' as const,
+        label: 'Pendiente',
+        icon: null
+      },
+      approved: {
+        variant: 'secondary' as const,
+        label: 'Aprobada',
+        icon: CheckCircle
+      },
+      rejected: {
+        variant: 'destructive' as const,
+        label: 'Rechazada',
+        icon: XCircle
+      }
     };
-    
     return variants[status as keyof typeof variants] || variants.pending;
   };
-
-
+  const getRiskBadge = (risk: string) => {
+    const variants = {
+      high: {
+        variant: 'destructive' as const,
+        label: 'Alto Riesgo'
+      },
+      medium: {
+        variant: 'default' as const,
+        label: 'Riesgo Medio'
+      },
+      low: {
+        variant: 'secondary' as const,
+        label: 'Bajo Riesgo'
+      }
+    };
+    return variants[risk as keyof typeof variants] || variants.medium;
+  };
   const getRecommendationBadge = (action: string) => {
     const variants = {
-      approve: { variant: 'secondary' as const, label: 'Aprobar' },
-      approve_with_conditions: { variant: 'default' as const, label: 'Aprobar con Condiciones' },
-      reject: { variant: 'destructive' as const, label: 'Rechazar' },
+      approve: {
+        variant: 'secondary' as const,
+        label: 'Aprobar'
+      },
+      approve_with_conditions: {
+        variant: 'default' as const,
+        label: 'Aprobar con Condiciones'
+      },
+      reject: {
+        variant: 'destructive' as const,
+        label: 'Rechazar'
+      }
     };
-    
     return variants[action as keyof typeof variants] || variants.approve;
   };
-
   const handleApprove = (id: string, amount: number) => {
     toast({
       title: "Crédito Aprobado",
-      description: `Se ha aprobado el crédito por Q${amount.toLocaleString()}`,
+      description: `Se ha aprobado el crédito por Q${amount.toLocaleString()}`
     });
   };
-
   const handleReject = (id: string) => {
     toast({
       title: "Crédito Rechazado",
       description: "Se ha rechazado la solicitud de crédito",
-      variant: "destructive",
+      variant: "destructive"
     });
   };
-
   const filterAuthorizations = (status: string) => {
     return authorizations.filter(auth => {
       const matchesStatus = status === 'all' || auth.status === status;
-      const matchesSearch = auth.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           auth.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           auth.businessType.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = auth.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) || auth.id.toLowerCase().includes(searchTerm.toLowerCase()) || auth.businessType.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesStatus && matchesSearch;
     });
   };
-
   const pendingCount = authorizations.filter(auth => auth.status === 'pending').length;
   const approvedCount = authorizations.filter(auth => auth.status === 'approved').length;
   const rejectedCount = authorizations.filter(auth => auth.status === 'rejected').length;
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Header />
       
       <main className="mobile-container pt-4 space-y-6">
@@ -146,52 +166,48 @@ const Authorizations = () => {
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por nombre, ID o negocio..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            <Input placeholder="Buscar por nombre, ID o negocio..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
           </div>
         </div>
 
         {/* Status Tabs */}
         <Tabs defaultValue="all">
-          <TabsList className="flex w-full overflow-x-auto gap-2">
-            <TabsTrigger value="all" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="all">
               Todas ({authorizations.length})
             </TabsTrigger>
-            <TabsTrigger value="pending" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
+            <TabsTrigger value="pending">
               Pendientes ({pendingCount})
             </TabsTrigger>
-            <TabsTrigger value="approved" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
+            <TabsTrigger value="approved">
               Aprobadas ({approvedCount})
             </TabsTrigger>
-            <TabsTrigger value="rejected" className="flex-shrink-0 whitespace-nowrap px-3 py-1.5 text-sm">
+            <TabsTrigger value="rejected">
               Rechazadas ({rejectedCount})
             </TabsTrigger>
           </TabsList>
 
-          {['all', 'pending', 'approved', 'rejected'].map((status) => (
-            <TabsContent key={status} value={status} className="mt-4 space-y-3">
-              {filterAuthorizations(status).map((authorization) => {
-                const statusBadge = getStatusBadge(authorization.status);
-                const recommendationBadge = getRecommendationBadge(authorization.recommendedAction);
-                const StatusIcon = statusBadge.icon;
-                
-                return (
-                  <Card key={authorization.id} className="card-hover">
+          {['all', 'pending', 'approved', 'rejected'].map(status => <TabsContent key={status} value={status} className="mt-4 space-y-3">
+              {filterAuthorizations(status).map(authorization => {
+            const statusBadge = getStatusBadge(authorization.status);
+            const riskBadge = getRiskBadge(authorization.riskLevel);
+            const recommendationBadge = getRecommendationBadge(authorization.recommendedAction);
+            const StatusIcon = statusBadge.icon;
+            return <Card key={authorization.id} className="card-hover">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1 flex-1">
-                          <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <CardTitle className="text-base">{authorization.applicantName}</CardTitle>
+                            <Badge {...riskBadge}>{riskBadge.label}</Badge>
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             {authorization.id} • {authorization.businessType}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                          <Badge {...statusBadge} className={statusBadge.className}>{statusBadge.label}</Badge>
+                          <Badge {...statusBadge}>{statusBadge.label}</Badge>
                         </div>
                       </div>
                     </CardHeader>
@@ -204,7 +220,8 @@ const Authorizations = () => {
                           <span>Q{authorization.amount.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span>Recomendacion: Aprobar</span>
+                          
+                          <span>Score: {authorization.creditScore}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4 text-muted-foreground" />
@@ -223,61 +240,45 @@ const Authorizations = () => {
                       </div>
 
                       {/* Additional Info for Completed */}
-                      {authorization.status === 'approved' && (
-                        <div className="p-3 bg-secondary/50 rounded-lg">
+                      {authorization.status === 'approved' && <div className="p-3 bg-secondary/50 rounded-lg">
                           <p className="text-sm font-medium text-secondary-foreground">
                             ✓ Aprobado el {authorization.approvedDate}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             Monto autorizado: Q{authorization.approvedAmount?.toLocaleString()}
                           </p>
-                        </div>
-                      )}
+                        </div>}
 
-                      {authorization.status === 'rejected' && (
-                        <div className="p-3 bg-destructive/10 rounded-lg">
+                      {authorization.status === 'rejected' && <div className="p-3 bg-destructive/10 rounded-lg">
                           <p className="text-sm font-medium text-destructive">
                             ✗ Rechazado el {authorization.rejectedDate}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             Motivo: {authorization.rejectionReason}
                           </p>
-                        </div>
-                      )}
+                        </div>}
 
                       {/* Action Button for Pending - Navigate to Details */}
-                      {authorization.status === 'pending' && (
-                        <div className="flex gap-2">
-                          <Button 
-                            onClick={() => navigate(`/manager/authorizations/${authorization.id}`)}
-                            className="flex-1"
-                            size="sm"
-                          >
+                      {authorization.status === 'pending' && <div className="flex gap-2">
+                          <Button onClick={() => navigate(`/manager/authorizations/${authorization.id}`)} className="flex-1" size="sm">
                             Iniciar Autorización
                           </Button>
-                        </div>
-                      )}
+                        </div>}
                     </CardContent>
-                  </Card>
-                );
-              })}
+                  </Card>;
+          })}
 
-              {filterAuthorizations(status).length === 0 && (
-                <div className="text-center py-8">
+              {filterAuthorizations(status).length === 0 && <div className="text-center py-8">
                   <p className="text-muted-foreground">
                     No se encontraron autorizaciones
                     {searchTerm && ` que coincidan con "${searchTerm}"`}
                   </p>
-                </div>
-              )}
-            </TabsContent>
-          ))}
+                </div>}
+            </TabsContent>)}
         </Tabs>
       </main>
 
       
-    </div>
-  );
+    </div>;
 };
-
 export default Authorizations;
