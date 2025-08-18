@@ -5,8 +5,10 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle, Download, Smartphone } from 'lucide-react';
+import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle, Download, Smartphone, Bug, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AppIssueSheet from '@/components/settings/AppIssueSheet';
+import CreditIssueSheet from '@/components/settings/CreditIssueSheet';
 
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePWA } from '@/hooks/usePWA';
@@ -22,6 +24,8 @@ const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showAppIssueSheet, setShowAppIssueSheet] = useState(false);
+  const [showCreditIssueSheet, setShowCreditIssueSheet] = useState(false);
   const { canInstall, isInstalled, installApp } = useInstallPrompt();
   const { isOnline } = usePWA();
 
@@ -250,10 +254,24 @@ const Settings = () => {
             <p className="text-sm text-muted-foreground mb-6">Encuentra ayuda y recursos para usar Crédito Productivo</p>
             
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-accent/50 rounded-md px-4" onClick={() => navigate('/settings/report-problem')}>
-                <div>
-                  <p className="font-medium">Reportar problema</p>
-                  <p className="text-sm text-muted-foreground">Informa sobre errores o fallos</p>
+              <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-accent/50 rounded-md px-4" onClick={() => setShowAppIssueSheet(true)}>
+                <div className="flex items-center gap-3">
+                  <Bug className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Reportar problema con la app</p>
+                    <p className="text-sm text-muted-foreground">Reporta sobre errores o fallos en esta aplicación</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              </div>
+              
+              <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-accent/50 rounded-md px-4" onClick={() => setShowCreditIssueSheet(true)}>
+                <div className="flex items-center gap-3">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Reportar problema con solicitud de crédito</p>
+                    <p className="text-sm text-muted-foreground">Recibe soporte para alguna solicitud de crédito en específico</p>
+                  </div>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </div>
@@ -290,6 +308,16 @@ const Settings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AppIssueSheet 
+        isOpen={showAppIssueSheet} 
+        onClose={() => setShowAppIssueSheet(false)} 
+      />
+      
+      <CreditIssueSheet 
+        isOpen={showCreditIssueSheet} 
+        onClose={() => setShowCreditIssueSheet(false)} 
+      />
     </div>
   );
 };
