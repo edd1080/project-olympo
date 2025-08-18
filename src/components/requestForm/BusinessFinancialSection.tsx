@@ -10,7 +10,7 @@ import BusinessProducts from './businessFinancial/BusinessProducts';
 import FinancialAnalysis from './FinancialAnalysis';
 import PatrimonialStatement from './PatrimonialStatement';
 import BusinessExpenses from './businessFinancial/BusinessExpenses';
-import { BarChart3, Scale, Building2, Package, Receipt, ChevronLeft, ChevronRight } from 'lucide-react';
+import { BarChart3, Scale, Building2, Package, Receipt, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 interface BusinessFinancialSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -108,7 +108,16 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
           <CurrentIcon className="h-5 w-5" />
           <h2 className="text-xl font-semibold">{screens[currentIndex].label}</h2>
         </div>
-        {activeScreen === 'products' && <Button size="sm" onClick={handleAddProduct}>Agregar Producto</Button>}
+        {activeScreen === 'products' && (
+          <Button 
+            size="sm" 
+            onClick={handleAddProduct}
+            className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white"
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            Agregar Producto
+          </Button>
+        )}
       </header>
 
       {/* Screen content */}
@@ -190,14 +199,28 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
         <Separator />
         <div className="flex items-center justify-between gap-2">
           <div>
-            {prev && <Button variant="outline" className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" onClick={() => setActiveScreen(prev.id)}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>}
+            {prev && (
+              <Button 
+                variant="outline" 
+                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
+                onClick={() => setActiveScreen(prev.id)}
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Anterior: {prev.label}
+              </Button>
+            )}
           </div>
           <div>
-            {next && <Button variant="outline" className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" onClick={() => setActiveScreen(next.id)}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>}
+            {next && (
+              <Button 
+                variant="outline" 
+                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
+                onClick={() => setActiveScreen(next.id)}
+              >
+                Siguiente: {next.label}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
           </div>
         </div>
       </section>

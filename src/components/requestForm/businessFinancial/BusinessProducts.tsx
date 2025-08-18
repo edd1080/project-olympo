@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Separator } from '@/components/ui/separator';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Camera } from 'lucide-react';
 
 interface BusinessProductsProps {
   formData: any;
@@ -235,18 +235,90 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
                     onValueChange={(value) => updateProduct(selectedProduct.id, 'bestMonths', value)}
                     className="grid grid-cols-4 gap-2"
                   >
-                    <ToggleGroupItem value="january">Ene</ToggleGroupItem>
-                    <ToggleGroupItem value="february">Feb</ToggleGroupItem>
-                    <ToggleGroupItem value="march">Mar</ToggleGroupItem>
-                    <ToggleGroupItem value="april">Abr</ToggleGroupItem>
-                    <ToggleGroupItem value="may">May</ToggleGroupItem>
-                    <ToggleGroupItem value="june">Jun</ToggleGroupItem>
-                    <ToggleGroupItem value="july">Jul</ToggleGroupItem>
-                    <ToggleGroupItem value="august">Ago</ToggleGroupItem>
-                    <ToggleGroupItem value="september">Sep</ToggleGroupItem>
-                    <ToggleGroupItem value="october">Oct</ToggleGroupItem>
-                    <ToggleGroupItem value="november">Nov</ToggleGroupItem>
-                    <ToggleGroupItem value="december">Dic</ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="january" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Ene
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="february" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Feb
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="march" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Mar
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="april" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Abr
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="may" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      May
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="june" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Jun
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="july" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Jul
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="august" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Ago
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="september" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Sep
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="october" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Oct
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="november" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Nov
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="december" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Dic
+                    </ToggleGroupItem>
                   </ToggleGroup>
                 </div>
 
@@ -272,18 +344,90 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
                     onValueChange={(value) => updateProduct(selectedProduct.id, 'worstMonths', value)}
                     className="grid grid-cols-4 gap-2"
                   >
-                    <ToggleGroupItem value="january">Ene</ToggleGroupItem>
-                    <ToggleGroupItem value="february">Feb</ToggleGroupItem>
-                    <ToggleGroupItem value="march">Mar</ToggleGroupItem>
-                    <ToggleGroupItem value="april">Abr</ToggleGroupItem>
-                    <ToggleGroupItem value="may">May</ToggleGroupItem>
-                    <ToggleGroupItem value="june">Jun</ToggleGroupItem>
-                    <ToggleGroupItem value="july">Jul</ToggleGroupItem>
-                    <ToggleGroupItem value="august">Ago</ToggleGroupItem>
-                    <ToggleGroupItem value="september">Sep</ToggleGroupItem>
-                    <ToggleGroupItem value="october">Oct</ToggleGroupItem>
-                    <ToggleGroupItem value="november">Nov</ToggleGroupItem>
-                    <ToggleGroupItem value="december">Dic</ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="january" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Ene
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="february" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Feb
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="march" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Mar
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="april" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Abr
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="may" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      May
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="june" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Jun
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="july" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Jul
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="august" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Ago
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="september" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Sep
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="october" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Oct
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="november" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Nov
+                    </ToggleGroupItem>
+                    <ToggleGroupItem 
+                      value="december" 
+                      variant="outline"
+                      className="h-8 px-2 text-xs hover:bg-[#E18E33]/10 border-[#E18E33]/60 data-[state=on]:bg-[#E18E33] data-[state=on]:text-white"
+                    >
+                      Dic
+                    </ToggleGroupItem>
                   </ToggleGroup>
                 </div>
 
@@ -317,14 +461,23 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
                     <Button variant="outline" size="sm" onClick={() => updateProduct(selectedProduct.id, 'photo', null)}>
                       Eliminar foto
                     </Button>
-                    <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
+                    <Button 
+                      size="sm" 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white font-medium"
+                    >
+                      <Camera className="h-4 w-4 mr-1.5" />
                       Reemplazar
                     </Button>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white font-medium"
+                  >
+                    <Camera className="h-4 w-4 mr-1.5" />
                     Tomar/Subir foto
                   </Button>
                   <span className="text-sm text-muted-foreground">Formato: JPG/PNG</span>
