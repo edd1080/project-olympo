@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { AlertCircle, Camera, CheckCircle, FileText, Image, Loader2, UploadCloud, X, RefreshCw, SwitchCamera } from 'lucide-react';
+import { AlertCircle, Camera, CheckCircle, FileText, Image, Loader2, UploadCloud, X, RefreshCw, SwitchCamera, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCamera } from '@/hooks/useCamera';
 
@@ -530,14 +530,7 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
             </div>
           )}
           
-          <div className="flex justify-end gap-3">
-            <Button 
-              variant="ghost" 
-              onClick={() => setShowPreview(null)}
-            >
-              <X className="mr-2 h-4 w-4" />
-              Cerrar
-            </Button>
+          <div className="flex justify-center">
             <Button 
               variant="outline" 
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -548,7 +541,7 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
                 }
               }}
             >
-              <X className="mr-2 h-4 w-4" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Eliminar
             </Button>
           </div>
