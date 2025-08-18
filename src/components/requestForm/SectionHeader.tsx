@@ -65,7 +65,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         return 'Revisión Final';
       // Official application sections
       case 'credit-details':
-        return 'Detalles del Crédito';
+        return 'Detalles del Credito e Info Personal';
       case 'character':
         return 'Análisis de Carácter';
       case 'business-financial':

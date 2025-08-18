@@ -35,7 +35,7 @@ const BreadcrumbNavigation = () => {
       'documents': 'Documentos y Cierre',
       'review': 'Revisión Final',
       // Official application sections
-      'credit-details': 'Detalles del Crédito',
+      'credit-details': 'Detalles del Credito e Info Personal',
       'character': 'Análisis de Carácter',
       'business-financial': 'Información Financiera',
       'signature': 'Cláusula y Firma'
