@@ -32,13 +32,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
   const [loadingDocument, setLoadingDocument] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState<DocumentItem | null>(null);
   
-  // Get the camera facing mode for the active document
-  const getActiveDocumentFacing = () => {
-    const activeDoc = documents.find(doc => doc.id === activeCameraId);
-    return activeDoc?.cameraFacing || 'environment';
-  };
-  
-  const camera = useCamera(getActiveDocumentFacing());
+  // Initialize camera with default facing mode
+  const camera = useCamera('environment');
 
   const [documents, setDocuments] = useState<DocumentItem[]>([
     {
@@ -109,6 +104,16 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
 
   const handleCaptureStart = async (documentId: string) => {
     setActiveCameraId(documentId);
+    
+    // Get the required facing mode for this document
+    const document = documents.find(doc => doc.id === documentId);
+    const requiredFacing = document?.cameraFacing || 'environment';
+    
+    // Switch camera if needed
+    if (camera.currentFacing !== requiredFacing) {
+      await camera.switchCamera(requiredFacing);
+    }
+    
     const success = await camera.requestPermission();
     if (!success) {
       setActiveCameraId(null);
