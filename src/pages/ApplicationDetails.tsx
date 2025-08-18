@@ -620,19 +620,19 @@ const ApplicationDetails = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-background rounded-md">
+              <div className="text-center p-3 bg-background rounded-md border">
                 <p className="text-xs text-muted-foreground mb-1">Monto Solicitado</p>
                 <p className="font-bold text-lg">Q{application.creditRequest.loanAmount.toLocaleString()}</p>
               </div>
-              <div className="text-center p-3 bg-background rounded-md">
+              <div className="text-center p-3 bg-background rounded-md border">
                 <p className="text-xs text-muted-foreground mb-1">Plazo</p>
                 <p className="font-bold text-lg">{application.creditRequest.termMonths} meses</p>
               </div>
-              <div className="text-center p-3 bg-background rounded-md">
+              <div className="text-center p-3 bg-background rounded-md border">
                 <p className="text-xs text-muted-foreground mb-1">Tipo de Crédito</p>
                 <p className="font-bold text-sm">{application.creditRequest.creditType}</p>
               </div>
-              <div className="text-center p-3 bg-background rounded-md">
+              <div className="text-center p-3 bg-background rounded-md border">
                 <p className="text-xs text-muted-foreground mb-1">Propósito</p>
                 <p className="font-bold text-sm">{application.creditRequest.purpose}</p>
               </div>
