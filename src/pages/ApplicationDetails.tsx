@@ -12,7 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Edit, FileText, CheckCircle, Clock, XCircle, AlertCircle, User, Briefcase, DollarSign, FileCheck, Camera, ClipboardList, Calendar, UserCheck, Users, Search, FileSignature, BarChart3, MapPin, Plus, Send, PartyPopper, ChevronRight, Building2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import CircularProgress from "@/components/requestForm/CircularProgress";
 import NewGuarantorSheet from "@/components/requestForm/guarantors/NewGuarantorSheet";
@@ -38,7 +38,7 @@ const applicationStatuses = {
 // Dynamic form sections based on application type
 const getFormSections = (applicationType: string) => {
   if (applicationType === 'oficial') {
-    // Official application sections (5 steps)
+    // Official application sections (6 steps)
     return [{
       id: 'credit-details',
       icon: <DollarSign size={18} />,
@@ -49,11 +49,15 @@ const getFormSections = (applicationType: string) => {
       name: 'Análisis de Carácter'
     }, {
       id: 'business-financial',
+      icon: <Building2 size={18} />,
+      name: 'Info del Negocio'
+    }, {
+      id: 'financial-info',
       icon: <BarChart3 size={18} />,
       name: 'Información Financiera'
     }, {
       id: 'documents',
-      icon: <FileSignature size={18} />,
+      icon: <MapPin size={18} />,
       name: 'Documentos e Imágenes'
     }, {
       id: 'signature',
@@ -132,6 +136,7 @@ const ApplicationDetails = () => {
             type: 'oficial',
             createdAt: contextApp.date,
             updatedAt: contextApp.date,
+            kycData: kycData,
             identification: {
               agencia: getFieldDisplayValue(null),
               cui: kycData.cui,
@@ -374,10 +379,8 @@ const ApplicationDetails = () => {
   };
   
   const navigateToFormSection = (sectionId: string) => {
-    // Determine the correct route based on application type
-    const editRoute = application?.type === 'oficial' 
-      ? `/applications/${id}/edit-oficial` 
-      : `/applications/${id}/edit`;
+    // Use unified route for all applications
+    const editRoute = `/applications/${id}/edit`;
       
     navigate(editRoute, {
       state: {
@@ -394,10 +397,8 @@ const ApplicationDetails = () => {
   };
 
   const navigateToDocuments = () => {
-    // Determine the correct route based on application type
-    const editRoute = application?.type === 'oficial' 
-      ? `/applications/${id}/edit-oficial` 
-      : `/applications/${id}/edit`;
+    // Use unified route for all applications
+    const editRoute = `/applications/${id}/edit`;
       
     navigate(editRoute, {
       state: {
@@ -444,8 +445,8 @@ const ApplicationDetails = () => {
   const isApplicationReadyToSubmit = () => {
     if (!application) return false;
 
-    // Check if all sections are completed (5 for oficial, 6 for legacy)
-    const maxSections = application.type === 'oficial' ? 5 : 6;
+    // Check if all sections are completed (6 for oficial, 6 for legacy)
+    const maxSections = 6;
     const allSectionsComplete = application.progress >= maxSections;
 
     // Check if required documents are uploaded
@@ -584,9 +585,9 @@ const ApplicationDetails = () => {
         <div className="mb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className="font-medium">Progreso:</span>
-            <span>{application.progress}/{application.type === 'oficial' ? 5 : 6} secciones completadas</span>
+            <span>{application.progress}/6 secciones completadas</span>
           </div>
-          <Progress value={application.progress / (application.type === 'oficial' ? 5 : 6) * 100} className="h-2" />
+          <Progress value={application.progress / 6 * 100} className="h-2" />
         </div>
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
@@ -597,7 +598,7 @@ const ApplicationDetails = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-3 pb-6">
-            <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 ${application.type === 'oficial' ? 'md:grid-cols-5' : 'md:grid-cols-6'}`}>
+            <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 ${application.type === 'oficial' ? 'md:grid-cols-6' : 'md:grid-cols-6'}`}>
               {getFormSections(application.type).map(section => <Button key={section.id} variant="outline" className="h-auto py-2 flex flex-col items-center text-xs gap-1 flex-1 min-h-[5rem] sm:min-h-[4.5rem]" onClick={() => navigateToFormSection(section.id)}>
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                     {section.icon}
