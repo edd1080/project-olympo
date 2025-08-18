@@ -11,45 +11,49 @@ import FinancialAnalysis from './FinancialAnalysis';
 import PatrimonialStatement from './PatrimonialStatement';
 import BusinessSeasonality from './businessFinancial/BusinessSeasonality';
 import BusinessExpenses from './businessFinancial/BusinessExpenses';
-import {
-  BarChart3,
-  Scale,
-  Building2,
-  Package,
-  CalendarRange,
-  Receipt,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
-
+import { BarChart3, Scale, Building2, Package, CalendarRange, Receipt, ChevronLeft, ChevronRight } from 'lucide-react';
 interface BusinessFinancialSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
 }
-
-const screens = [
-  { id: 'info', label: 'Info General', icon: Building2 },
-  { id: 'products', label: 'Productos', icon: Package },
-  { id: 'seasonality', label: 'Estacionalidad', icon: CalendarRange },
-  { id: 'expenses', label: 'Gastos', icon: Receipt },
-  // { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
-  // { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
+const screens = [{
+  id: 'info',
+  label: 'Info General',
+  icon: Building2
+}, {
+  id: 'products',
+  label: 'Productos',
+  icon: Package
+}, {
+  id: 'seasonality',
+  label: 'Estacionalidad',
+  icon: CalendarRange
+}, {
+  id: 'expenses',
+  label: 'Gastos',
+  icon: Receipt
+}
+// { id: 'analysis', label: 'Análisis Financiero', icon: BarChart3 },
+// { id: 'statement', label: 'Estado Patrimonial', icon: Scale },
 ] as const;
-
 type ScreenId = typeof screens[number]['id'];
-
-const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ formData, updateFormData }) => {
+const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
+  formData,
+  updateFormData
+}) => {
   const [activeScreen, setActiveScreen] = React.useState<ScreenId>('info');
   const [addressOpen, setAddressOpen] = React.useState(false);
-
   const chipRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
   React.useEffect(() => {
     const el = chipRefs.current[activeScreen];
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      el.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
     }
   }, [activeScreen]);
-
   const handleAddProduct = React.useCallback(() => {
     const current = Array.isArray(formData.products) ? formData.products : [];
     if (current.length >= 10) {
@@ -57,7 +61,6 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
       console.warn('Máximo 10 productos permitidos');
       return;
     }
-    
     const newProduct = {
       id: Date.now(),
       type: '',
@@ -70,18 +73,15 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
       worstMonth: '',
       bestAmount: '',
       worstAmount: '',
-      photo: null,
+      photo: null
     };
     updateFormData('products', [...current, newProduct]);
   }, [formData.products, updateFormData]);
-
-  const currentIndex = screens.findIndex((s) => s.id === activeScreen);
+  const currentIndex = screens.findIndex(s => s.id === activeScreen);
   const prev = currentIndex > 0 ? screens[currentIndex - 1] : null;
   const next = currentIndex < screens.length - 1 ? screens[currentIndex + 1] : null;
   const CurrentIcon = screens[currentIndex].icon;
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Local CSS to hide horizontal scrollbar */}
       <style>{`
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -91,27 +91,19 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
       {/* Chips navigation */}
       <nav className="hide-scrollbar overflow-x-auto">
         <div className="flex items-center gap-2 py-2">
-          {screens.map(({ id, label, icon: Icon }) => {
-            const active = id === activeScreen;
-            return (
-              <button
-                key={id}
-                type="button"
-                ref={(el) => { if (el) chipRefs.current[id] = el; }}
-                onClick={() => setActiveScreen(id)}
-                aria-selected={active}
-                className={
-                  `inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-colors whitespace-nowrap ` +
-                  (active
-                    ? 'bg-[#E18E33]/10 text-[#E18E33] border-[#E18E33]'
-                    : 'bg-background text-foreground hover:bg-[#E18E33]/5')
-                }
-              >
+          {screens.map(({
+          id,
+          label,
+          icon: Icon
+        }) => {
+          const active = id === activeScreen;
+          return <button key={id} type="button" ref={el => {
+            if (el) chipRefs.current[id] = el;
+          }} onClick={() => setActiveScreen(id)} aria-selected={active} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-colors whitespace-nowrap ` + (active ? 'bg-[#E18E33]/10 text-[#E18E33] border-[#E18E33]' : 'bg-background text-foreground hover:bg-[#E18E33]/5')}>
                 <Icon className="h-4 w-4" />
                 <span className="text-sm font-medium">{label}</span>
-              </button>
-            );
-          })}
+              </button>;
+        })}
         </div>
       </nav>
 
@@ -121,50 +113,36 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
           <CurrentIcon className="h-5 w-5" />
           <h2 className="text-xl font-semibold">{screens[currentIndex].label}</h2>
         </div>
-        {activeScreen === 'products' && (
-          <Button size="sm" onClick={handleAddProduct}>Agregar Producto</Button>
-        )}
+        {activeScreen === 'products' && <Button size="sm" onClick={handleAddProduct}>Agregar Producto</Button>}
       </header>
 
       {/* Screen content */}
       <section className="space-y-4">
         {/* Commented out - moved to separate FinancialInfoSection
-        {activeScreen === 'analysis' && (
+         {activeScreen === 'analysis' && (
           <div className="space-y-4">
             <FinancialAnalysis formData={formData} updateFormData={updateFormData} />
           </div>
-        )}
-
-        {activeScreen === 'statement' && (
+         )}
+         {activeScreen === 'statement' && (
           <div className="space-y-4">
             <PatrimonialStatement formData={formData} updateFormData={updateFormData} />
           </div>
-        )}
-        */}
+         )}
+         */}
 
-        {activeScreen === 'info' && (
-          <Card>
-            <CardContent>
+        {activeScreen === 'info' && <Card>
+            <CardContent className="my-[16px]">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="businessName">Nombre del negocio</Label>
-                  <Input
-                    id="businessName"
-                    value={formData.businessName ?? ''}
-                    onChange={(e) => updateFormData('businessName', e.target.value)}
-                    placeholder="Ej. Tienda La Esperanza"
-                  />
+                  <Input id="businessName" value={formData.businessName ?? ''} onChange={e => updateFormData('businessName', e.target.value)} placeholder="Ej. Tienda La Esperanza" />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="businessAddress">Dirección completa del negocio</Label>
                   <div className="flex items-center gap-2">
-                    <Input
-                      id="businessAddress"
-                      value={formData.businessAddress ?? ''}
-                      readOnly
-                      placeholder="No registrada"
-                    />
+                    <Input id="businessAddress" value={formData.businessAddress ?? ''} readOnly placeholder="No registrada" />
                     <Sheet open={addressOpen} onOpenChange={setAddressOpen}>
                       <SheetTrigger asChild>
                         <Button variant="outline">Agregar/Editar</Button>
@@ -174,15 +152,11 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
                           <SheetTitle>Dirección del negocio</SheetTitle>
                         </SheetHeader>
                         <div className="p-2 md:p-4">
-                          <AddressModule
-                            initialData={formData.businessAddressDetails}
-                            onSave={(data) => {
-                              updateFormData('businessAddressDetails', data);
-                              updateFormData('businessAddress', (data as any).direccionCompleta);
-                              setAddressOpen(false);
-                            }}
-                            onCancel={() => setAddressOpen(false)}
-                          />
+                          <AddressModule initialData={formData.businessAddressDetails} onSave={data => {
+                        updateFormData('businessAddressDetails', data);
+                        updateFormData('businessAddress', (data as any).direccionCompleta);
+                        setAddressOpen(false);
+                      }} onCancel={() => setAddressOpen(false)} />
                         </div>
                       </SheetContent>
                     </Sheet>
@@ -193,16 +167,7 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
                   <Label htmlFor="cashSales">Ventas totales a contado</Label>
                   <div className="relative">
                     <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
-                    <Input
-                      id="cashSales"
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      className="pl-7"
-                      value={formData.cashSales ?? ''}
-                      onChange={(e) => updateFormData('cashSales', parseFloat(e.target.value || '0'))}
-                      placeholder="0.00"
-                    />
+                    <Input id="cashSales" type="number" min={0} step="0.01" className="pl-7" value={formData.cashSales ?? ''} onChange={e => updateFormData('cashSales', parseFloat(e.target.value || '0'))} placeholder="0.00" />
                   </div>
                 </div>
 
@@ -210,70 +175,40 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({ for
                   <Label htmlFor="creditSales">Ventas totales a crédito</Label>
                   <div className="relative">
                     <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
-                    <Input
-                      id="creditSales"
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      className="pl-7"
-                      value={formData.creditSales ?? ''}
-                      onChange={(e) => updateFormData('creditSales', parseFloat(e.target.value || '0'))}
-                      placeholder="0.00"
-                    />
+                    <Input id="creditSales" type="number" min={0} step="0.01" className="pl-7" value={formData.creditSales ?? ''} onChange={e => updateFormData('creditSales', parseFloat(e.target.value || '0'))} placeholder="0.00" />
                   </div>
                 </div>
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
 
-        {activeScreen === 'products' && (
-          <div className="space-y-4">
+        {activeScreen === 'products' && <div className="space-y-4">
             <BusinessProducts formData={formData} updateFormData={updateFormData} />
-          </div>
-        )}
+          </div>}
 
-        {activeScreen === 'seasonality' && (
-          <div className="space-y-4">
+        {activeScreen === 'seasonality' && <div className="space-y-4">
             <BusinessSeasonality formData={formData} updateFormData={updateFormData} />
-          </div>
-        )}
+          </div>}
 
-        {activeScreen === 'expenses' && (
-          <div className="space-y-4">
+        {activeScreen === 'expenses' && <div className="space-y-4">
             <BusinessExpenses formData={formData} updateFormData={updateFormData} />
-          </div>
-        )}
+          </div>}
 
         {/* Inline nav between sub-screens */}
         <Separator />
         <div className="flex items-center justify-between gap-2">
           <div>
-            {prev && (
-              <Button 
-                variant="outline" 
-                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
-                onClick={() => setActiveScreen(prev.id)}
-              >
+            {prev && <Button variant="outline" className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" onClick={() => setActiveScreen(prev.id)}>
                 <ChevronLeft className="h-4 w-4" />
-              </Button>
-            )}
+              </Button>}
           </div>
           <div>
-            {next && (
-              <Button 
-                variant="outline"
-                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
-                onClick={() => setActiveScreen(next.id)}
-              >
+            {next && <Button variant="outline" className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" onClick={() => setActiveScreen(next.id)}>
                 <ChevronRight className="h-4 w-4" />
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default BusinessFinancialSection;
