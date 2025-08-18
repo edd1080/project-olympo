@@ -144,7 +144,7 @@ const IdentityVerification: React.FC = () => {
       case 'dpi-front':
         return (
           <DocumentCapture
-            documentType="front"
+            documentType="dpi-front"
             onCapture={handleDPIFrontCapture}
             onRetry={() => setState(prev => ({ ...prev, captures: { ...prev.captures, dpiFrontURL: undefined } }))}
             capturedImage={state.captures.dpiFrontURL}
@@ -154,7 +154,7 @@ const IdentityVerification: React.FC = () => {
       case 'dpi-back':
         return (
           <DocumentCapture
-            documentType="back"
+            documentType="dpi-back"
             onCapture={handleDPIBackCapture}
             onRetry={() => setState(prev => ({ ...prev, captures: { ...prev.captures, dpiBackURL: undefined } }))}
             capturedImage={state.captures.dpiBackURL}
