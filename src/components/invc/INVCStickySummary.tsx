@@ -118,7 +118,7 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
           </Button>
         </div>
 
-        {/* Location and Photos Grid */}
+        {/* Location and Discrepancies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Location Panel */}
           <div className="space-y-2">
@@ -148,34 +148,12 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
             )}
           </div>
 
-          {/* Photos Panel */}
+          {/* Discrepancies Panel */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Camera className="w-4 h-4" />
-              <span className="text-sm font-medium">Fotos nuevas:</span>
-              <span className="text-sm font-semibold">
-                {Object.keys(invcData.evidencias.fotosNuevas).filter(k => invcData.evidencias.fotosNuevas[k as keyof typeof invcData.evidencias.fotosNuevas]).length}/2
-              </span>
-            </div>
-            <div className="space-y-1 text-xs text-muted-foreground">
-              <div className="flex justify-between">
-                <span>Negocio:</span>
-                <span className={invcData.evidencias.fotosNuevas.negocio ? 'text-green-600' : ''}>
-                  {invcData.evidencias.fotosNuevas.negocio ? 'OK' : 'Pendiente'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Solicitante:</span>
-                <span className={invcData.evidencias.fotosNuevas.solicitante ? 'text-green-600' : ''}>
-                  {invcData.evidencias.fotosNuevas.solicitante ? 'OK' : 'Pendiente'}
-                </span>
-              </div>
-            </div>
-            
-            {/* Discrepancies */}
             {invcData.diffs.length > 0 && (
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs font-medium">Discrepancias:</span>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                <span className="text-sm font-medium">Discrepancias:</span>
                 <Badge className="bg-orange-500 text-white text-xs">
                   {invcData.diffs.length}
                 </Badge>

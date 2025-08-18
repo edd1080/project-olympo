@@ -139,6 +139,20 @@ const INVCComparisonContent: React.FC = () => {
           onFinalizeINVC={() => setShowConfirmModal(true)} 
         />
 
+        {/* Calculator Section */}
+        <Card className="p-4 mb-6">
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowCalculator(true)}
+              className="w-full max-w-md"
+            >
+              <DollarSign className="w-4 h-4 mr-2" />
+              Usar Calculadora para Ajustar Monto
+            </Button>
+          </div>
+        </Card>
+
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="personal" className="text-sm">
@@ -153,9 +167,8 @@ const INVCComparisonContent: React.FC = () => {
           </TabsList>
 
           <TabsContent value="personal" className="space-y-6">
-            {/* Datos Personales */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Datos Personales
               </h3>
@@ -185,10 +198,9 @@ const INVCComparisonContent: React.FC = () => {
                   observedValue={invcData.observado.datosPersonales?.telefono}
                 />
               </div>
-            </Card>
 
-            {/* Actividad y Productos */}
-            <Card className="p-6">
+              <Separator className="my-6" />
+
               <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <Building className="w-5 h-5" />
                 Actividad y Productos
@@ -242,10 +254,9 @@ const INVCComparisonContent: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </Card>
 
-            {/* Fiadores */}
-            <Card className="p-6">
+              <Separator className="my-6" />
+
               <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Fiadores
@@ -286,7 +297,6 @@ const INVCComparisonContent: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="financial" className="space-y-6">
-            {/* Ingresos y Egresos */}
             <Card className="p-6">
               <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -310,10 +320,9 @@ const INVCComparisonContent: React.FC = () => {
                   threshold={0.1}
                 />
               </div>
-            </Card>
 
-            {/* Producto Financiero */}
-            <Card className="p-6">
+              <Separator className="my-6" />
+
               <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Producto Solicitado
@@ -343,86 +352,40 @@ const INVCComparisonContent: React.FC = () => {
                     type="currency"
                   />
                 </div>
-
-                <Separator />
-
-                <div className="flex justify-center">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowCalculator(true)}
-                    className="w-full max-w-md"
-                  >
-                    <DollarSign className="w-4 h-4 mr-2" />
-                    Usar Calculadora para Ajustar Monto
-                  </Button>
-                </div>
               </div>
             </Card>
           </TabsContent>
 
-          <TabsContent value="evidence" className="space-y-8">
-            {/* Evidence Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Left Column: Geolocation and Captures */}
-              <div className="space-y-8">
-                {/* Nuevas Capturas */}
-                <Card className="p-6">
-                  <h3 className="font-bold text-lg mb-6">Nuevas Capturas (Gerente)</h3>
-                  
-                  <div className="text-sm text-muted-foreground mb-6">
-                    Toma las 2 fotos con geolocalización. La de negocio validará que estás en la ubicación guardada por el agente.
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <GeolocationCapture
-                      type="negocio"
-                      title="Foto del Negocio"
-                      targetLocation={invcData.declarado.direccionNegocio}
-                      toleranceMeters={10}
-                    />
-                    
-                    <GeolocationCapture
-                      type="solicitante"
-                      title="Foto del Solicitante"
-                      toleranceMeters={10}
+          <TabsContent value="evidence" className="space-y-6">
+            <Card className="p-6">
+              <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                <Camera className="w-5 h-5" />
+                Fotos de Referencia (Agente)
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {invcData.evidencias.fotosPrevias.map((foto, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedPhoto({ url: foto, title: `Referencia ${index + 1}` })}
+                    className="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-colors"
+                  >
+                    <img
+                      src={foto}
+                      alt={`Referencia ${index + 1}`}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                     />
                   </div>
-                </Card>
+                ))}
               </div>
-
-              {/* Right Column: Reference Photos */}
-              <div className="space-y-6">
-                <Card className="p-6">
-                  <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-                    <Camera className="w-5 h-5" />
-                    Fotos de Referencia (Agente)
-                  </h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    {invcData.evidencias.fotosPrevias.map((foto, index) => (
-                      <div
-                        key={index}
-                        onClick={() => setSelectedPhoto({ url: foto, title: `Referencia ${index + 1}` })}
-                        className="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-colors"
-                      >
-                        <img
-                          src={foto}
-                          alt={`Referencia ${index + 1}`}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-                    <p className="text-sm text-muted-foreground">
-                      Estas fotos fueron tomadas por el agente durante el llenado de la solicitud. 
-                      Úsalas como referencia para comparar con las nuevas capturas.
-                    </p>
-                  </div>
-                </Card>
+              
+              <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  Estas fotos fueron tomadas por el agente durante el llenado de la solicitud. 
+                  Úsalas como referencia para comparar con las nuevas capturas.
+                </p>
               </div>
-            </div>
+            </Card>
 
             {/* Comentarios */}
             <Card className="p-6">
