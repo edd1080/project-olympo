@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
-import FormTypeSelectionModal from '@/components/modals/FormTypeSelectionModal';
+
 import MonthlyGoalCard from '@/components/dashboard/MonthlyGoalCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, TrendingUp, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 const Index = () => {
   const navigate = useNavigate();
   const [showPrequalificationModal, setShowPrequalificationModal] = useState(false);
-  const [showFormTypeModal, setShowFormTypeModal] = useState(false);
+  
   useEffect(() => {
     // Check if user is authenticated
     const authToken = localStorage.getItem('authToken');
@@ -20,15 +20,7 @@ const Index = () => {
     }
   }, [navigate]);
   const handleCreateNewApplication = () => {
-    setShowFormTypeModal(true);
-  };
-  const handleFormTypeSelection = (type: 'legacy' | 'oficial') => {
-    setShowFormTypeModal(false);
-    if (type === 'legacy') {
-      navigate('/applications/new');
-    } else {
-      navigate('/identity-verification');
-    }
+    navigate('/identity-verification');
   };
   return <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -103,7 +95,7 @@ const Index = () => {
       <BottomNavigation />
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
-      <FormTypeSelectionModal open={showFormTypeModal} onOpenChange={setShowFormTypeModal} onSelectType={handleFormTypeSelection} />
+      
     </div>;
 };
 export default Index;

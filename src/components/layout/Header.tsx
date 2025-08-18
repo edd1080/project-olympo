@@ -181,7 +181,7 @@ const Header = ({
           {getStatusBadge()}
           
           {/* Add button for applications page */}
-          {location.pathname === '/applications' && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" onClick={() => navigate('/applications/new')} aria-label="Nueva Solicitud">
+          {location.pathname === '/applications' && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" onClick={() => navigate('/identity-verification')} aria-label="Nueva Solicitud">
               <Plus className="h-4 w-4" />
             </Button>}
           

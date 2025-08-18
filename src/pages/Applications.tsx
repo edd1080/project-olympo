@@ -294,7 +294,7 @@ const Applications = () => {
       {/* Floating Action Button */}
       <Button 
         className="fixed bottom-14 right-4 z-50 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
-        onClick={() => navigate('/applications/new')}
+        onClick={() => navigate('/identity-verification')}
         aria-label="Nueva Solicitud"
       >
         <Plus className="h-6 w-6" />
