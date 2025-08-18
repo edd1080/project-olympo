@@ -46,7 +46,7 @@ const getFormSections = (applicationType: string) => {
     }, {
       id: 'character',
       icon: <Users size={18} />,
-      name: 'Analisis de Caracter'
+      name: 'Análisis de Carácter'
     }, {
       id: 'business-financial',
       icon: <Building2 size={18} />,
@@ -54,7 +54,7 @@ const getFormSections = (applicationType: string) => {
     }, {
       id: 'financial-info',
       icon: <BarChart3 size={18} />,
-      name: 'Información Financiera'
+      name: 'Info Financiera'
     }, {
       id: 'documents',
       icon: <MapPin size={18} />,
@@ -611,6 +611,35 @@ const ApplicationDetails = () => {
           </CardContent>
         </Card>
 
+        <Card className="mb-6 border-primary/20 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center">
+              <FileText className="h-4 w-4 mr-2 text-primary" />
+              Solicitud de Crédito
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-3 bg-background rounded-md">
+                <p className="text-xs text-muted-foreground mb-1">Monto Solicitado</p>
+                <p className="font-bold text-lg">Q{application.creditRequest.loanAmount.toLocaleString()}</p>
+              </div>
+              <div className="text-center p-3 bg-background rounded-md">
+                <p className="text-xs text-muted-foreground mb-1">Plazo</p>
+                <p className="font-bold text-lg">{application.creditRequest.termMonths} meses</p>
+              </div>
+              <div className="text-center p-3 bg-background rounded-md">
+                <p className="text-xs text-muted-foreground mb-1">Tipo de Crédito</p>
+                <p className="font-bold text-sm">{application.creditRequest.creditType}</p>
+              </div>
+              <div className="text-center p-3 bg-background rounded-md">
+                <p className="text-xs text-muted-foreground mb-1">Propósito</p>
+                <p className="font-bold text-sm">{application.creditRequest.purpose}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Fiadores Section */}
         <Card className="mb-6 border-primary/20">
           <CardHeader className="pb-2">
@@ -640,7 +669,7 @@ const ApplicationDetails = () => {
                 <Button 
                   size="sm"
                   onClick={handleAddGuarantor}
-                  className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white"
+                  className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white border-0"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Agregar Primer Fiador
@@ -674,10 +703,9 @@ const ApplicationDetails = () => {
                 </div>
                 <div className="flex justify-center pt-2">
                   <Button 
-                    variant="outline" 
                     size="sm"
                     onClick={handleAddGuarantor}
-                    className="border-[#E18E33] text-[#E18E33] hover:bg-[#E18E33]/10"
+                    className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white border-0"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Agregar Otro Fiador
@@ -711,26 +739,26 @@ const ApplicationDetails = () => {
                     Identificación
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <dl className="space-y-2 text-sm">
-                    <div>
-                      <dt className="text-muted-foreground">Nombre</dt>
-                      <dd className="font-medium">{application.identification.fullName}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">CUI</dt>
-                      <dd className="font-medium">{application.identification.cui}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">NIT</dt>
-                      <dd className="font-medium">{application.identification.nit}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Teléfono</dt>
-                      <dd className="font-medium">{application.identification.phone}</dd>
-                    </div>
-                  </dl>
-                </CardContent>
+                 <CardContent>
+                   <dl className="space-y-2 text-sm">
+                     <div>
+                       <dt className="text-muted-foreground">Nombre</dt>
+                       <dd className="font-semibold">{application.identification.fullName}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">CUI</dt>
+                       <dd className="font-semibold">{application.identification.cui}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">NIT</dt>
+                       <dd className="font-semibold">{application.identification.nit}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">Teléfono</dt>
+                       <dd className="font-semibold">{application.identification.phone}</dd>
+                     </div>
+                   </dl>
+                 </CardContent>
               </Card>
               
               <Card>
@@ -740,22 +768,22 @@ const ApplicationDetails = () => {
                     Finanzas
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <dl className="space-y-2 text-sm">
-                    <div>
-                      <dt className="text-muted-foreground">Ingresos Principales</dt>
-                      <dd className="font-medium">Q{application.finances.primaryIncome.toLocaleString()}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Gastos Mensuales</dt>
-                      <dd className="font-medium">Q{application.finances.totalExpenses.toLocaleString()}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Patrimonio Neto</dt>
-                      <dd className="font-medium">Q{application.finances.netWorth.toLocaleString()}</dd>
-                    </div>
-                  </dl>
-                </CardContent>
+                 <CardContent>
+                   <dl className="space-y-2 text-sm">
+                     <div>
+                       <dt className="text-muted-foreground">Ingresos Principales</dt>
+                       <dd className="font-semibold">Q{application.finances.primaryIncome.toLocaleString()}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">Gastos Mensuales</dt>
+                       <dd className="font-semibold">Q{application.finances.totalExpenses.toLocaleString()}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">Patrimonio Neto</dt>
+                       <dd className="font-semibold">Q{application.finances.netWorth.toLocaleString()}</dd>
+                     </div>
+                   </dl>
+                 </CardContent>
               </Card>
               
               <Card>
@@ -765,53 +793,24 @@ const ApplicationDetails = () => {
                     Trabajo
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <dl className="space-y-2 text-sm">
-                    <div>
-                      <dt className="text-muted-foreground">Situación Laboral</dt>
-                      <dd className="font-medium">{application.work.employmentStatus}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Empresa/Negocio</dt>
-                      <dd className="font-medium">{application.work.companyName}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Experiencia</dt>
-                      <dd className="font-medium">{application.work.yearsEmployed} años</dd>
-                    </div>
-                  </dl>
-                </CardContent>
+                 <CardContent>
+                   <dl className="space-y-2 text-sm">
+                     <div>
+                       <dt className="text-muted-foreground">Situación Laboral</dt>
+                       <dd className="font-semibold">{application.work.employmentStatus}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">Empresa/Negocio</dt>
+                       <dd className="font-semibold">{application.work.companyName}</dd>
+                     </div>
+                     <div>
+                       <dt className="text-muted-foreground">Experiencia</dt>
+                       <dd className="font-semibold">{application.work.yearsEmployed} años</dd>
+                     </div>
+                   </dl>
+                 </CardContent>
               </Card>
             </div>
-            
-            <Card className="mb-4 border-primary/20 bg-primary/5">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center">
-                  <FileText className="h-4 w-4 mr-2 text-primary" />
-                  Solicitud de Crédito
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Monto Solicitado</p>
-                    <p className="font-bold text-lg">Q{application.creditRequest.loanAmount.toLocaleString()}</p>
-                  </div>
-                  <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Plazo</p>
-                    <p className="font-bold text-lg">{application.creditRequest.termMonths} meses</p>
-                  </div>
-                  <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Tipo de Crédito</p>
-                    <p className="font-bold text-sm">{application.creditRequest.creditType}</p>
-                  </div>
-                  <div className="text-center p-3 bg-background rounded-md">
-                    <p className="text-xs text-muted-foreground mb-1">Propósito</p>
-                    <p className="font-bold text-sm">{application.creditRequest.purpose}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
             
             <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200" onClick={navigateToDocuments}>
               <CardHeader className="pb-2">
