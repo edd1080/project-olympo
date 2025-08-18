@@ -701,11 +701,11 @@ const ApplicationDetails = () => {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-center pt-2">
+                <div className="pt-2">
                   <Button 
                     size="sm"
                     onClick={handleAddGuarantor}
-                    className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white border-0"
+                    className="bg-[#E18E33] hover:bg-[#E18E33]/90 text-white border-0 w-full"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Agregar Otro Fiador
