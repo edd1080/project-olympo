@@ -8,50 +8,41 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, FileSignature, AlertCircle, Camera, Upload, User, FileText } from 'lucide-react';
-
 interface SignatureClauseSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
 }
-
-const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formData, updateFormData }) => {
+const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
+  formData,
+  updateFormData
+}) => {
   const [readingProgress, setReadingProgress] = useState(0);
   const [hasReadComplete, setHasReadComplete] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  const clauses = [
-    {
-      title: "Cláusula de Veracidad de Información",
-      content: "El solicitante declara bajo juramento que toda la información proporcionada en esta solicitud es veraz, completa y exacta. Cualquier falsedad u omisión en los datos proporcionados constituirá causa suficiente para el rechazo de la solicitud o la cancelación del crédito si ya hubiere sido otorgado."
-    },
-    {
-      title: "Autorización para Verificación de Datos",
-      content: "El solicitante autoriza expresamente a la institución financiera para verificar la información proporcionada a través de consultas a centrales de riesgo, referencias comerciales, laborales y personales, así como cualquier otra fuente que considere necesaria para evaluar la capacidad crediticia."
-    },
-    {
-      title: "Cláusula de Protección de Datos Personales",
-      content: "El solicitante consiente el tratamiento de sus datos personales conforme a la Ley de Protección de Datos Personales, para los fines relacionados con la evaluación, aprobación, administración y cobranza del crédito solicitado. Los datos serán conservados durante el tiempo necesario para cumplir con las obligaciones legales y contractuales."
-    },
-    {
-      title: "Términos y Condiciones del Crédito",
-      content: "El otorgamiento del crédito estará sujeto a la aprobación del comité de crédito correspondiente y al cumplimiento de todos los requisitos establecidos por la institución. Las condiciones finales del crédito (monto, plazo, tasa de interés) podrán variar de acuerdo con el resultado de la evaluación crediticia."
-    },
-    {
-      title: "Obligaciones del Deudor",
-      content: "En caso de aprobación del crédito, el deudor se compromete a utilizar los recursos únicamente para el destino declarado, mantener actualizada su información de contacto, cumplir puntualmente con los pagos establecidos y permitir las supervisiones que la institución considere necesarias."
-    }
-  ];
-
+  const clauses = [{
+    title: "Cláusula de Veracidad de Información",
+    content: "El solicitante declara bajo juramento que toda la información proporcionada en esta solicitud es veraz, completa y exacta. Cualquier falsedad u omisión en los datos proporcionados constituirá causa suficiente para el rechazo de la solicitud o la cancelación del crédito si ya hubiere sido otorgado."
+  }, {
+    title: "Autorización para Verificación de Datos",
+    content: "El solicitante autoriza expresamente a la institución financiera para verificar la información proporcionada a través de consultas a centrales de riesgo, referencias comerciales, laborales y personales, así como cualquier otra fuente que considere necesaria para evaluar la capacidad crediticia."
+  }, {
+    title: "Cláusula de Protección de Datos Personales",
+    content: "El solicitante consiente el tratamiento de sus datos personales conforme a la Ley de Protección de Datos Personales, para los fines relacionados con la evaluación, aprobación, administración y cobranza del crédito solicitado. Los datos serán conservados durante el tiempo necesario para cumplir con las obligaciones legales y contractuales."
+  }, {
+    title: "Términos y Condiciones del Crédito",
+    content: "El otorgamiento del crédito estará sujeto a la aprobación del comité de crédito correspondiente y al cumplimiento de todos los requisitos establecidos por la institución. Las condiciones finales del crédito (monto, plazo, tasa de interés) podrán variar de acuerdo con el resultado de la evaluación crediticia."
+  }, {
+    title: "Obligaciones del Deudor",
+    content: "En caso de aprobación del crédito, el deudor se compromete a utilizar los recursos únicamente para el destino declarado, mantener actualizada su información de contacto, cumplir puntualmente con los pagos establecidos y permitir las supervisiones que la institución considere necesarias."
+  }];
   const handleScroll = () => {
     if (scrollAreaRef.current) {
       const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollElement) {
         const scrollTop = scrollElement.scrollTop;
         const scrollHeight = scrollElement.scrollHeight - scrollElement.clientHeight;
-        const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
-        
+        const progress = Math.min(scrollTop / scrollHeight * 100, 100);
         setReadingProgress(progress);
-        
         if (progress >= 90 && !hasReadComplete) {
           setHasReadComplete(true);
           updateFormData('hasReadClauses', true);
@@ -59,7 +50,6 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
       }
     }
   };
-
   useEffect(() => {
     const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
     if (scrollElement) {
@@ -67,13 +57,11 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
       return () => scrollElement.removeEventListener('scroll', handleScroll);
     }
   }, []);
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileSignature className="h-5 w-5" />
+            
             Cláusulas y términos del contrato
           </CardTitle>
         </CardHeader>
@@ -93,19 +81,14 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
               Lea cuidadosamente todas las cláusulas antes de proceder a firmar
             </Label>
             
-            <ScrollArea 
-              ref={scrollAreaRef}
-              className="h-96 w-full border rounded-lg p-4"
-            >
+            <ScrollArea ref={scrollAreaRef} className="h-96 w-full border rounded-lg p-4">
               <div className="space-y-6">
-                {clauses.map((clause, index) => (
-                  <div key={index} className="space-y-2">
+                {clauses.map((clause, index) => <div key={index} className="space-y-2">
                     <h4 className="font-semibold text-primary">{index + 1}. {clause.title}</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {clause.content}
                     </p>
-                  </div>
-                ))}
+                  </div>)}
                 
                 <div className="mt-8 p-4 bg-muted/50 rounded-lg">
                   <p className="text-sm text-center text-muted-foreground italic">
@@ -118,64 +101,27 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
 
           {/* Reading confirmation */}
           <div className="flex items-center space-x-2 p-3 rounded-lg bg-muted/50">
-            {hasReadComplete ? (
-              <CheckCircle className="h-5 w-5 text-green-600" />
-            ) : (
-              <AlertCircle className="h-5 w-5 text-amber-600" />
-            )}
+            {hasReadComplete ? <CheckCircle className="h-5 w-5 text-green-600" /> : <AlertCircle className="h-5 w-5 text-amber-600" />}
             <span className={`text-sm ${hasReadComplete ? 'text-green-700' : 'text-amber-700'}`}>
-              {hasReadComplete 
-                ? "Has leído completamente las cláusulas" 
-                : "Debes leer completamente las cláusulas para continuar"
-              }
+              {hasReadComplete ? "Has leído completamente las cláusulas" : "Debes leer completamente las cláusulas para continuar"}
             </span>
           </div>
 
           {/* Acceptance checkboxes */}
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <Checkbox
-                id="acceptTerms"
-                checked={formData.termsAccepted || false}
-                onCheckedChange={(checked) => updateFormData('termsAccepted', checked)}
-                disabled={!hasReadComplete}
-              />
-              <Label 
-                htmlFor="acceptTerms" 
-                className={`text-sm leading-relaxed ${!hasReadComplete ? 'text-muted-foreground' : ''}`}
-              >
+              <Checkbox id="acceptTerms" checked={formData.termsAccepted || false} onCheckedChange={checked => updateFormData('termsAccepted', checked)} disabled={!hasReadComplete} />
+              <Label htmlFor="acceptTerms" className={`text-sm leading-relaxed ${!hasReadComplete ? 'text-muted-foreground' : ''}`}>
                 Acepto los términos y condiciones establecidos en las cláusulas del contrato. 
                 Declaro haber leído y comprendido todas las disposiciones.
               </Label>
             </div>
 
-            <div className="flex items-start space-x-3">
-              <Checkbox
-                id="acceptDataProcessing"
-                checked={formData.dataProcessingAccepted || false}
-                onCheckedChange={(checked) => updateFormData('dataProcessingAccepted', checked)}
-                disabled={!hasReadComplete}
-              />
-              <Label 
-                htmlFor="acceptDataProcessing" 
-                className={`text-sm leading-relaxed ${!hasReadComplete ? 'text-muted-foreground' : ''}`}
-              >
-                Autorizo el tratamiento de mis datos personales conforme a la normativa vigente 
-                de protección de datos personales.
-              </Label>
-            </div>
+            
 
             <div className="flex items-start space-x-3">
-              <Checkbox
-                id="acceptCreditCheck"
-                checked={formData.creditCheckAccepted || false}
-                onCheckedChange={(checked) => updateFormData('creditCheckAccepted', checked)}
-                disabled={!hasReadComplete}
-              />
-              <Label 
-                htmlFor="acceptCreditCheck" 
-                className={`text-sm leading-relaxed ${!hasReadComplete ? 'text-muted-foreground' : ''}`}
-              >
+              <Checkbox id="acceptCreditCheck" checked={formData.creditCheckAccepted || false} onCheckedChange={checked => updateFormData('creditCheckAccepted', checked)} disabled={!hasReadComplete} />
+              <Label htmlFor="acceptCreditCheck" className={`text-sm leading-relaxed ${!hasReadComplete ? 'text-muted-foreground' : ''}`}>
                 Autorizo la consulta de mi historial crediticio en centrales de riesgo y 
                 la verificación de referencias comerciales y laborales.
               </Label>
@@ -193,36 +139,18 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="signatureName">Nombre completo del firmante</Label>
-                  <input
-                    id="signatureName"
-                    className="w-full p-2 border rounded"
-                    value={`${formData.personalInfo?.nombres || ''} ${formData.personalInfo?.apellidos || ''}`}
-                    readOnly
-                  />
+                  <input id="signatureName" className="w-full p-2 border rounded" value={`${formData.personalInfo?.nombres || ''} ${formData.personalInfo?.apellidos || ''}`} readOnly />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="signatureDate">Fecha de firma</Label>
-                  <input
-                    id="signatureDate"
-                    className="w-full p-2 border rounded bg-muted"
-                    value={new Date().toLocaleDateString('es-GT')}
-                    readOnly
-                  />
+                  <input id="signatureDate" className="w-full p-2 border rounded bg-muted" value={new Date().toLocaleDateString('es-GT')} readOnly />
                 </div>
               </div>
 
               <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="digitalSignature"
-                  checked={formData.digitalSignatureAccepted || false}
-                  onCheckedChange={(checked) => updateFormData('digitalSignatureAccepted', checked)}
-                  disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
-                />
-                <Label 
-                  htmlFor="digitalSignature" 
-                  className={`text-sm font-medium ${(!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) ? 'text-muted-foreground' : ''}`}
-                >
+                <Checkbox id="digitalSignature" checked={formData.digitalSignatureAccepted || false} onCheckedChange={checked => updateFormData('digitalSignatureAccepted', checked)} disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted} />
+                <Label htmlFor="digitalSignature" className={`text-sm font-medium ${!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted ? 'text-muted-foreground' : ''}`}>
                   Confirmo que esta es mi firma digital y acepto la validez legal de este documento electrónico.
                 </Label>
               </div>
@@ -238,16 +166,8 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
             
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <Switch
-                  id="applicantCannotSign"
-                  checked={formData.applicantCannotSign || false}
-                  onCheckedChange={(checked) => updateFormData('applicantCannotSign', checked)}
-                  disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted}
-                />
-                <Label 
-                  htmlFor="applicantCannotSign" 
-                  className={`text-sm font-medium ${(!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted) ? 'text-muted-foreground' : ''}`}
-                >
+                <Switch id="applicantCannotSign" checked={formData.applicantCannotSign || false} onCheckedChange={checked => updateFormData('applicantCannotSign', checked)} disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted} />
+                <Label htmlFor="applicantCannotSign" className={`text-sm font-medium ${!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted ? 'text-muted-foreground' : ''}`}>
                   El solicitante no firma
                 </Label>
               </div>
@@ -257,8 +177,7 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
               </p>
 
               {/* Witness signature section - only visible when applicant cannot sign */}
-              {formData.applicantCannotSign && (
-                <div className="mt-6 p-4 border-l-4 border-amber-500 bg-amber-50/30 dark:bg-amber-950/10 space-y-4">
+              {formData.applicantCannotSign && <div className="mt-6 p-4 border-l-4 border-amber-500 bg-amber-50/30 dark:bg-amber-950/10 space-y-4">
                   <h5 className="font-medium flex items-center gap-2">
                     <FileSignature className="h-4 w-4" />
                     Información del testigo
@@ -267,35 +186,18 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="witnessName">Nombre completo del testigo *</Label>
-                      <Input
-                        id="witnessName"
-                        placeholder="Ingrese nombre completo"
-                        value={formData.witnessName || ''}
-                        onChange={(e) => updateFormData('witnessName', e.target.value)}
-                      />
+                      <Input id="witnessName" placeholder="Ingrese nombre completo" value={formData.witnessName || ''} onChange={e => updateFormData('witnessName', e.target.value)} />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="witnessDPI">DPI del testigo *</Label>
-                      <Input
-                        id="witnessDPI"
-                        placeholder="1234 56789 0123"
-                        value={formData.witnessDPI || ''}
-                        onChange={(e) => updateFormData('witnessDPI', e.target.value)}
-                        maxLength={15}
-                      />
+                      <Input id="witnessDPI" placeholder="1234 56789 0123" value={formData.witnessDPI || ''} onChange={e => updateFormData('witnessDPI', e.target.value)} maxLength={15} />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="witnessNIT">NIT del testigo *</Label>
-                    <Input
-                      id="witnessNIT"
-                      placeholder="12345678-9"
-                      value={formData.witnessNIT || ''}
-                      onChange={(e) => updateFormData('witnessNIT', e.target.value)}
-                      className="max-w-sm"
-                    />
+                    <Input id="witnessNIT" placeholder="12345678-9" value={formData.witnessNIT || ''} onChange={e => updateFormData('witnessNIT', e.target.value)} className="max-w-sm" />
                   </div>
 
                   {/* Photo with fingerprint upload */}
@@ -306,72 +208,51 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
                     </p>
                     
                     <div className="flex flex-wrap gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          // Mock fingerprint photo capture
-                          updateFormData('fingerprintPhoto', 'mock_fingerprint_photo.jpg');
-                        }}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => {
+                    // Mock fingerprint photo capture
+                    updateFormData('fingerprintPhoto', 'mock_fingerprint_photo.jpg');
+                  }}>
                         <Camera className="mr-2 h-4 w-4" />
                         Tomar foto con huella
                       </Button>
                       
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          // Mock file upload
-                          const input = document.createElement('input');
-                          input.type = 'file';
-                          input.accept = 'image/*';
-                          input.onchange = (e) => {
-                            const file = (e.target as HTMLInputElement).files?.[0];
-                            if (file) {
-                              updateFormData('fingerprintPhoto', file.name);
-                            }
-                          };
-                          input.click();
-                        }}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => {
+                    // Mock file upload
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) {
+                        updateFormData('fingerprintPhoto', file.name);
+                      }
+                    };
+                    input.click();
+                  }}>
                         <Upload className="mr-2 h-4 w-4" />
                         Subir archivo
                       </Button>
                     </div>
                     
-                    {formData.fingerprintPhoto && (
-                      <div className="flex items-center gap-2 text-sm text-green-600 mt-2">
+                    {formData.fingerprintPhoto && <div className="flex items-center gap-2 text-sm text-green-600 mt-2">
                         <CheckCircle className="h-4 w-4" />
                         <span>Foto con huella cargada: {formData.fingerprintPhoto}</span>
-                      </div>
-                    )}
+                      </div>}
                   </div>
 
                   {/* Witness signature confirmation */}
                   <div className="flex items-center space-x-3">
-                    <Checkbox
-                      id="witnessSignature"
-                      checked={formData.witnessSignatureAccepted || false}
-                      onCheckedChange={(checked) => updateFormData('witnessSignatureAccepted', checked)}
-                      disabled={!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto}
-                    />
-                    <Label 
-                      htmlFor="witnessSignature" 
-                      className={`text-sm font-medium ${(!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto) ? 'text-muted-foreground' : ''}`}
-                    >
+                    <Checkbox id="witnessSignature" checked={formData.witnessSignatureAccepted || false} onCheckedChange={checked => updateFormData('witnessSignatureAccepted', checked)} disabled={!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto} />
+                    <Label htmlFor="witnessSignature" className={`text-sm font-medium ${!formData.witnessName || !formData.witnessDPI || !formData.witnessNIT || !formData.fingerprintPhoto ? 'text-muted-foreground' : ''}`}>
                       Confirmo que actúo como testigo de la firma del solicitante y que todos los datos proporcionados son correctos.
                     </Label>
                   </div>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
 
           {/* Final confirmation */}
-          {((formData.digitalSignatureAccepted && !formData.applicantCannotSign) || 
-            (formData.applicantCannotSign && formData.witnessSignatureAccepted)) && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950/20 dark:border-green-900/30">
+          {(formData.digitalSignatureAccepted && !formData.applicantCannotSign || formData.applicantCannotSign && formData.witnessSignatureAccepted) && <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950/20 dark:border-green-900/30">
               <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
                 <CheckCircle className="h-5 w-5" />
                 <span className="font-medium">
@@ -381,12 +262,9 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({ formDat
               <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                 Tu solicitud está lista para ser enviada. Se generará un código de confirmación una vez enviada.
               </p>
-            </div>
-          )}
+            </div>}
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default SignatureClauseSection;
