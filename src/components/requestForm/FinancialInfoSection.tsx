@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   BarChart3,
   TrendingUp,
@@ -17,8 +16,6 @@ import {
   Receipt,
   FileText,
   Target,
-  Copy,
-  Zap,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -57,7 +54,6 @@ const sum = (obj: Record<string, number | ''> = {}) =>
 
 const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, updateFormData }) => {
   const [activeScreen, setActiveScreen] = React.useState<ScreenId>('current-assets');
-  const [activePeriod, setActivePeriod] = React.useState<'anterior' | 'actual'>('anterior');
 
   const chipRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
   
@@ -86,27 +82,16 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
     });
   };
 
-  const handleFieldChange = (category: string, field: string, value: string) => {
+  const handleFieldChange = (category: string, period: 'prev' | 'curr', field: string, value: string) => {
     const numValue = value === '' ? '' : parseFloat(value) || 0;
     const updatedCategory = {
       ...financialData[category],
-      [activePeriod === 'anterior' ? 'prev' : 'curr']: {
-        ...financialData[category][activePeriod === 'anterior' ? 'prev' : 'curr'],
+      [period]: {
+        ...financialData[category][period],
         [field]: numValue
       }
     };
     updateFinancialData(category, updatedCategory);
-  };
-
-  const copyFromPrevious = (category: string) => {
-    if (activePeriod === 'actual') {
-      const prevData = financialData[category]?.prev || {};
-      const updatedCategory = {
-        ...financialData[category],
-        curr: { ...prevData }
-      };
-      updateFinancialData(category, updatedCategory);
-    }
   };
 
   // Calculate totals
@@ -145,62 +130,63 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
   }, [financialData]);
 
   const renderAssetForm = (category: string, fields: string[], title: string) => {
-    const currentData = financialData[category]?.[activePeriod === 'anterior' ? 'prev' : 'curr'] || {};
-    const otherPeriodData = financialData[category]?.[activePeriod === 'anterior' ? 'curr' : 'prev'] || {};
+    const prevData = financialData[category]?.prev || {};
+    const currData = financialData[category]?.curr || {};
     
     return (
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              {title}
-            </CardTitle>
-            <div className="flex items-center gap-4">
-              <Tabs value={activePeriod} onValueChange={(v) => setActivePeriod(v as 'anterior' | 'actual')}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="anterior">Anterior</TabsTrigger>
-                  <TabsTrigger value="actual">Actual</TabsTrigger>
-                </TabsList>
-              </Tabs>
-              {activePeriod === 'actual' && (
-                <Button
-                  variant="outline"
-                  className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5 flex items-center gap-1"
-                  onClick={() => copyFromPrevious(category)}
-                >
-                  <Copy className="h-4 w-4" />
-                  Copiar de Anterior
-                </Button>
-              )}
-            </div>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            {title}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Column headers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-muted-foreground">Periodo Anterior</h3>
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-muted-foreground">Periodo Actual</h3>
+            </div>
+          </div>
+
+          {/* Fields with dual inputs */}
+          <div className="space-y-4">
             {fields.map((field) => (
               <div key={field} className="space-y-2">
-                <Label htmlFor={field} className="text-sm font-medium">
+                <Label className="text-sm font-medium">
                   {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
                 </Label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
-                  <Input
-                    id={field}
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    className="pl-7"
-                    value={currentData[field] || ''}
-                    onChange={(e) => handleFieldChange(category, field, e.target.value)}
-                    placeholder="0.00"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Previous period input */}
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      className="pl-7"
+                      value={prevData[field] || ''}
+                      onChange={(e) => handleFieldChange(category, 'prev', field, e.target.value)}
+                      placeholder="0.00"
+                    />
+                  </div>
+                  {/* Current period input */}
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      className="pl-7"
+                      value={currData[field] || ''}
+                      onChange={(e) => handleFieldChange(category, 'curr', field, e.target.value)}
+                      placeholder="0.00"
+                    />
+                  </div>
                 </div>
-                {otherPeriodData[field] && (
-                  <p className="text-xs text-muted-foreground">
-                    Ref ({activePeriod === 'anterior' ? 'Actual' : 'Anterior'}): {currency(numberVal(otherPeriodData[field]))}
-                  </p>
-                )}
               </div>
             ))}
           </div>
