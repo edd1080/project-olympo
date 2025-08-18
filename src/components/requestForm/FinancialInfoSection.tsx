@@ -453,10 +453,14 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
             {prev && (
               <Button 
                 variant="outline" 
-                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
+                className="h-auto px-3 py-2 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
                 onClick={() => setActiveScreen(prev.id)}
+                aria-label={`Ir a ${prev.label}`}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4 mr-1 flex-shrink-0" />
+                <span className="max-w-[120px] sm:max-w-[200px] truncate">
+                  Anterior: {prev.label}
+                </span>
               </Button>
             )}
           </div>
@@ -464,10 +468,14 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
             {next && (
               <Button 
                 variant="outline"
-                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
+                className="h-auto px-3 py-2 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
                 onClick={() => setActiveScreen(next.id)}
+                aria-label={`Ir a ${next.label}`}
               >
-                <ChevronRight className="h-4 w-4" />
+                <span className="max-w-[120px] sm:max-w-[200px] truncate">
+                  Siguiente: {next.label}
+                </span>
+                <ChevronRight className="h-4 w-4 ml-1 flex-shrink-0" />
               </Button>
             )}
           </div>
