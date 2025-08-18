@@ -76,19 +76,22 @@ const Authorizations = () => {
   const getStatusBadge = (status: string) => {
     const variants = {
       pending: {
-        variant: 'default' as const,
+        variant: 'secondary' as const,
         label: 'Pendiente',
-        icon: null
+        icon: null,
+        className: 'bg-orange-100 text-orange-800 hover:bg-orange-100'
       },
       approved: {
         variant: 'secondary' as const,
         label: 'Aprobada',
-        icon: CheckCircle
+        icon: CheckCircle,
+        className: 'bg-green-100 text-green-800 hover:bg-green-100'
       },
       rejected: {
         variant: 'destructive' as const,
         label: 'Rechazada',
-        icon: XCircle
+        icon: XCircle,
+        className: ''
       }
     };
     return variants[status as keyof typeof variants] || variants.pending;
@@ -207,7 +210,7 @@ const Authorizations = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                          <Badge {...statusBadge}>{statusBadge.label}</Badge>
+                          <Badge {...statusBadge} className={statusBadge.className}>{statusBadge.label}</Badge>
                         </div>
                       </div>
                     </CardHeader>
@@ -218,10 +221,6 @@ const Authorizations = () => {
                         <div className="flex items-center gap-2">
                           <DollarSign className="h-4 w-4 text-muted-foreground" />
                           <span>Q{authorization.amount.toLocaleString()}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          
-                          <span>Score: {authorization.creditScore}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4 text-muted-foreground" />
