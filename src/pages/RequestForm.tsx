@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
 import { getFirstNameAndLastName } from '@/lib/nameUtils';
@@ -43,7 +43,7 @@ const RequestFormContent = () => {
         <FormActionBar steps={steps} />
       </main>
       
-      <BottomNavigation />
+      
       
       {/* Exit Dialog */}
       <ExitDialog 

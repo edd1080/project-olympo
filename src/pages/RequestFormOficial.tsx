@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
 import { getFirstNameAndLastName } from '@/lib/nameUtils';
@@ -62,7 +62,7 @@ const RequestFormOficialContent = () => {
         <FormActionBar steps={stepsOficial} />
       </main>
       
-      <BottomNavigation />
+      
       
       {/* Exit Dialog */}
       <ExitDialog 

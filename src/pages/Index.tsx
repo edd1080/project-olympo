@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 
 import MonthlyGoalCard from '@/components/dashboard/MonthlyGoalCard';
@@ -92,7 +92,7 @@ const Index = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
       
       <PrequalificationModal open={showPrequalificationModal} onOpenChange={setShowPrequalificationModal} />
       

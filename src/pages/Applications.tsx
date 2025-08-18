@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import PrequalificationModal from '@/components/prequalification/PrequalificationModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -289,7 +289,7 @@ const Applications = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
       
       {/* Floating Action Button */}
       <Button 

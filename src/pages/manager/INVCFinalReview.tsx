@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, AlertTriangle, Camera, FileText, Users, DollarSign } from 'lucide-react';
 import Header from '@/components/layout/Header';
-import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
+
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -357,7 +357,7 @@ const INVCFinalReviewContent: React.FC = () => {
         </div>
       </div>
 
-      <BottomNavigationManager />
+      
     </div>
   );
 };

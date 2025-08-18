@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle, Download, Smartphone, Users, TrendingUp, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
+
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePWA } from '@/hooks/usePWA';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -335,7 +335,7 @@ const ManagerSettings = () => {
         </div>
       </main>
       
-      <BottomNavigationManager />
+      
 
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
         <AlertDialogContent className="sm:max-w-[425px]">

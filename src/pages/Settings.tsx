@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, LogOut, User, HelpCircle, AlertTriangle, Download, Smartphone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePWA } from '@/hooks/usePWA';
 // DeviceInfo commented out but preserved for future use
@@ -278,7 +278,7 @@ const Settings = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
 
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
         <AlertDialogContent className="sm:max-w-[425px]">

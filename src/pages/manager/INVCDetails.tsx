@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -243,7 +243,7 @@ const INVCDetails = () => {
         </div>
       </main>
 
-      <BottomNavigationManager />
+      
     </div>
   );
 };

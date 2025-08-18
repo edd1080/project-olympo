@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import AlertGroup from '@/components/alerts/AlertGroup';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 
 const Alerts = () => {
   const navigate = useNavigate();
@@ -85,7 +85,7 @@ const Alerts = () => {
         )}
       </main>
       
-      <BottomNavigation />
+      
     </div>
   );
 };

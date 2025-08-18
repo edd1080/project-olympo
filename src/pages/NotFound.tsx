@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 
 const NotFound = () => {
   const location = useLocation();
@@ -28,7 +28,7 @@ const NotFound = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
     </div>
   );
 };

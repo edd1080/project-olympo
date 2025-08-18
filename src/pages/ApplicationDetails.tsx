@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import { useAppState } from '@/context/AppStateContext';
 import { Button } from '@/components/ui/button';
@@ -516,7 +516,6 @@ const ApplicationDetails = () => {
             </div>
           </div>
         </main>
-        <BottomNavigation />
       </div>;
   }
   if (!application) {
@@ -537,7 +536,6 @@ const ApplicationDetails = () => {
             </Button>
           </div>
         </main>
-        <BottomNavigation />
       </div>;
   }
 
@@ -1191,7 +1189,7 @@ const ApplicationDetails = () => {
         </Tabs>
       </main>
       
-      <BottomNavigation />
+      
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>

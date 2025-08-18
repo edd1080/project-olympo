@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, DollarSign, FileText, Camera, MessageCircle, Building } from 'lucide-react';
 import Header from '@/components/layout/Header';
-import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
+
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -440,7 +440,7 @@ const INVCComparisonContent: React.FC = () => {
         timestamp={selectedPhoto?.timestamp}
       />
 
-      <BottomNavigationManager />
+      
     </div>
   );
 };

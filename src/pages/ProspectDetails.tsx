@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, FileSpreadsheet, Pencil, Phone, Mail, Calendar, FileText } from 'lucide-react';
 
@@ -115,7 +115,7 @@ const ProspectDetails = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
     </div>
   );
 };

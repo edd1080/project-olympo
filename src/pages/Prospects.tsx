@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Header from '@/components/layout/Header';
-import BottomNavigation from '@/components/layout/BottomNavigation';
+
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 
 const Prospects = () => {
@@ -30,7 +30,7 @@ const Prospects = () => {
         </div>
       </main>
       
-      <BottomNavigation />
+      
     </div>
   );
 };

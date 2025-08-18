@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
-import BottomNavigationManager from '@/components/layout/BottomNavigationManager';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -181,7 +181,7 @@ const INVCList = () => {
         </Tabs>
       </main>
 
-      <BottomNavigationManager />
+      
     </div>
   );
 };
