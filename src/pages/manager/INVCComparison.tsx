@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, DollarSign, FileText, Camera, MessageCircle, Building, CheckCircle } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -26,6 +26,16 @@ const INVCComparisonContent: React.FC = () => {
   const [generalComment, setGeneralComment] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string; geotag?: any; timestamp?: string } | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  useEffect(() => {
+    const handleInvcExit = () => {
+      setShowExitConfirm(true);
+    };
+
+    window.addEventListener('invcExit', handleInvcExit);
+    return () => window.removeEventListener('invcExit', handleInvcExit);
+  }, []);
 
   if (!invcData) {
     return <div>Cargando datos...</div>;
@@ -46,6 +56,10 @@ const INVCComparisonContent: React.FC = () => {
     setShowConfirmModal(false);
     
     // Navigate back to details page
+    navigate(`/manager/invc/${invcData.solicitudId}`);
+  };
+
+  const handleExitInvestigation = () => {
     navigate(`/manager/invc/${invcData.solicitudId}`);
   };
 
@@ -507,6 +521,23 @@ const INVCComparisonContent: React.FC = () => {
         timestamp={selectedPhoto?.timestamp}
       />
 
+      {/* Exit Confirmation Modal */}
+      <AlertDialog open={showExitConfirm} onOpenChange={setShowExitConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar salida</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Deseas salir de la investigación? Se perderá cualquier progreso no guardado.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleExitInvestigation}>
+              Salir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
     </div>
   );

@@ -153,6 +153,9 @@ const Header = ({
 
   // Show X button for authorization routes instead of back arrow
   const showExitButton = location.pathname.match(/^\/manager\/authorizations\/[^\/]+$/);
+  
+  // Show X button for INVC comparison routes
+  const showINVCExitButton = location.pathname.match(/^\/manager\/invc\/[^\/]+\/comparison$/);
   const getStatusBadge = () => {
     if (!applicationStatus || !isApplicationDetailsPage) return null;
     const statusConfig = applicationStatuses[applicationStatus as keyof typeof applicationStatuses];
@@ -183,6 +186,11 @@ const Header = ({
           {/* Add button for applications page */}
           {location.pathname === '/applications' && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 bg-primary/10 hover:bg-primary/20 text-primary" onClick={() => navigate('/identity-verification')} aria-label="Nueva Solicitud">
               <Plus className="h-4 w-4" />
+            </Button>}
+          
+          {/* X button for INVC comparison */}
+          {showINVCExitButton && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={() => window.dispatchEvent(new CustomEvent('invcExit'))} aria-label="Salir">
+              <X className="h-5 w-5" />
             </Button>}
           
           {location.pathname.includes('/edit') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
