@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, DollarSign, FileText, Camera, MessageCircle, Building } from 'lucide-react';
+import { ArrowLeft, Users, DollarSign, FileText, Camera, MessageCircle, Building, CheckCircle } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { INVCProvider, useINVC } from '@/context/INVCContext';
 import { INVCStickySummary } from '@/components/invc/INVCStickySummary';
 import { ComparisonRow } from '@/components/invc/ComparisonRow';
@@ -20,17 +21,32 @@ import { PhotoViewerModal } from '@/components/invc/PhotoViewerModal';
 
 const INVCComparisonContent: React.FC = () => {
   const navigate = useNavigate();
-  const { invcData, updateObservedData, addDifference } = useINVC();
+  const { invcData, updateObservedData, addDifference, setINVCData } = useINVC();
   const [showCalculator, setShowCalculator] = useState(false);
   const [generalComment, setGeneralComment] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string; geotag?: any; timestamp?: string } | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   if (!invcData) {
     return <div>Cargando datos...</div>;
   }
 
   const handleFinalize = () => {
-    navigate(`/manager/invc/${invcData.solicitudId}/review`);
+    if (!invcData) return;
+    
+    // Update INVC status to completed
+    const updatedData = {
+      ...invcData,
+      estado: 'completado' as const,
+      comentarioGeneral: generalComment,
+      fechaActualizacion: new Date().toISOString()
+    };
+    
+    setINVCData(updatedData);
+    setShowConfirmModal(false);
+    
+    // Navigate back to details page
+    navigate(`/manager/invc/${invcData.solicitudId}`);
   };
 
   const handleCalculatorConfirm = (newAmount: number, term: number, newQuota: number) => {
@@ -104,7 +120,10 @@ const INVCComparisonContent: React.FC = () => {
       <Header />
 
       <div className="p-4 pb-20">
-        <INVCStickySummary onFinalize={handleFinalize} />
+        <INVCStickySummary 
+          onFinalize={handleFinalize} 
+          onFinalizeINVC={() => setShowConfirmModal(true)} 
+        />
 
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -405,6 +424,33 @@ const INVCComparisonContent: React.FC = () => {
                 rows={4}
                 className="bg-muted/30"
               />
+              
+              {/* Finalizar INVC Button in Evidence Tab */}
+              <div className="pt-4">
+                <AlertDialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full" size="lg">
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Finalizar INVC
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmar finalización</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        ¿Estás seguro de que deseas finalizar esta investigación INVC? 
+                        Una vez completada, se marcará como finalizada y no podrá modificarse.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleFinalize}>
+                        Sí, finalizar investigación
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </Card>
 
             {/* Lista de Discrepancias */}

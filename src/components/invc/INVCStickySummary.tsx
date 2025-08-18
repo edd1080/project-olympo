@@ -9,9 +9,10 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 
 interface INVCStickySummaryProps {
   onFinalize: () => void;
+  onFinalizeINVC: () => void;
 }
 
-export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize }) => {
+export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize, onFinalizeINVC }) => {
   const { invcData, validateForFinish, isOffline } = useINVC();
   const { getCurrentPosition, isWithinTolerance, isLoading: geoLoading } = useGeolocation();
   const [isAtLocation, setIsAtLocation] = React.useState<boolean | null>(null);
@@ -105,25 +106,15 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
             )}
           </div>
           
-          {/* Finalize Button */}
+          {/* Finalize INVC Button */}
           <Button 
-            onClick={onFinalize}
-            disabled={!validation.isValid}
-            variant={validation.isValid ? "default" : "secondary"}
+            onClick={onFinalizeINVC}
+            variant="default"
             size="sm"
-            className="min-w-[100px]"
+            className="min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white"
           >
-            {validation.isValid ? (
-              <>
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Finalizar
-              </>
-            ) : (
-              <>
-                <AlertCircle className="w-4 h-4 mr-2" />
-                Pendiente
-              </>
-            )}
+            <CheckCircle className="w-4 h-4 mr-2" />
+            Finalizar INVC
           </Button>
         </div>
 

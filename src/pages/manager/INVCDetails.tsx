@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 
@@ -6,10 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, MapPin, User, Phone, DollarSign, Building, Calendar } from 'lucide-react';
+import { INVCData } from '@/types/invc';
 
 const INVCDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [invcData, setInvcData] = useState<INVCData | null>(null);
+
+  // Load INVC data from localStorage
+  useEffect(() => {
+    if (id) {
+      try {
+        const stored = localStorage.getItem(`invc_${id}`);
+        if (stored) {
+          setInvcData(JSON.parse(stored));
+        }
+      } catch (error) {
+        console.error('Error loading INVC data:', error);
+      }
+    }
+  }, [id]);
 
   // Mock data for INVC investigation details
   const investigation = {
@@ -17,7 +33,7 @@ const INVCDetails = () => {
     applicationId: 'APP-2024-001',
     applicantName: 'María García Pérez',
     amount: 15000,
-    status: 'pending',
+    status: invcData?.estado === 'completado' ? 'completed' : 'pending', // Use INVC data status
     priority: 'high',
     assignedDate: '2025-01-14',
     dueDate: '2025-01-16',
