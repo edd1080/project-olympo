@@ -80,6 +80,33 @@ const IdentityVerification: React.FC = () => {
     }
   };
 
+  const handleSkipSelfie = async () => {
+    setState(prev => ({
+      ...prev,
+      currentStep: 'processing'
+    }));
+
+    // Procesar datos del DPI sin selfie para demo
+    try {
+      const identityData = await extractDPIData(
+        state.captures.dpiFrontURL!,
+        state.captures.dpiBackURL
+      );
+      
+      setState(prev => ({
+        ...prev,
+        identityData,
+        currentStep: 'success'
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        error: 'Error al procesar los datos del DPI',
+        currentStep: 'error'
+      }));
+    }
+  };
+
   const handleContinueToForm = () => {
     // Navegar al formulario oficial con datos prellenados
     navigate('/applications/oficial/new', { 
@@ -168,6 +195,7 @@ const IdentityVerification: React.FC = () => {
           <SelfieCapture
             onCapture={handleSelfieCapture}
             onRetry={() => setState(prev => ({ ...prev, captures: { ...prev.captures, selfieURL: undefined } }))}
+            onSkip={handleSkipSelfie}
             capturedImage={state.captures.selfieURL}
           />
         );

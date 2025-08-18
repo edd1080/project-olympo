@@ -8,10 +8,11 @@ import { validateSelfieImage } from '@/utils/dpiExtraction';
 interface SelfieCaptureProps {
   onCapture: (imageData: string) => void;
   onRetry: () => void;
+  onSkip?: () => void;
   capturedImage?: string;
 }
 
-const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, capturedImage }) => {
+const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, onSkip, capturedImage }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [validation, setValidation] = useState<{ isValid: boolean; message?: string; confidence?: number } | null>(null);
   const [countdown, setCountdown] = useState(0);
@@ -160,28 +161,39 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
             />
           </div>
           
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              className="flex-1"
-              onClick={() => {
-                setShowPreview(false);
-                setValidation(null);
-                setPreviewImage(null);
-                onRetry();
-              }}
-            >
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Repetir
-            </Button>
-            <Button 
-              className="flex-1"
-              onClick={() => onCapture(imageToShow!)}
-              disabled={validation && !validation.isValid}
-            >
-              <Check className="mr-2 h-4 w-4" />
-              Finalizar
-            </Button>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => {
+                  setShowPreview(false);
+                  setValidation(null);
+                  setPreviewImage(null);
+                  onRetry();
+                }}
+              >
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Repetir
+              </Button>
+              <Button 
+                className="flex-1"
+                onClick={() => onCapture(imageToShow!)}
+                disabled={validation && !validation.isValid}
+              >
+                <Check className="mr-2 h-4 w-4" />
+                Finalizar
+              </Button>
+            </div>
+            {onSkip && (
+              <Button 
+                variant="secondary" 
+                className="w-full"
+                onClick={onSkip}
+              >
+                Continuar sin selfie (Demo)
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -214,13 +226,24 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
             </div>
           </div>
           
-          <Button 
-            className="w-full" 
-            onClick={handleStartCamera}
-          >
-            <Camera className="mr-2 h-4 w-4" />
-            Iniciar escaneo facial
-          </Button>
+          <div className="space-y-2">
+            <Button 
+              className="w-full" 
+              onClick={handleStartCamera}
+            >
+              <Camera className="mr-2 h-4 w-4" />
+              Iniciar escaneo facial
+            </Button>
+            {onSkip && (
+              <Button 
+                variant="secondary" 
+                className="w-full"
+                onClick={onSkip}
+              >
+                Continuar sin selfie (Demo)
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     );
@@ -280,35 +303,46 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
         </div>
         
         {/* Action buttons */}
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            className="flex-1"
-            onClick={() => {
-              closeCamera();
-              setIsCameraActive(false);
-              setIsVideoReady(false);
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            className="flex-1"
-            onClick={handleCapture}
-            disabled={!isVideoReady || countdown > 0}
-          >
-            {countdown > 0 ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {countdown}
-              </>
-            ) : (
-              <>
-                <Camera className="mr-2 h-4 w-4" />
-                Capturar
-              </>
-            )}
-          </Button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                closeCamera();
+                setIsCameraActive(false);
+                setIsVideoReady(false);
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              className="flex-1"
+              onClick={handleCapture}
+              disabled={!isVideoReady || countdown > 0}
+            >
+              {countdown > 0 ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {countdown}
+                </>
+              ) : (
+                <>
+                  <Camera className="mr-2 h-4 w-4" />
+                  Capturar
+                </>
+              )}
+            </Button>
+          </div>
+          {onSkip && (
+            <Button 
+              variant="secondary" 
+              className="w-full"
+              onClick={onSkip}
+            >
+              Continuar sin selfie (Demo)
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
