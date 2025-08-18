@@ -3,8 +3,9 @@ import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { AlertCircle, Camera, CheckCircle, FileText, Image, Loader2, UploadCloud, X, RefreshCw } from 'lucide-react';
+import { AlertCircle, Camera, CheckCircle, FileText, Image, Loader2, UploadCloud, X, RefreshCw, SwitchCamera } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCamera } from '@/hooks/useCamera';
 
 interface PhotoDocumentUploadProps {
   formData: any;
@@ -17,6 +18,8 @@ interface DocumentItem {
   description: string;
   type: 'photo' | 'document';
   required: boolean;
+  allowedSources: ('camera' | 'upload')[];
+  cameraFacing?: 'user' | 'environment';
   file?: File | null;
   status: 'empty' | 'success' | 'error' | 'loading';
   thumbnailUrl?: string;
@@ -28,6 +31,14 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
   const [activeCameraId, setActiveCameraId] = useState<string | null>(null);
   const [loadingDocument, setLoadingDocument] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState<DocumentItem | null>(null);
+  
+  // Get the camera facing mode for the active document
+  const getActiveDocumentFacing = () => {
+    const activeDoc = documents.find(doc => doc.id === activeCameraId);
+    return activeDoc?.cameraFacing || 'environment';
+  };
+  
+  const camera = useCamera(getActiveDocumentFacing());
 
   const [documents, setDocuments] = useState<DocumentItem[]>([
     {
@@ -36,6 +47,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       description: 'Selfie frontal del cliente',
       type: 'photo',
       required: true,
+      allowedSources: ['camera'],
+      cameraFacing: 'user',
       status: 'empty'
     },
     {
@@ -44,6 +57,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       description: 'Fotografía con el agente de negocios',
       type: 'photo',
       required: true,
+      allowedSources: ['camera'],
+      cameraFacing: 'environment',
       status: 'empty'
     },
     {
@@ -52,6 +67,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       description: 'Fotografía del local o vivienda',
       type: 'photo',
       required: true,
+      allowedSources: ['camera'],
+      cameraFacing: 'environment',
       status: 'empty'
     },
     {
@@ -60,6 +77,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       description: 'Luz, agua o teléfono',
       type: 'document',
       required: true,
+      allowedSources: ['camera', 'upload'],
+      cameraFacing: 'environment',
       status: 'empty'
     },
     {
@@ -68,6 +87,8 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       description: 'Opcional',
       type: 'document',
       required: false,
+      allowedSources: ['camera', 'upload'],
+      cameraFacing: 'environment',
       status: 'empty'
     }
   ]);
@@ -86,8 +107,41 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
     updateFormData('documents', documentsData);
   };
 
-  const handleCaptureStart = (documentId: string) => {
+  const handleCaptureStart = async (documentId: string) => {
     setActiveCameraId(documentId);
+    const success = await camera.requestPermission();
+    if (!success) {
+      setActiveCameraId(null);
+      toast({
+        title: "Error de cámara",
+        description: "No se pudo acceder a la cámara. Verifica los permisos.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleCameraCapture = async () => {
+    if (!activeCameraId) return;
+    
+    const imageDataUrl = camera.capture();
+    if (!imageDataUrl) {
+      toast({
+        title: "Error al capturar",
+        description: "No se pudo capturar la imagen. Inténtalo de nuevo.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    
+    // Convert data URL to file
+    const response = await fetch(imageDataUrl);
+    const blob = await response.blob();
+    const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
+    
+    camera.closeCamera();
+    handleFileCapture(activeCameraId, file);
   };
 
   const handleFileCapture = async (documentId: string, file: File) => {
@@ -269,38 +323,56 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
                   <div className="flex flex-wrap gap-2 mt-4">
                     {document.status === 'empty' ? (
                       <>
-                        {document.type === 'photo' ? (
+                        {document.allowedSources.includes('camera') && (
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="flex-1"
+                            className={document.allowedSources.length === 1 ? "w-full" : "flex-1"}
                             onClick={() => handleCaptureStart(document.id)}
                           >
                             <Camera className="mr-1 h-4 w-4" />
                             Tomar foto
                           </Button>
-                        ) : null}
+                        )}
                         
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => handleFileUpload(document.id)}
-                        >
-                          <UploadCloud className="mr-1 h-4 w-4" />
-                          Subir {document.type === 'photo' ? 'imagen' : 'documento'}
-                        </Button>
+                        {document.allowedSources.includes('upload') && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className={document.allowedSources.length === 1 ? "w-full" : "flex-1"}
+                            onClick={() => handleFileUpload(document.id)}
+                          >
+                            <UploadCloud className="mr-1 h-4 w-4" />
+                            Subir {document.type === 'photo' ? 'imagen' : 'documento'}
+                          </Button>
+                        )}
                       </>
                     ) : document.status === 'error' ? (
-                      <Button 
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleCaptureStart(document.id)}
-                        className="flex-1 border-destructive/30 text-destructive hover:bg-destructive/10"
-                      >
-                        <RefreshCw className="mr-1 h-4 w-4" />
-                        Reintentar
-                      </Button>
+                      <div className="flex gap-2 w-full">
+                        {document.allowedSources.includes('camera') && (
+                          <Button 
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCaptureStart(document.id)}
+                            className="flex-1 border-destructive/30 text-destructive hover:bg-destructive/10"
+                          >
+                            <RefreshCw className="mr-1 h-4 w-4" />
+                            Reintentar
+                          </Button>
+                        )}
+                        
+                        {document.allowedSources.includes('upload') && (
+                          <Button 
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleFileUpload(document.id)}
+                            className="flex-1 border-destructive/30 text-destructive hover:bg-destructive/10"
+                          >
+                            <UploadCloud className="mr-1 h-4 w-4" />
+                            Subir archivo
+                          </Button>
+                        )}
+                      </div>
                     ) : document.status === 'success' ? (
                       <div className="flex w-full gap-2">
                         <Button
@@ -351,7 +423,10 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
       />
       
       {/* Camera dialog */}
-      <Dialog open={activeCameraId !== null} onOpenChange={() => setActiveCameraId(null)}>
+      <Dialog open={activeCameraId !== null} onOpenChange={() => {
+        camera.closeCamera();
+        setActiveCameraId(null);
+      }}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
@@ -363,53 +438,70 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
           </DialogHeader>
           
           <div className="p-4 bg-muted/50 rounded-md flex flex-col items-center justify-center">
-            <div className="aspect-video w-full bg-black rounded-md mb-4 flex items-center justify-center">
-              <Camera className="h-12 w-12 text-gray-500" />
-            </div>
-            <p className="text-muted-foreground text-sm mb-4 text-center">
-              Esta es una simulación de cámara. En la aplicación real, aquí se mostraría la vista previa de la cámara.
-            </p>
-            
-            {/* Mock camera actions */}
-            <div className="flex gap-3">
-              <Button 
-                variant="ghost" 
-                onClick={() => setActiveCameraId(null)}
-              >
-                <X className="mr-2 h-4 w-4" />
-                Cancelar
-              </Button>
-              <Button
-                onClick={() => {
-                  // Mock a file capture by creating a canvas image
-                  const canvas = document.createElement('canvas');
-                  canvas.width = 400;
-                  canvas.height = 300;
-                  const ctx = canvas.getContext('2d');
-                  if (ctx) {
-                    // Draw a simple image for demonstration
-                    ctx.fillStyle = '#f0f0f0';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#3498db';
-                    ctx.fillRect(50, 50, 300, 200);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '20px sans-serif';
-                    ctx.fillText('Mock Photo', 150, 150);
-                    
-                    // Convert to blob and then to file
-                    canvas.toBlob((blob) => {
-                      if (blob && activeCameraId) {
-                        const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
-                        handleFileCapture(activeCameraId, file);
-                      }
-                    }, 'image/jpeg');
-                  }
-                }}
-              >
-                <Camera className="mr-2 h-4 w-4" />
-                Capturar
-              </Button>
-            </div>
+            {camera.error ? (
+              <div className="w-full text-center">
+                <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+                <p className="text-destructive text-sm mb-4">{camera.error}</p>
+                <Button onClick={() => camera.requestPermission()}>
+                  Reintentar
+                </Button>
+              </div>
+            ) : camera.isLoading ? (
+              <div className="w-full text-center">
+                <Loader2 className="h-12 w-12 text-primary animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground text-sm">Iniciando cámara...</p>
+              </div>
+            ) : camera.isVideoReady ? (
+              <>
+                <div className="aspect-video w-full bg-black rounded-md mb-4 overflow-hidden">
+                  <video
+                    ref={camera.videoRef}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    playsInline
+                    muted
+                  />
+                </div>
+                
+                <div className="flex gap-3 w-full">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => {
+                      camera.closeCamera();
+                      setActiveCameraId(null);
+                    }}
+                    className="flex-1"
+                  >
+                    <X className="mr-2 h-4 w-4" />
+                    Cancelar
+                  </Button>
+                  
+                  {camera.availableCameras > 1 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => camera.switchCamera(camera.currentFacing === 'user' ? 'environment' : 'user')}
+                    >
+                      <SwitchCamera className="h-4 w-4" />
+                    </Button>
+                  )}
+                  
+                  <Button
+                    onClick={handleCameraCapture}
+                    className="flex-1"
+                  >
+                    <Camera className="mr-2 h-4 w-4" />
+                    Capturar
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="w-full text-center">
+                <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground text-sm mb-4">
+                  Preparando cámara...
+                </p>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
