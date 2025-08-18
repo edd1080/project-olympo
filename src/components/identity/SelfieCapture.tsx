@@ -63,27 +63,71 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
   };
 
   const performCapture = async () => {
-    const imageData = capture();
-    if (!imageData) return;
+    try {
+      const imageData = capture();
+      if (!imageData) {
+        console.error('Failed to capture image');
+        return;
+      }
 
-    // Close camera
-    closeCamera();
-    setIsCameraActive(false);
-    setIsVideoReady(false);
+      // Create a canvas to overlay the oval guide on the captured image
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    // Store captured image locally
-    setPreviewImage(imageData);
+      // Create image element to load captured image
+      const img = new Image();
+      img.onload = () => {
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-    // Validate the captured image
-    const validationResult = validateSelfieImage(imageData);
-    setValidation({
-      isValid: validationResult.isValid,
-      message: validationResult.message || 'Selfie procesada',
-      confidence: 0.8
-    });
-    
-    // Show preview
-    setShowPreview(true);
+        // Draw the captured image (flipped horizontally to match preview)
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(img, -canvas.width, 0);
+        ctx.restore();
+
+        // Draw oval overlay
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radiusX = canvas.width * 0.3;
+        const radiusY = canvas.height * 0.38;
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([10, 5]);
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // Get the final image with overlay
+        const finalImageData = canvas.toDataURL('image/jpeg', 0.9);
+
+        // Close camera
+        closeCamera();
+        setIsCameraActive(false);
+        setIsVideoReady(false);
+
+        // Store captured image locally
+        setPreviewImage(finalImageData);
+
+        // Validate the captured image
+        const validationResult = validateSelfieImage(finalImageData);
+        setValidation({
+          isValid: validationResult.isValid,
+          message: validationResult.message || 'Selfie procesada',
+          confidence: 0.8
+        });
+        
+        // Show preview
+        setShowPreview(true);
+      };
+
+      img.src = imageData;
+    } catch (error) {
+      console.error('Error capturing selfie:', error);
+    }
   };
 
   // Show preview with captured image
@@ -136,7 +180,7 @@ const SelfieCapture: React.FC<SelfieCaptureProps> = ({ onCapture, onRetry, captu
               disabled={validation && !validation.isValid}
             >
               <Check className="mr-2 h-4 w-4" />
-              Confirmar
+              Finalizar
             </Button>
           </div>
         </CardContent>
