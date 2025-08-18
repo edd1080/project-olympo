@@ -323,6 +323,8 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
         return !!(formData.hasAlcoholismOrViolence !== undefined && (formData.areaRiskLevel !== undefined || formData.livesInHighRiskZone !== undefined));
       case 'business-financial':
         return !!(formData.businessName && formData.cashSales);
+      case 'financial-info':
+        return !!(formData.monthlyIncome && formData.monthlyExpenses);
       case 'documents':
         return !!(formData.documentsUploaded);
       case 'signature':
@@ -341,9 +343,11 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
         return 1;
       case 2: // business-financial section has 4 sub-steps
         return 4;
-      case 3: // documents section has 1 sub-step
+      case 3: // financial-info section has 1 sub-step
         return 1;
-      case 4: // signature section has 1 sub-step
+      case 4: // documents section has 1 sub-step
+        return 1;
+      case 5: // signature section has 1 sub-step
         return 1;
       default:
         return 1;
