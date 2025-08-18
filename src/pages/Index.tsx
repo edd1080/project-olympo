@@ -37,9 +37,9 @@ const Index = () => {
         {/* Symmetric 2x2 Metrics Grid */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           {/* Solicitudes Activas */}
-          <Card className="h-24">
-            <CardContent className="p-4 px-[17px] py-[4px]">
-              <div className="flex flex-col justify-center h-full text-center py-0">
+          <Card className="h-32">
+            <CardContent className="p-4">
+              <div className="flex flex-col justify-center h-full text-center">
                 <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Activas</p>
                 <p className="text-xl font-bold my-1">24</p>
@@ -48,7 +48,7 @@ const Index = () => {
           </Card>
           
           {/* Solicitudes Aprobadas */}
-          <Card className="h-24">
+          <Card className="h-32">
             <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
@@ -59,7 +59,7 @@ const Index = () => {
           </Card>
           
           {/* Solicitudes Pendientes */}
-          <Card className="h-24">
+          <Card className="h-32">
             <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <Clock className="h-6 w-6 text-amber-600 mx-auto mb-2" />
@@ -70,11 +70,11 @@ const Index = () => {
           </Card>
           
           {/* Solicitudes Observadas */}
-          <Card className="h-24">
+          <Card className="h-32">
             <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <AlertTriangle className="h-6 w-6 text-red-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1 px-0">Observadas</p>
+                <p className="text-xs text-muted-foreground mb-1">Observadas</p>
                 <p className="text-xl font-bold my-1">4</p>
               </div>
             </CardContent>
