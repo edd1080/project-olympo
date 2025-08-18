@@ -95,7 +95,7 @@ const ManagerIndex = () => {
         <div className="grid grid-cols-2 gap-4">
           <ManagerMetricsCard icon={ClipboardList} title="INVC Pendientes" value={stats.pendingINVC} colorClass="bg-blue-500/10" iconColorClass="text-blue-600" />
           
-          <ManagerMetricsCard icon={CheckCircle} title="Completadas Hoy" value={stats.completedToday} colorClass="bg-green-500/10" iconColorClass="text-green-600" />
+          <ManagerMetricsCard icon={CheckCircle} title="Completadas" value={stats.completedToday} colorClass="bg-green-500/10" iconColorClass="text-green-600" />
           
           <ManagerMetricsCard icon={Clock} title="Autorizaciones" description="Pendientes" value={stats.pendingAuthorizations} colorClass="bg-amber-500/10" iconColorClass="text-amber-600" />
           
