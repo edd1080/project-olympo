@@ -129,6 +129,8 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
     };
   }, [financialData]);
 
+  const [activePeriod, setActivePeriod] = React.useState<'prev' | 'curr'>('prev');
+
   const renderAssetForm = (category: string, fields: string[], title: string) => {
     const prevData = financialData[category]?.prev || {};
     const currData = financialData[category]?.curr || {};
@@ -142,24 +144,52 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Column headers */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Mobile: Period navigation chips */}
+          <div className="md:hidden mb-6">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setActivePeriod('prev')}
+                className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+                  activePeriod === 'prev'
+                    ? 'bg-muted border-border'
+                    : 'bg-background border-border/50 hover:bg-muted/50'
+                }`}
+              >
+                <span className="text-sm font-medium">Periodo Anterior</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActivePeriod('curr')}
+                className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+                  activePeriod === 'curr'
+                    ? 'bg-[#E18E33]/10 border-[#E18E33] text-[#E18E33]'
+                    : 'bg-background border-border/50 hover:bg-[#E18E33]/5'
+                }`}
+              >
+                <span className="text-sm font-medium">Periodo Actual</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop: Column headers */}
+          <div className="hidden md:grid grid-cols-2 gap-4 mb-6">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-muted-foreground">Periodo Anterior</h3>
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-muted-foreground">Periodo Actual</h3>
+              <h3 className="text-lg font-semibold text-[#E18E33]">Periodo Actual</h3>
             </div>
           </div>
 
-          {/* Fields with dual inputs */}
-          <div className="space-y-4">
+          {/* Desktop: Fields with dual inputs */}
+          <div className="hidden md:block space-y-4">
             {fields.map((field) => (
               <div key={field} className="space-y-2">
                 <Label className="text-sm font-medium">
                   {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
                 </Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   {/* Previous period input */}
                   <div className="relative">
                     <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
@@ -180,7 +210,7 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
                       type="number"
                       min={0}
                       step="0.01"
-                      className="pl-7"
+                      className="pl-7 border-[#E18E33]/20 focus:border-[#E18E33] focus:ring-[#E18E33]/20"
                       value={currData[field] || ''}
                       onChange={(e) => handleFieldChange(category, 'curr', field, e.target.value)}
                       placeholder="0.00"
@@ -190,10 +220,41 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
               </div>
             ))}
           </div>
+
+          {/* Mobile: Period-based single column input */}
+          <div className="md:hidden space-y-4">
+            {fields.map((field) => {
+              const data = activePeriod === 'prev' ? prevData : currData;
+              return (
+                <div key={field} className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
+                  </Label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">Q</span>
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      className={`pl-7 ${
+                        activePeriod === 'curr' 
+                          ? 'border-[#E18E33]/20 focus:border-[#E18E33] focus:ring-[#E18E33]/20' 
+                          : ''
+                      }`}
+                      value={data[field] || ''}
+                      onChange={(e) => handleFieldChange(category, activePeriod, field, e.target.value)}
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           
           {/* Show totals */}
           <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <div className="grid grid-cols-2 gap-4">
+            {/* Desktop: Both totals side by side */}
+            <div className="hidden md:grid grid-cols-2 gap-4">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Total Anterior</p>
                 <p className="text-lg font-semibold">
@@ -201,11 +262,21 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">Total Actual</p>
-                <p className="text-lg font-semibold">
+                <p className="text-sm text-[#E18E33]">Total Actual</p>
+                <p className="text-lg font-semibold text-[#E18E33]">
                   {currency(sum(financialData[category]?.curr))}
                 </p>
               </div>
+            </div>
+            
+            {/* Mobile: Only active period total */}
+            <div className="md:hidden text-center">
+              <p className={`text-sm ${activePeriod === 'curr' ? 'text-[#E18E33]' : 'text-muted-foreground'}`}>
+                Total {activePeriod === 'prev' ? 'Anterior' : 'Actual'}
+              </p>
+              <p className={`text-lg font-semibold ${activePeriod === 'curr' ? 'text-[#E18E33]' : ''}`}>
+                {currency(sum(financialData[category]?.[activePeriod]))}
+              </p>
             </div>
           </div>
         </CardContent>
