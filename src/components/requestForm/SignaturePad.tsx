@@ -7,9 +7,19 @@ interface SignaturePadProps {
   onChange: (dataUrl: string | null) => void;
   value?: string | null;
   disabled?: boolean;
+  heightPx?: number;
+  showLabel?: boolean;
+  showClearButton?: boolean;
 }
 
-const SignaturePad: React.FC<SignaturePadProps> = ({ onChange, value, disabled = false }) => {
+const SignaturePad: React.FC<SignaturePadProps> = ({ 
+  onChange, 
+  value, 
+  disabled = false, 
+  heightPx = 128,
+  showLabel = true,
+  showClearButton = true 
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEmpty, setIsEmpty] = useState(!value);
@@ -128,17 +138,19 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onChange, value, disabled =
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">
-        Dibuje su firma en el área a continuación
-      </Label>
+      {showLabel && (
+        <Label className="text-sm font-medium">
+          Dibuje su firma en el área a continuación
+        </Label>
+      )}
       
       <div className="relative">
         <canvas
           ref={canvasRef}
-          className={`w-full h-32 border-2 border-dashed rounded-lg cursor-crosshair ${
+          className={`w-full border-2 border-dashed rounded-lg cursor-crosshair ${
             disabled ? 'opacity-50 cursor-not-allowed bg-muted' : 'border-border bg-background'
           }`}
-          style={{ width: '100%', height: '128px' }}
+          style={{ width: '100%', height: `${heightPx}px` }}
           onMouseDown={(e) => startDrawing(getMousePos(e))}
           onMouseMove={(e) => draw(getMousePos(e))}
           onMouseUp={stopDrawing}
@@ -167,30 +179,32 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onChange, value, disabled =
         )}
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {!isEmpty && (
-            <>
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span className="text-sm text-green-600">
-                Firma capturada correctamente
-              </span>
-            </>
-          )}
+      {showClearButton && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {!isEmpty && (
+              <>
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <span className="text-sm text-green-600">
+                  Firma capturada correctamente
+                </span>
+              </>
+            )}
+          </div>
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={clearSignature}
+            disabled={disabled || isEmpty}
+            className="text-destructive hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4 mr-1" />
+            Limpiar
+          </Button>
         </div>
-        
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={clearSignature}
-          disabled={disabled || isEmpty}
-          className="text-destructive hover:text-destructive"
-        >
-          <Trash2 className="h-4 w-4 mr-1" />
-          Limpiar
-        </Button>
-      </div>
+      )}
     </div>
   );
 };

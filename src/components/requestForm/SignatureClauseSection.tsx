@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, FileSignature, AlertCircle, Camera, Upload, User, FileText } from 'lucide-react';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { CheckCircle, FileSignature, AlertCircle, Camera, Upload, User, FileText, PenTool } from 'lucide-react';
 import SignaturePad from './SignaturePad';
 interface SignatureClauseSectionProps {
   formData: any;
@@ -19,6 +20,8 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
 }) => {
   const [readingProgress, setReadingProgress] = useState(0);
   const [hasReadComplete, setHasReadComplete] = useState(false);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+  const [draftSignature, setDraftSignature] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const clauses = [{
     title: "Cláusula de Veracidad de Información",
@@ -137,24 +140,87 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
             </h4>
             
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signatureName">Nombre completo del firmante</Label>
-                  <input id="signatureName" className="w-full p-2 border rounded bg-muted" value={`${formData.personalInfo?.nombres || ''} ${formData.personalInfo?.apellidos || ''}`} readOnly />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signatureDate">Fecha de firma</Label>
-                  <input id="signatureDate" className="w-full p-2 border rounded bg-muted" value={new Date().toLocaleDateString('es-GT')} readOnly />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="signatureDate">Fecha de firma</Label>
+                <input id="signatureDate" className="w-full p-2 border rounded bg-muted" value={new Date().toLocaleDateString('es-GT')} readOnly />
               </div>
 
-              {/* Signature drawing area */}
-              <SignaturePad
-                value={formData.signatureDataUrl}
-                onChange={(dataUrl) => updateFormData('signatureDataUrl', dataUrl)}
-                disabled={!formData.termsAccepted || !formData.creditCheckAccepted}
-              />
+              {/* Signature preview area */}
+              <div className="space-y-2">
+                <Label>Firma digital</Label>
+                <Sheet open={isSignatureModalOpen} onOpenChange={setIsSignatureModalOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full h-32 border-2 border-dashed ${
+                        !formData.termsAccepted || !formData.creditCheckAccepted 
+                          ? 'opacity-50 cursor-not-allowed' 
+                          : 'hover:border-primary/50'
+                      }`}
+                      disabled={!formData.termsAccepted || !formData.creditCheckAccepted}
+                    >
+                      {formData.signatureDataUrl ? (
+                        <img 
+                          src={formData.signatureDataUrl} 
+                          alt="Firma digital" 
+                          className="max-h-24 max-w-full object-contain"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                          <PenTool className="h-6 w-6" />
+                          <span>Toque para firmar</span>
+                        </div>
+                      )}
+                    </Button>
+                  </SheetTrigger>
+                  
+                  <SheetContent side="bottom" className="h-[80vh] flex flex-col">
+                    <SheetHeader>
+                      <SheetTitle>Firmar documento</SheetTitle>
+                      <SheetDescription>
+                        Dibuje su firma en el área a continuación
+                      </SheetDescription>
+                    </SheetHeader>
+                    
+                    <div className="flex-1 py-6">
+                      <SignaturePad
+                        key={draftSignature ? 'with-signature' : 'empty'}
+                        value={draftSignature}
+                        onChange={setDraftSignature}
+                        heightPx={320}
+                        showLabel={false}
+                        showClearButton={false}
+                      />
+                    </div>
+                    
+                    <SheetFooter className="flex-shrink-0">
+                      <div className="flex gap-3 w-full">
+                        <Button
+                          variant="outline"
+                          onClick={() => setDraftSignature(null)}
+                          disabled={!draftSignature}
+                          className="flex-1"
+                        >
+                          Firmar de nuevo
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            if (draftSignature) {
+                              updateFormData('signatureDataUrl', draftSignature);
+                              setIsSignatureModalOpen(false);
+                              setDraftSignature(null);
+                            }
+                          }}
+                          disabled={!draftSignature}
+                          className="flex-1"
+                        >
+                          Continuar
+                        </Button>
+                      </div>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
+              </div>
 
               <div className="flex items-center space-x-3">
                 <Checkbox 
