@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, FileSignature, AlertCircle, Camera, Upload, User, FileText } from 'lucide-react';
+import SignaturePad from './SignaturePad';
 interface SignatureClauseSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -139,7 +140,7 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="signatureName">Nombre completo del firmante</Label>
-                  <input id="signatureName" className="w-full p-2 border rounded" value={`${formData.personalInfo?.nombres || ''} ${formData.personalInfo?.apellidos || ''}`} readOnly />
+                  <input id="signatureName" className="w-full p-2 border rounded bg-muted" value={`${formData.personalInfo?.nombres || ''} ${formData.personalInfo?.apellidos || ''}`} readOnly />
                 </div>
                 
                 <div className="space-y-2">
@@ -148,9 +149,21 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
                 </div>
               </div>
 
+              {/* Signature drawing area */}
+              <SignaturePad
+                value={formData.signatureDataUrl}
+                onChange={(dataUrl) => updateFormData('signatureDataUrl', dataUrl)}
+                disabled={!formData.termsAccepted || !formData.creditCheckAccepted}
+              />
+
               <div className="flex items-center space-x-3">
-                <Checkbox id="digitalSignature" checked={formData.digitalSignatureAccepted || false} onCheckedChange={checked => updateFormData('digitalSignatureAccepted', checked)} disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted} />
-                <Label htmlFor="digitalSignature" className={`text-sm font-medium ${!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted ? 'text-muted-foreground' : ''}`}>
+                <Checkbox 
+                  id="digitalSignature" 
+                  checked={formData.digitalSignatureAccepted || false} 
+                  onCheckedChange={checked => updateFormData('digitalSignatureAccepted', checked)} 
+                  disabled={!formData.termsAccepted || !formData.creditCheckAccepted || !formData.signatureDataUrl} 
+                />
+                <Label htmlFor="digitalSignature" className={`text-sm font-medium ${!formData.termsAccepted || !formData.creditCheckAccepted || !formData.signatureDataUrl ? 'text-muted-foreground' : ''}`}>
                   Confirmo que esta es mi firma digital y acepto la validez legal de este documento electrónico.
                 </Label>
               </div>
