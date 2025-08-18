@@ -445,17 +445,6 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   const handleSubmit = () => {
     console.log('Submitting form:', formData);
     
-    if (!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted || !formData.digitalSignatureAccepted) {
-      toast({
-        title: "Error en el envío",
-        description: "Debes completar todos los términos y la firma digital para continuar.",
-        variant: "destructive",
-        className: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
-        duration: 3000,
-      });
-      return;
-    }
-    
     toast({
       title: "Solicitud enviada",
       description: "Tu solicitud ha sido enviada correctamente.",
