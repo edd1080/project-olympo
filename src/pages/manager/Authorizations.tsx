@@ -172,17 +172,17 @@ const Authorizations = () => {
 
         {/* Status Tabs */}
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">
+          <TabsList className="flex sm:grid w-full sm:grid-cols-4 gap-2 overflow-x-auto">
+            <TabsTrigger value="all" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
               Todas ({authorizations.length})
             </TabsTrigger>
-            <TabsTrigger value="pending">
+            <TabsTrigger value="pending" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
               Pendientes ({pendingCount})
             </TabsTrigger>
-            <TabsTrigger value="approved">
+            <TabsTrigger value="approved" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
               Aprobadas ({approvedCount})
             </TabsTrigger>
-            <TabsTrigger value="rejected">
+            <TabsTrigger value="rejected" className="whitespace-nowrap flex-shrink-0 sm:whitespace-normal text-sm">
               Rechazadas ({rejectedCount})
             </TabsTrigger>
           </TabsList>
