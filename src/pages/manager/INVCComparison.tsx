@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, DollarSign, FileText, Camera, MessageCircle, Building, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Users, DollarSign, FileText, Camera, MessageCircle, Building, CheckCircle } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 import { Card } from '@/components/ui/card';
@@ -27,6 +27,7 @@ const INVCComparisonContent: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string; geotag?: any; timestamp?: string } | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [activeTab, setActiveTab] = useState('personal');
 
   useEffect(() => {
     const handleInvcExit = () => {
@@ -129,6 +130,21 @@ const INVCComparisonContent: React.FC = () => {
     }
   };
 
+  const tabs = ['personal', 'financial', 'evidence'];
+  const currentTabIndex = tabs.indexOf(activeTab);
+
+  const goPrev = () => {
+    if (currentTabIndex > 0) {
+      setActiveTab(tabs[currentTabIndex - 1]);
+    }
+  };
+
+  const goNext = () => {
+    if (currentTabIndex < tabs.length - 1) {
+      setActiveTab(tabs[currentTabIndex + 1]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -153,7 +169,7 @@ const INVCComparisonContent: React.FC = () => {
           </div>
         </Card>
 
-        <Tabs defaultValue="personal" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="personal" className="text-sm">
               Datos
@@ -294,6 +310,27 @@ const INVCComparisonContent: React.FC = () => {
                 ))}
               </div>
             </Card>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center pt-4">
+              <Button 
+                variant="outline" 
+                onClick={goPrev}
+                disabled={currentTabIndex === 0}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Anterior
+              </Button>
+              <Button 
+                onClick={goNext}
+                disabled={currentTabIndex === tabs.length - 1}
+                className="flex items-center gap-2"
+              >
+                Siguiente
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="financial" className="space-y-6">
@@ -354,6 +391,27 @@ const INVCComparisonContent: React.FC = () => {
                 </div>
               </div>
             </Card>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center pt-4">
+              <Button 
+                variant="outline" 
+                onClick={goPrev}
+                disabled={currentTabIndex === 0}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Anterior
+              </Button>
+              <Button 
+                onClick={goNext}
+                disabled={currentTabIndex === tabs.length - 1}
+                className="flex items-center gap-2"
+              >
+                Siguiente
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="evidence" className="space-y-6">
@@ -462,6 +520,27 @@ const INVCComparisonContent: React.FC = () => {
                 </div>
               </Card>
             )}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center pt-4">
+              <Button 
+                variant="outline" 
+                onClick={goPrev}
+                disabled={currentTabIndex === 0}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Anterior
+              </Button>
+              <Button 
+                onClick={goNext}
+                disabled={currentTabIndex === tabs.length - 1}
+                className="flex items-center gap-2"
+              >
+                Siguiente
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
