@@ -161,7 +161,7 @@ const Header = ({
         {statusConfig.label}
       </Badge>;
   };
-  return <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
+  return <header className="bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex h-14 items-center px-4 relative">
         {/* Left button area */}
         <div className="flex items-center gap-3 flex-1">

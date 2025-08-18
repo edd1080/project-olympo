@@ -158,22 +158,22 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
             </div>
           </div>
 
-          {/* Values Display in 2 Columns */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Values Display - Stacked for Mobile */}
+          <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2 block">
                 DECLARADO
               </label>
-              <div className="mt-1 p-3 bg-muted/50 rounded text-sm font-medium">
+              <div className="p-3 bg-muted/50 rounded text-sm font-medium">
                 {formatValue(declaredValue)}
               </div>
             </div>
             
             <div>
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2 block">
                 OBSERVADO
               </label>
-              <div className="mt-1">
+              <div>
                 {isEditable && !isConfirmed ? (
                   <Input
                     type={type === 'number' || type === 'currency' ? 'number' : 'text'}
@@ -199,8 +199,18 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
             </div>
           )}
 
-          {/* Actions Below Columns */}
-          <div className="flex gap-2 pt-2">
+          {/* Actions Below Inputs */}
+          <div className="flex gap-3 pt-4">
+            <Button
+              size="sm"
+              onClick={copyDeclaredValue}
+              variant="outline"
+              className="flex-1 text-primary border-primary hover:bg-primary/10"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copiar
+            </Button>
+            
             {!isConfirmed && isEditable && (
               <Button
                 size="sm"
@@ -212,16 +222,6 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
                 {hasSignificantDifference() ? 'Ajustar' : 'Confirmar'}
               </Button>
             )}
-            
-            <Button
-              size="sm"
-              onClick={copyDeclaredValue}
-              variant="outline"
-              className="flex-1 text-primary border-primary hover:bg-primary/10"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              Copiar
-            </Button>
             
             {isConfirmed && (
               <Button

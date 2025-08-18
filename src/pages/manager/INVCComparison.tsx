@@ -108,16 +108,13 @@ const INVCComparisonContent: React.FC = () => {
 
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="personal" className="text-xs">
-              <Users className="w-4 h-4 mr-1" />
+            <TabsTrigger value="personal" className="text-sm">
               Datos
             </TabsTrigger>
-            <TabsTrigger value="financial" className="text-xs">
-              <DollarSign className="w-4 h-4 mr-1" />
+            <TabsTrigger value="financial" className="text-sm">
               Financiero
             </TabsTrigger>
-            <TabsTrigger value="evidence" className="text-xs">
-              <Camera className="w-4 h-4 mr-1" />
+            <TabsTrigger value="evidence" className="text-sm">
               Evidencia
             </TabsTrigger>
           </TabsList>
@@ -158,16 +155,16 @@ const INVCComparisonContent: React.FC = () => {
             </Card>
 
             {/* Actividad y Productos */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <Building className="w-5 h-5" />
                 Actividad y Productos
               </h3>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Actividad Activa */}
-                <div className="flex items-center justify-between p-3 border rounded">
-                  <div>
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
+                  <div className="space-y-1">
                     <div className="font-medium">¿La actividad está activa?</div>
                     <div className="text-sm text-muted-foreground">
                       Declarado: {invcData.declarado.actividad.activa ? 'Sí' : 'No'}
@@ -180,31 +177,33 @@ const INVCComparisonContent: React.FC = () => {
                 </div>
 
                 {/* Productos */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="font-medium">Productos del negocio</div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         Declarados
                       </div>
-                      <div className="space-y-1">
+                      <div className="p-3 bg-muted/30 rounded-lg min-h-[60px] flex flex-wrap items-center gap-2">
                         {invcData.declarado.actividad.productos.map((producto, index) => (
-                          <Badge key={index} variant="outline" className="mr-1 mb-1">
+                          <Badge key={index} variant="outline" className="text-xs">
                             {producto}
                           </Badge>
                         ))}
                       </div>
                     </div>
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                    <div className="space-y-3">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         Observados
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          checked={invcData.observado.actividad?.productos !== undefined}
-                          onCheckedChange={(checked) => handleProductMatchChange(!!checked)}
-                        />
-                        <span className="text-sm">¿Concuerdan los productos?</span>
+                      <div className="p-3 bg-muted/30 rounded-lg min-h-[60px] flex items-center">
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={invcData.observado.actividad?.productos !== undefined}
+                            onCheckedChange={(checked) => handleProductMatchChange(!!checked)}
+                          />
+                          <span className="text-sm">¿Concuerdan los productos?</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -213,40 +212,38 @@ const INVCComparisonContent: React.FC = () => {
             </Card>
 
             {/* Fiadores */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Fiadores
               </h3>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {invcData.declarado.fiadores.map((fiador) => (
-                  <Card key={fiador.id} className="p-3 border-muted">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-medium">{fiador.nombre}</div>
-                          <div className="text-sm text-muted-foreground">
-                            DPI: {fiador.dpi} • {fiador.relacion}
-                          </div>
+                  <Card key={fiador.id} className="p-4 border-muted bg-muted/20">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="font-medium text-lg">{fiador.nombre}</div>
+                        <div className="text-sm text-muted-foreground">
+                          DPI: {fiador.dpi} • {fiador.relacion}
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="flex items-center gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                           <Checkbox />
-                          <span className="text-sm">Encontrado</span>
+                          <span className="text-sm font-medium">Encontrado</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                           <Checkbox />
-                          <span className="text-sm">Coincide datos</span>
+                          <span className="text-sm font-medium">Coincide datos</span>
                         </div>
                       </div>
                       
                       <Textarea
                         placeholder="Comentario obligatorio si no coincide o no se encontró..."
-                        className="text-sm"
-                        rows={2}
+                        className="text-sm bg-background"
+                        rows={3}
                       />
                     </div>
                   </Card>
@@ -257,12 +254,12 @@ const INVCComparisonContent: React.FC = () => {
 
           <TabsContent value="financial" className="space-y-6">
             {/* Ingresos y Egresos */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
                 Ingresos y Egresos
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <ComparisonRow
                   label="Ingresos Mensuales"
                   fieldPath="ingresos"
@@ -283,13 +280,13 @@ const INVCComparisonContent: React.FC = () => {
             </Card>
 
             {/* Producto Financiero */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Producto Solicitado
               </h3>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <ComparisonRow
                   label="Tipo de Crédito"
                   fieldPath="producto.tipo"
@@ -297,7 +294,7 @@ const INVCComparisonContent: React.FC = () => {
                   observedValue={invcData.observado.producto?.tipo}
                 />
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <ComparisonRow
                     label="Monto"
                     fieldPath="producto.monto"
@@ -320,7 +317,7 @@ const INVCComparisonContent: React.FC = () => {
                   <Button
                     variant="outline"
                     onClick={() => setShowCalculator(true)}
-                    className="w-full"
+                    className="w-full max-w-md"
                   >
                     <DollarSign className="w-4 h-4 mr-2" />
                     Usar Calculadora para Ajustar Monto
@@ -331,53 +328,68 @@ const INVCComparisonContent: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="evidence" className="space-y-6">
-            {/* Fotos de Referencia */}
-            <Card className="bg-white dark:bg-card p-4">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Camera className="w-5 h-5" />
-                Fotos de Referencia (Agente)
-              </h3>
-              
-              <div className="grid grid-cols-2 gap-3">
-                {invcData.evidencias.fotosPrevias.map((foto, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setSelectedPhoto({ url: foto, title: `Referencia ${index + 1}` })}
-                    className="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-colors"
-                  >
-                    <img
-                      src={foto}
-                      alt={`Referencia ${index + 1}`}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+            {/* Evidence Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column: Geolocation and Captures */}
+              <div className="space-y-6">
+                {/* Nuevas Capturas */}
+                <Card className="p-6">
+                  <h3 className="font-bold text-lg mb-6">Nuevas Capturas (Gerente)</h3>
+                  
+                  <div className="space-y-6">
+                    <GeolocationCapture
+                      type="negocio"
+                      title="Foto del Negocio"
+                      targetLocation={invcData.declarado.direccionNegocio}
+                      toleranceMeters={10}
+                    />
+                    
+                    <GeolocationCapture
+                      type="solicitante"
+                      title="Foto del Solicitante"
+                      toleranceMeters={10}
                     />
                   </div>
-                ))}
+                </Card>
               </div>
-            </Card>
 
-            {/* Nuevas Capturas */}
-            <Card className="bg-white dark:bg-card p-4">
-              <h3 className="font-bold text-lg mb-4">Nuevas Capturas (Gerente)</h3>
-              
-              <div className="space-y-4">
-                <GeolocationCapture
-                  type="negocio"
-                  title="Foto del Negocio"
-                  targetLocation={invcData.declarado.direccionNegocio}
-                  toleranceMeters={10}
-                />
-                
-                <GeolocationCapture
-                  type="solicitante"
-                  title="Foto del Solicitante"
-                  toleranceMeters={10}
-                />
+              {/* Right Column: Reference Photos */}
+              <div className="space-y-6">
+                <Card className="p-6">
+                  <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                    <Camera className="w-5 h-5" />
+                    Fotos de Referencia (Agente)
+                  </h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    {invcData.evidencias.fotosPrevias.map((foto, index) => (
+                      <div
+                        key={index}
+                        onClick={() => setSelectedPhoto({ url: foto, title: `Referencia ${index + 1}` })}
+                        className="aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-colors"
+                      >
+                        <img
+                          src={foto}
+                          alt={`Referencia ${index + 1}`}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      Estas fotos fueron tomadas por el agente durante el llenado de la solicitud. 
+                      Úsalas como referencia para comparar con las nuevas capturas.
+                    </p>
+                  </div>
+                </Card>
               </div>
-            </Card>
+            </div>
 
             {/* Comentarios */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-6 flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 Comentarios Generales
               </h3>
@@ -387,28 +399,33 @@ const INVCComparisonContent: React.FC = () => {
                 value={generalComment}
                 onChange={(e) => setGeneralComment(e.target.value)}
                 rows={4}
+                className="bg-muted/30"
               />
             </Card>
 
             {/* Lista de Discrepancias */}
             {invcData.diffs.length > 0 && (
-              <Card className="p-4">
-                <h3 className="font-semibold mb-4">Discrepancias Encontradas</h3>
+              <Card className="p-6">
+                <h3 className="font-semibold mb-6">Discrepancias Encontradas</h3>
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {invcData.diffs.map((diff, index) => (
-                    <div key={index} className="p-3 border rounded bg-orange-50 dark:bg-orange-900/20">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-medium">{diff.campo}</span>
+                    <div key={index} className="p-4 border rounded-lg bg-orange-50 dark:bg-orange-900/20">
+                      <div className="flex justify-between items-start mb-3">
+                        <span className="font-medium text-lg">{diff.campo}</span>
                         {diff.delta !== 0 && (
                           <Badge variant="secondary">
                             {diff.delta > 0 ? '+' : ''}{diff.delta}%
                           </Badge>
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground mb-2">
-                        <span className="font-medium">Declarado:</span> {diff.valor_declarado} → 
-                        <span className="font-medium ml-1">Observado:</span> {diff.valor_observado}
+                      <div className="text-sm text-muted-foreground mb-3 space-y-1">
+                        <div>
+                          <span className="font-medium">Declarado:</span> {diff.valor_declarado}
+                        </div>
+                        <div>
+                          <span className="font-medium">Observado:</span> {diff.valor_observado}
+                        </div>
                       </div>
                       <div className="text-sm">
                         <span className="font-medium">Comentario:</span> {diff.comentario}
