@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Camera, MapPin, CheckCircle, AlertCircle, RotateCcw } from 'lucide-react';
-import { useCamera } from '@/hooks/useCamera';
+import { Camera, MapPin, RotateCcw } from 'lucide-react';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useINVC } from '@/context/INVCContext';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 interface GeolocationCaptureProps {
   type: 'negocio' | 'solicitante';
@@ -22,11 +19,10 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
   toleranceMeters = 10
 }) => {
   const { invcData, updateObservedData } = useINVC();
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const { videoRef, requestPermission, capture, closeCamera, isOpen: cameraIsOpen } = useCamera('environment');
-  const { getCurrentPosition, isWithinTolerance, calculateDistance, isLoading: geoLoading } = useGeolocation();
+  const { getCurrentPosition, calculateDistance, isLoading: geoLoading } = useGeolocation();
 
   const existingPhoto = invcData?.evidencias.fotosNuevas[type];
   const isPhotoValid = existingPhoto && (
@@ -45,31 +41,31 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
 
   const distance = getDistance();
 
-  const handleOpenCamera = async () => {
-    try {
-      await requestPermission();
-      setIsCameraOpen(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-    }
+  const handleOpenCamera = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleCapturePhoto = async () => {
+  const handleFileCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
     setIsCapturing(true);
     
     try {
-      // Capturar foto
-      const photoData = capture();
-      if (!photoData) {
-        throw new Error('No se pudo capturar la foto');
-      }
+      // Convertir archivo a dataURL
+      const reader = new FileReader();
+      const dataURL = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
       // Obtener ubicación actual
       const coordinates = await getCurrentPosition();
       
       // Crear objeto de foto con geotag
       const newPhoto = {
-        url: photoData,
+        url: dataURL,
         geotag: coordinates,
         timestamp: new Date().toISOString()
       };
@@ -97,23 +93,31 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
         }
       };
 
+      const currentFotometria = invcData?.fotometria || {};
       const updatedFotometria = {
-        ...invcData?.fotometria,
+        ...currentFotometria,
         [`${type}_ok`]: isLocationValid,
-        geo_ok: invcData?.fotometria.negocio_ok && invcData?.fotometria.solicitante_ok && isLocationValid,
         [`distancia_${type}`]: calculatedDistance
-      };
+      } as any;
+
+      // Actualizar geo_ok basado en ambas fotos
+      if (type === 'negocio') {
+        updatedFotometria.geo_ok = isLocationValid && ((currentFotometria as any).solicitante_ok || false);
+      } else {
+        updatedFotometria.geo_ok = ((currentFotometria as any).negocio_ok || false) && isLocationValid;
+      }
 
       updateObservedData('evidencias', updatedEvidencias);
       updateObservedData('fotometria', updatedFotometria);
-
-      closeCamera();
-      setIsCameraOpen(false);
       
     } catch (error) {
       console.error('Error capturing photo with geolocation:', error);
     } finally {
       setIsCapturing(false);
+      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -127,11 +131,18 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
       }
     };
 
+    const currentFotometria = invcData?.fotometria || {};
     const updatedFotometria = {
-      ...invcData?.fotometria,
-      [`${type}_ok`]: false,
-      geo_ok: false
-    };
+      ...currentFotometria,
+      [`${type}_ok`]: false
+    } as any;
+
+    // Actualizar geo_ok basado en la otra foto
+    if (type === 'negocio') {
+      updatedFotometria.geo_ok = false;
+    } else {
+      updatedFotometria.geo_ok = (currentFotometria as any).negocio_ok && false;
+    }
 
     updateObservedData('evidencias', updatedEvidencias);
     updateObservedData('fotometria', updatedFotometria);
@@ -139,9 +150,17 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
     handleOpenCamera();
   };
 
-
   return (
     <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileCapture}
+        style={{ display: 'none' }}
+      />
+      
       <Card className={`p-4 ${
         isPhotoValid ? 'border-green-500 bg-green-50 dark:bg-green-900/20' :
         existingPhoto && !isPhotoValid ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
@@ -186,6 +205,7 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
               variant="outline"
               onClick={handleRetakePhoto}
               className="w-full"
+              disabled={isCapturing || geoLoading}
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               Tomar nueva foto
@@ -196,10 +216,13 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
             onClick={handleOpenCamera}
             className="w-full h-32"
             variant="outline"
+            disabled={isCapturing || geoLoading}
           >
             <div className="text-center">
               <Camera className="w-8 h-8 mx-auto mb-2" />
-              <span>Capturar {title}</span>
+              <span>
+                {isCapturing || geoLoading ? 'Capturando...' : `Capturar ${title}`}
+              </span>
               <div className="text-xs text-muted-foreground mt-1">
                 Con geolocalización
               </div>
@@ -207,75 +230,6 @@ export const GeolocationCapture: React.FC<GeolocationCaptureProps> = ({
           </Button>
         )}
       </Card>
-
-      {/* Camera Sheet */}
-      <Sheet open={isCameraOpen} onOpenChange={() => {
-        setIsCameraOpen(false);
-        closeCamera();
-      }}>
-        <SheetContent side="bottom" className="h-[90vh]">
-          <SheetHeader>
-            <SheetTitle>Capturar {title}</SheetTitle>
-          </SheetHeader>
-
-          <div className="mt-6 space-y-4">
-            {cameraIsOpen && (
-              <div className="relative">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  className="w-full h-80 object-cover rounded-lg bg-black"
-                />
-                <div className="absolute inset-0 border-2 border-white/50 rounded-lg pointer-events-none">
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="w-20 h-20 border-2 border-white rounded-full"></div>
-                  </div>
-                </div>
-                
-                {/* Ubicación requerida */}
-                {targetLocation && (
-                  <div className="absolute top-4 left-4 right-4">
-                    <Card className="p-2 bg-black/70 text-white border-white/20">
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4" />
-                        <span>Verificar ubicación (±{toleranceMeters}m)</span>
-                      </div>
-                    </Card>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCameraOpen(false);
-                  closeCamera();
-                }}
-                className="flex-1"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={handleCapturePhoto}
-                disabled={!cameraIsOpen || isCapturing || geoLoading}
-                className="flex-1"
-              >
-                {isCapturing || geoLoading ? (
-                  'Capturando...'
-                ) : (
-                  <>
-                    <Camera className="w-4 h-4 mr-2" />
-                    Capturar
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
     </>
   );
 };
