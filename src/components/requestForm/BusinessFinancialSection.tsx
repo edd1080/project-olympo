@@ -9,9 +9,8 @@ import AddressModule from './AddressModule';
 import BusinessProducts from './businessFinancial/BusinessProducts';
 import FinancialAnalysis from './FinancialAnalysis';
 import PatrimonialStatement from './PatrimonialStatement';
-import BusinessSeasonality from './businessFinancial/BusinessSeasonality';
 import BusinessExpenses from './businessFinancial/BusinessExpenses';
-import { BarChart3, Scale, Building2, Package, CalendarRange, Receipt, ChevronLeft, ChevronRight } from 'lucide-react';
+import { BarChart3, Scale, Building2, Package, Receipt, ChevronLeft, ChevronRight } from 'lucide-react';
 interface BusinessFinancialSectionProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -24,10 +23,6 @@ const screens = [{
   id: 'products',
   label: 'Productos',
   icon: Package
-}, {
-  id: 'seasonality',
-  label: 'Estacionalidad',
-  icon: CalendarRange
 }, {
   id: 'expenses',
   label: 'Gastos',
@@ -69,8 +64,8 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
       unitCost: '',
       sellingPrice: '',
       margin: '',
-      bestMonth: '',
-      worstMonth: '',
+      bestMonths: [],
+      worstMonths: [],
       bestAmount: '',
       worstAmount: '',
       photo: null
@@ -186,9 +181,6 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
             <BusinessProducts formData={formData} updateFormData={updateFormData} />
           </div>}
 
-        {activeScreen === 'seasonality' && <div className="space-y-4">
-            <BusinessSeasonality formData={formData} updateFormData={updateFormData} />
-          </div>}
 
         {activeScreen === 'expenses' && <div className="space-y-4">
             <BusinessExpenses formData={formData} updateFormData={updateFormData} />

@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Separator } from '@/components/ui/separator';
 import { Trash2 } from 'lucide-react';
 
@@ -25,8 +26,8 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
           unitCost: '',
           sellingPrice: '',
           margin: '',
-          bestMonth: '',
-          worstMonth: '',
+          bestMonths: [],
+          worstMonths: [],
           bestAmount: '',
           worstAmount: '',
           photo: null,
@@ -51,7 +52,17 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
     }
   }, [products, selectedId]);
 
-  const selectedProduct = useMemo(() => products.find((p: any) => p.id === selectedId) || products[0], [products, selectedId]);
+  const selectedProduct = useMemo(() => {
+    const product = products.find((p: any) => p.id === selectedId) || products[0];
+    if (!product) return null;
+    
+    // Backward compatibility: convert old single month to array
+    return {
+      ...product,
+      bestMonths: product.bestMonths ?? (product.bestMonth ? [product.bestMonth] : []),
+      worstMonths: product.worstMonths ?? (product.worstMonth ? [product.worstMonth] : []),
+    };
+  }, [products, selectedId]);
 
   const updateProduct = (id: number, field: string, value: any) => {
     const updatedProducts = (formData.products || []).map((p: any) => (p.id === id ? { ...p, [field]: value } : p));
@@ -164,7 +175,7 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Costo Unitario (Q) *</Label>
                 <Input
@@ -172,6 +183,17 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
                   step="0.01"
                   value={selectedProduct.unitCost || ''}
                   onChange={(e) => updateProduct(selectedProduct.id, 'unitCost', e.target.value)}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Total Costo (Q)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={selectedProduct.unitCost || ''}
+                  readOnly
+                  className="bg-muted"
                   placeholder="0.00"
                 />
               </div>
@@ -201,50 +223,80 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
 
             <Separator />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Mejor Mes</Label>
-                <Select value={selectedProduct.bestMonth || ''} onValueChange={(value) => updateProduct(selectedProduct.id, 'bestMonth', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar mes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="january">Enero</SelectItem>
-                    <SelectItem value="february">Febrero</SelectItem>
-                    <SelectItem value="march">Marzo</SelectItem>
-                    <SelectItem value="april">Abril</SelectItem>
-                    <SelectItem value="may">Mayo</SelectItem>
-                    <SelectItem value="june">Junio</SelectItem>
-                    <SelectItem value="july">Julio</SelectItem>
-                    <SelectItem value="august">Agosto</SelectItem>
-                    <SelectItem value="september">Septiembre</SelectItem>
-                    <SelectItem value="october">Octubre</SelectItem>
-                    <SelectItem value="november">Noviembre</SelectItem>
-                    <SelectItem value="december">Diciembre</SelectItem>
-                  </SelectContent>
-                </Select>
+            {/* Seasonality Section */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Mejores Meses (seleccionar múltiples)</Label>
+                  <ToggleGroup
+                    type="multiple"
+                    size="sm"
+                    value={selectedProduct.bestMonths || []}
+                    onValueChange={(value) => updateProduct(selectedProduct.id, 'bestMonths', value)}
+                    className="grid grid-cols-4 gap-2"
+                  >
+                    <ToggleGroupItem value="january">Ene</ToggleGroupItem>
+                    <ToggleGroupItem value="february">Feb</ToggleGroupItem>
+                    <ToggleGroupItem value="march">Mar</ToggleGroupItem>
+                    <ToggleGroupItem value="april">Abr</ToggleGroupItem>
+                    <ToggleGroupItem value="may">May</ToggleGroupItem>
+                    <ToggleGroupItem value="june">Jun</ToggleGroupItem>
+                    <ToggleGroupItem value="july">Jul</ToggleGroupItem>
+                    <ToggleGroupItem value="august">Ago</ToggleGroupItem>
+                    <ToggleGroupItem value="september">Sep</ToggleGroupItem>
+                    <ToggleGroupItem value="october">Oct</ToggleGroupItem>
+                    <ToggleGroupItem value="november">Nov</ToggleGroupItem>
+                    <ToggleGroupItem value="december">Dic</ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Total ventas en mejores meses (Q)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={selectedProduct.bestAmount || ''}
+                    onChange={(e) => updateProduct(selectedProduct.id, 'bestAmount', e.target.value)}
+                    placeholder="0.00"
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Peor Mes</Label>
-                <Select value={selectedProduct.worstMonth || ''} onValueChange={(value) => updateProduct(selectedProduct.id, 'worstMonth', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar mes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="january">Enero</SelectItem>
-                    <SelectItem value="february">Febrero</SelectItem>
-                    <SelectItem value="march">Marzo</SelectItem>
-                    <SelectItem value="april">Abril</SelectItem>
-                    <SelectItem value="may">Mayo</SelectItem>
-                    <SelectItem value="june">Junio</SelectItem>
-                    <SelectItem value="july">Julio</SelectItem>
-                    <SelectItem value="august">Agosto</SelectItem>
-                    <SelectItem value="september">Septiembre</SelectItem>
-                    <SelectItem value="october">Octubre</SelectItem>
-                    <SelectItem value="november">Noviembre</SelectItem>
-                    <SelectItem value="december">Diciembre</SelectItem>
-                  </SelectContent>
-                </Select>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Peores Meses (seleccionar múltiples)</Label>
+                  <ToggleGroup
+                    type="multiple"
+                    size="sm"
+                    value={selectedProduct.worstMonths || []}
+                    onValueChange={(value) => updateProduct(selectedProduct.id, 'worstMonths', value)}
+                    className="grid grid-cols-4 gap-2"
+                  >
+                    <ToggleGroupItem value="january">Ene</ToggleGroupItem>
+                    <ToggleGroupItem value="february">Feb</ToggleGroupItem>
+                    <ToggleGroupItem value="march">Mar</ToggleGroupItem>
+                    <ToggleGroupItem value="april">Abr</ToggleGroupItem>
+                    <ToggleGroupItem value="may">May</ToggleGroupItem>
+                    <ToggleGroupItem value="june">Jun</ToggleGroupItem>
+                    <ToggleGroupItem value="july">Jul</ToggleGroupItem>
+                    <ToggleGroupItem value="august">Ago</ToggleGroupItem>
+                    <ToggleGroupItem value="september">Sep</ToggleGroupItem>
+                    <ToggleGroupItem value="october">Oct</ToggleGroupItem>
+                    <ToggleGroupItem value="november">Nov</ToggleGroupItem>
+                    <ToggleGroupItem value="december">Dic</ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Total ventas en peores meses (Q)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={selectedProduct.worstAmount || ''}
+                    onChange={(e) => updateProduct(selectedProduct.id, 'worstAmount', e.target.value)}
+                    placeholder="0.00"
+                  />
+                </div>
               </div>
             </div>
 
