@@ -71,7 +71,7 @@ const Index = () => {
             <CardContent className="p-4">
               <div className="flex flex-col justify-center h-full text-center">
                 <AlertTriangle className="h-6 w-6 text-red-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Observadas</p>
+                <p className="text-xs text-muted-foreground mb-1">Canceladas</p>
                 <p className="font-bold my-1 text-3xl">4</p>
               </div>
             </CardContent>
