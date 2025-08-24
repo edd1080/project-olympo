@@ -6,7 +6,7 @@ interface KYCDataBannerProps {
   onClose: () => void;
 }
 
-const KYCDataBanner: React.FC<KYCDataBannerProps> = ({ onClose }) => {
+export const KYCDataBanner: React.FC<KYCDataBannerProps> = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleClose = () => {

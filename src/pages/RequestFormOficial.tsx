@@ -4,7 +4,7 @@ import Header from '@/components/layout/Header';
 
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
-import KYCDataBanner from '@/components/requestForm/KYCDataBanner';
+import { KYCDataBanner } from '@/components/requestForm/KYCDataBanner';
 import { getFirstNameAndLastName } from '@/lib/nameUtils';
 
 // Refactored components
