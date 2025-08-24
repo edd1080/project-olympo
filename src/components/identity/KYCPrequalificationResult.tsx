@@ -71,8 +71,8 @@ const KYCPrequalificationResult: React.FC<KYCPrequalificationResultProps> = ({
 
   const handleContinue = () => {    
     if (prequalificationResult.status === 'green') {
-      // Verde: continuar normalmente
-      const applicationId = addApplicationFromKYC(identityData);
+      // Verde: continuar normalmente con estado approved
+      const applicationId = addApplicationFromKYC(identityData, 'approved');
       navigate('/applications/oficial/new', {
         state: { 
           applicationId,
@@ -82,7 +82,7 @@ const KYCPrequalificationResult: React.FC<KYCPrequalificationResultProps> = ({
       });
     } else if (prequalificationResult.status === 'yellow') {
       // Amarillo: continuar con excepción
-      const applicationId = addApplicationFromKYC(identityData);
+      const applicationId = addApplicationFromKYC(identityData, 'verification');
       navigate('/applications/oficial/new', {
         state: { 
           applicationId,
@@ -190,6 +190,16 @@ const KYCPrequalificationResult: React.FC<KYCPrequalificationResultProps> = ({
         >
           Verificar Identidad de Nuevo
         </Button>
+      </div>
+
+      {/* Demo chips */}
+      <div className="flex justify-center gap-2 mt-4">
+        <div className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium border border-green-200">
+          Aprobado (Demo)
+        </div>
+        <div className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium border border-red-200">
+          Rechazado (Demo)
+        </div>
       </div>
     </div>
   );

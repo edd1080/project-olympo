@@ -60,7 +60,7 @@ interface AppStateContextType {
   // Actions
   addProspect: (prospect: Prospect) => void;
   addApplication: (application: Application) => void;
-  addApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }) => string;
+  addApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }, status?: string) => string;
   addCancelledApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }, reason: string) => string;
   addAlert: (alert: Alert) => void;
   markAlertAsRead: (alertId: number) => void;
@@ -140,14 +140,14 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     setApplications(prev => [...prev, application]);
   };
 
-  const addApplicationFromKYC = (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }) => {
+  const addApplicationFromKYC = (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }, status: string = 'draft') => {
     const newId = `SCO_${Date.now().toString().slice(-6)}`;
     const newApplication: Application = {
       id: newId,
       clientName: `${kycData.firstName} ${kycData.lastName}`,
       product: 'Crédito Oficial',
       amount: 'Por definir',
-      status: 'draft',
+      status: status as Application['status'],
       date: new Date().toISOString().split('T')[0],
       progress: 1,
       stage: 'Identificación y Contacto',

@@ -81,7 +81,15 @@ const IdentityVerification: React.FC = () => {
         actividad_economica: "comercio"
       };
 
-      const prequalificationResult = evaluatePrequalification(prequalificationData);
+      let prequalificationResult = evaluatePrequalification(prequalificationData);
+      
+      // Force green result for demo
+      prequalificationResult = {
+        status: 'green',
+        reason: 'Demo: Cliente pre-aprobado para solicitud de crédito',
+        canProceed: true,
+        requiresAdditionalData: false
+      };
 
       setState(prev => ({
         ...prev,
@@ -123,7 +131,15 @@ const IdentityVerification: React.FC = () => {
         actividad_economica: "comercio"
       };
 
-      const prequalificationResult = evaluatePrequalification(prequalificationData);
+      let prequalificationResult = evaluatePrequalification(prequalificationData);
+      
+      // Force green result for demo
+      prequalificationResult = {
+        status: 'green',
+        reason: 'Demo: Cliente pre-aprobado para solicitud de crédito',
+        canProceed: true,
+        requiresAdditionalData: false
+      };
 
       setState(prev => ({
         ...prev,

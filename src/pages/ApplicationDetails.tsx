@@ -131,7 +131,7 @@ const ApplicationDetails = () => {
           const kycData = contextApp.kycData!;
           const oficialApplication = {
             id: contextApp.id,
-            status: 'draft',
+            status: contextApp.status,
             progress: 1,
             type: 'oficial',
             createdAt: contextApp.date,
@@ -571,14 +571,24 @@ const ApplicationDetails = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={handleEditApplication}>
-              <Edit className="h-4 w-4 mr-1" />
-              Editar
-            </Button>
-            <Button size="sm" onClick={handleSubmitApplication} disabled={!isApplicationReadyToSubmit()} className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}>
-              <Send className="mr-2 h-4 w-4" />
-              Enviar Solicitud
-            </Button>
+            {application.status !== 'cancelled' && (
+              <>
+                <Button size="sm" variant="outline" onClick={handleEditApplication}>
+                  <Edit className="h-4 w-4 mr-1" />
+                  Editar
+                </Button>
+                <Button size="sm" onClick={handleSubmitApplication} disabled={!isApplicationReadyToSubmit()} className={!isApplicationReadyToSubmit() ? 'opacity-50 cursor-not-allowed' : ''}>
+                  <Send className="mr-2 h-4 w-4" />
+                  Enviar Solicitud
+                </Button>
+              </>
+            )}
+            {application.status === 'cancelled' && (
+              <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1 text-sm px-3 py-1">
+                <AlertCircle className="h-4 w-4" />
+                <span>Solicitud Cancelada</span>
+              </Badge>
+            )}
           </div>
         </div>
 

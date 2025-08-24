@@ -136,11 +136,11 @@ const Header = ({
   };
   const handleExit = () => {
     // If we're in a form context (request form), use the form's exit handler
-    if (formContext && location.pathname.includes('/edit')) {
+    if (formContext && (location.pathname.includes('/edit') || location.pathname === '/applications/oficial/new')) {
       formContext.handleShowExitDialog();
     } else {
       // Default behavior for other routes
-      if (location.pathname.includes('/edit')) {
+      if (location.pathname.includes('/edit') || location.pathname === '/applications/oficial/new') {
         navigate('/applications');
       } else {
         navigate(-1);
@@ -148,8 +148,8 @@ const Header = ({
     }
   };
 
-  // Show back button for application details and edit routes (but not main pages)
-  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager', '/manager/invc', '/manager/authorizations'].includes(location.pathname);
+  // Show back button for application details and edit routes (but not main pages and /applications/oficial/new)
+  const showBackButton = !['/', '/prospects', '/applications', '/alerts', '/settings', '/login', '/manager', '/manager/invc', '/manager/authorizations', '/applications/oficial/new'].includes(location.pathname);
 
   // Show X button for authorization routes instead of back arrow
   const showExitButton = location.pathname.match(/^\/manager\/authorizations\/[^\/]+$/);
@@ -202,7 +202,7 @@ const Header = ({
               <X className="h-5 w-5" />
             </Button>}
           
-          {location.pathname.includes('/edit') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
+          {(location.pathname.includes('/edit') || location.pathname === '/applications/oficial/new') && <Button variant="ghost" size="icon" className="rounded-full w-8 h-8" onClick={handleExit} aria-label="Cerrar">
               <X className="h-5 w-5" />
             </Button>}
         </div>

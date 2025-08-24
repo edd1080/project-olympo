@@ -79,6 +79,11 @@ const Applications = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
+      case 'draft':
+        return <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200 flex items-center gap-1 text-sm px-3 py-1">
+            <Clock className="h-4 w-4" />
+            <span>Borrador</span>
+          </Badge>;
       case 'active':
         return <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 text-sm px-3 py-1">
             <BarChart3 className="h-4 w-4" />
@@ -98,6 +103,11 @@ const Applications = () => {
         return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1 text-sm px-3 py-1">
             <AlertCircle className="h-4 w-4" />
             <span>Rechazado</span>
+          </Badge>;
+      case 'cancelled':
+        return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 flex items-center gap-1 text-sm px-3 py-1">
+            <AlertCircle className="h-4 w-4" />
+            <span>Cancelada</span>
           </Badge>;
       default:
         return null;
@@ -125,6 +135,7 @@ const Applications = () => {
       verification: applications.filter(app => app.status === 'verification').length,
       approved: applications.filter(app => app.status === 'approved').length,
       rejected: applications.filter(app => app.status === 'rejected').length,
+      cancelled: applications.filter(app => app.status === 'cancelled').length,
     };
   };
 
