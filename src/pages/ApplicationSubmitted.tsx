@@ -81,7 +81,17 @@ const ApplicationSubmitted = () => {
           )}
         </div>
 
-        <div className="animate-fade-in pt-4">
+        <div className="animate-fade-in pt-4 space-y-3">
+          {applicationId && (
+            <Button 
+              onClick={() => navigate(`/applications/${applicationId}/guarantors/new`)}
+              size="lg"
+              className="w-full"
+              variant="outline"
+            >
+              Agregar fiadores ahora
+            </Button>
+          )}
           <Button 
             onClick={() => navigate('/applications')}
             size="lg"

@@ -123,9 +123,9 @@ const App = () => {
                       <Route path="/identity-verification" element={<IdentityVerification />} />
                       <Route path="/applications/:id" element={<ApplicationDetails />} />
                       <Route path="/applications/:id/edit" element={<RequestFormOficial />} />
-                      <Route path="/applications/:id/guarantors/new" element={<RequestForm />} />
+                      <Route path="/applications/:id/guarantors/new" element={<RequestFormOficial />} />
                       <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
-                      <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestForm />} />
+                      <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestFormOficial />} />
                       <Route path="/alerts" element={<Alerts />} />
                       
                        {/* Manager Routes */}

@@ -19,13 +19,25 @@ const GuarantorFinancialInfo: React.FC<GuarantorFinancialInfoProps> = ({ guarant
   const handleInputChange = (field: string, value: string | number | boolean) => {
     updateGuarantor(guarantorIndex, field, value);
     
-    // Check if financial info is completed
+    // Check if financial info is completed based on employment type
     const updatedGuarantor = { ...guarantor, [field]: value };
-    const isCompleted = !!(
-      updatedGuarantor.monthlyIncome > 0 && 
-      updatedGuarantor.monthlyExpenses >= 0 && 
-      updatedGuarantor.bankAccounts
-    );
+    const isAsalariado = guarantor.employmentType === 'asalariado';
+    
+    let isCompleted = false;
+    if (isAsalariado) {
+      // For salaried guarantors, only require income and expenses
+      isCompleted = !!(
+        updatedGuarantor.monthlyIncome > 0 && 
+        updatedGuarantor.monthlyExpenses >= 0
+      );
+    } else {
+      // For business owners, require full financial info
+      isCompleted = !!(
+        updatedGuarantor.monthlyIncome > 0 && 
+        updatedGuarantor.monthlyExpenses >= 0 && 
+        updatedGuarantor.bankAccounts
+      );
+    }
     
     if (isCompleted !== guarantor.financialInfoCompleted) {
       updateGuarantor(guarantorIndex, 'financialInfoCompleted', isCompleted);
@@ -41,12 +53,17 @@ const GuarantorFinancialInfo: React.FC<GuarantorFinancialInfoProps> = ({ guarant
     }).format(value);
   };
 
+  const isAsalariado = guarantor.employmentType === 'asalariado';
+
   return (
     <div className="space-y-6">
       <div className="border-b pb-4">
         <h3 className="text-lg font-semibold">Análisis Financiero del Fiador {guarantorIndex + 1}</h3>
         <p className="text-muted-foreground">
-          Información financiera para evaluar la capacidad de respaldo del fiador
+          {isAsalariado 
+            ? 'Información de ingresos y gastos mensuales (fiador asalariado)'
+            : 'Información financiera para evaluar la capacidad de respaldo del fiador'
+          }
         </p>
       </div>
 
@@ -142,8 +159,9 @@ const GuarantorFinancialInfo: React.FC<GuarantorFinancialInfoProps> = ({ guarant
         </CardContent>
       </Card>
 
-      {/* Patrimonio */}
-      <Card>
+      {/* Patrimonio - Only for business owners */}
+      {!isAsalariado && (
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Home className="h-5 w-5 text-primary" />
@@ -219,10 +237,12 @@ const GuarantorFinancialInfo: React.FC<GuarantorFinancialInfoProps> = ({ guarant
             )}
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      )}
 
-      {/* Cuentas Bancarias */}
-      <Card>
+      {/* Cuentas Bancarias - Only for business owners */}
+      {!isAsalariado && (
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Banknote className="h-5 w-5 text-primary" />
@@ -241,7 +261,8 @@ const GuarantorFinancialInfo: React.FC<GuarantorFinancialInfoProps> = ({ guarant
             />
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      )}
     </div>
   );
 };

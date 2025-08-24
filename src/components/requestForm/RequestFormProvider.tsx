@@ -155,7 +155,7 @@ export const RequestFormProvider: React.FC<Props> = ({ children, steps, initialK
   const [lastSavedData, setLastSavedData] = useState<Record<string, any>>({});
   
 // New guarantor states
-const [guarantors, setGuarantors] = useState<GuarantorData[]>([createEmptyGuarantor(), createEmptyGuarantor(), createEmptyGuarantor()]);
+const [guarantors, setGuarantors] = useState<GuarantorData[]>([]);
 const [currentGuarantorIndex, setCurrentGuarantorIndex] = useState(0);
 const [guarantorFormStep, setGuarantorFormStep] = useState(0); // 0: basic info, 1: financial info
 const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
@@ -482,7 +482,10 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   
   // New guarantor functions
   const addGuarantor = () => {
-    setGuarantors(prev => [...prev, createEmptyGuarantor()]);
+    setGuarantors(prev => {
+      if (prev.length >= 2) return prev; // Maximum 2 guarantors
+      return [...prev, createEmptyGuarantor()];
+    });
   };
   
   const updateGuarantor = (index: number, field: string, value: any) => {

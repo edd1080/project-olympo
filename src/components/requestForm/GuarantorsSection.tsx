@@ -65,6 +65,7 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
   };
 
   const handleAddNewGuarantor = () => {
+    if (guarantors.length >= 2) return; // Maximum 2 guarantors
     const newIndex = guarantors.length;
     pendingNewIndexRef.current = newIndex;
     addGuarantor();
@@ -108,6 +109,12 @@ const GuarantorsSection: React.FC<GuarantorsSectionProps> = ({
       updateGuarantor(idx, 'age', data.age);
       updateGuarantor(idx, 'employmentType', data.employmentType);
       pendingNewIndexRef.current = null;
+      
+      // If business owner, redirect to full form
+      if (data.employmentType === 'negocio') {
+        // TODO: Navigate to full guarantor form
+        console.log('Redirecting to full guarantor form for business owner');
+      }
     }
     setNewSheetOpen(false);
   };
@@ -124,13 +131,26 @@ const computeGuarantorProgress = (g: any) => {
   const basicFilled = basicFields.filter(Boolean).length;
   const basicPct = basicFields.length ? basicFilled / basicFields.length : 0;
 
-  const financialChecks = [
-    (g.monthlyIncome ?? 0) > 0,
-    (g.monthlyExpenses ?? 0) > 0,
-    !!g.bankAccounts?.toString().trim(),
-    g.hasProperty ? (g.propertyValue ?? 0) > 0 : true,
-    g.hasVehicle ? (g.vehicleValue ?? 0) > 0 : true,
-  ];
+  const isAsalariado = g.employmentType === 'asalariado';
+  
+  let financialChecks = [];
+  if (isAsalariado) {
+    // For salaried guarantors, only check income and expenses
+    financialChecks = [
+      (g.monthlyIncome ?? 0) > 0,
+      (g.monthlyExpenses ?? 0) >= 0,
+    ];
+  } else {
+    // For business owners, check all financial fields
+    financialChecks = [
+      (g.monthlyIncome ?? 0) > 0,
+      (g.monthlyExpenses ?? 0) >= 0,
+      !!g.bankAccounts?.toString().trim(),
+      g.hasProperty ? (g.propertyValue ?? 0) > 0 : true,
+      g.hasVehicle ? (g.vehicleValue ?? 0) > 0 : true,
+    ];
+  }
+  
   const financialFilled = financialChecks.filter(Boolean).length;
   const financialPct = financialChecks.length ? financialFilled / financialChecks.length : 0;
 
@@ -215,10 +235,10 @@ const computeGuarantorProgress = (g: any) => {
 <div className="border-b pb-4 flex items-start justify-between">
   <div>
     <h2 className="text-xl font-semibold">Garantías, Fiadores y Referencias</h2>
-    <p className="text-muted-foreground">Se requieren mínimo 2 fiadores para la solicitud de crédito</p>
+    <p className="text-muted-foreground">Máximo 2 fiadores en este demo</p>
   </div>
   <Badge className={`${completedGuarantors >= 2 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'}`}>
-    {completedGuarantors} de 2 mínimo
+    {guarantors.length} de 2 máximo
   </Badge>
 </div>
 
@@ -300,18 +320,20 @@ const computeGuarantorProgress = (g: any) => {
       </div>
 
       {/* Add Guarantor Button */}
-      <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center justify-center py-8">
-          <Plus className="h-8 w-8 text-muted-foreground mb-2" />
-          <p className="text-muted-foreground mb-4">
-            {guarantors.length === 2 ? 'Agregar fiador adicional (opcional)' : 'Agregar nuevo fiador'}
-          </p>
-          <Button onClick={handleAddNewGuarantor} variant="outline">
-            <Plus className="h-4 w-4 mr-2" />
-            Agregar Fiador
-          </Button>
-        </CardContent>
-      </Card>
+      {guarantors.length < 2 && (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-8">
+            <Plus className="h-8 w-8 text-muted-foreground mb-2" />
+            <p className="text-muted-foreground mb-4">
+              Agregar nuevo fiador
+            </p>
+            <Button onClick={handleAddNewGuarantor} variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Agregar Fiador
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <NewGuarantorSheet
         open={newSheetOpen}

@@ -129,7 +129,13 @@ const NewGuarantorSheet: React.FC<NewGuarantorSheetProps> = ({ open, onOpenChang
           </div>
 
           <DrawerFooter className="gap-2 px-4">
-            <Button onClick={handleAdd} className="w-full">Agregar</Button>
+            <Button 
+              onClick={handleAdd} 
+              className="w-full"
+              disabled={!employmentType}
+            >
+              Agregar
+            </Button>
             <Button variant="outline" onClick={() => handleAttemptClose(false)} className="w-full">Cancelar</Button>
           </DrawerFooter>
         </DrawerContent>

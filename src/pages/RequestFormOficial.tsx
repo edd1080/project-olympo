@@ -6,6 +6,7 @@ import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
 import { KYCDataBanner } from '@/components/requestForm/KYCDataBanner';
 import { getFirstNameAndLastName } from '@/lib/nameUtils';
+import FormTypeBanner from '@/components/forms/FormTypeBanner';
 
 // Refactored components
 import RequestFormProvider, { useFormContext } from '@/components/requestForm/RequestFormProvider';
@@ -18,6 +19,7 @@ const RequestFormOficialContent = () => {
   const location = useLocation();
   const kycData = location.state?.identityData;
   const applicationId = location.state?.applicationId;
+  const isGuarantorForm = location.pathname.includes('/guarantors');
   
   const { 
     personName,
@@ -37,11 +39,16 @@ const RequestFormOficialContent = () => {
           <BreadcrumbNavigation />
         </div>
         
+        {/* Form Type Banner for Guarantors */}
+        {isGuarantorForm && (
+          <FormTypeBanner type="guarantor" />
+        )}
+        
         {/* Dynamic Form Header */}
         <DynamicFormHeader />
         
         {/* KYC Data Banner */}
-        {kycData && (
+        {kycData && !isGuarantorForm && (
           <KYCDataBanner onClose={() => {/* Banner dismissed */}} />
         )}
         
