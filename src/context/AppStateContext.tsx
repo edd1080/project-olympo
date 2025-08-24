@@ -17,7 +17,7 @@ export interface Application {
   clientName: string;
   product: string;
   amount: string;
-  status: 'draft' | 'active' | 'pending' | 'approved' | 'rejected' | 'verification';
+  status: 'draft' | 'active' | 'pending' | 'approved' | 'rejected' | 'verification' | 'cancelled';
   date: string;
   progress: number;
   stage: string;
@@ -61,6 +61,7 @@ interface AppStateContextType {
   addProspect: (prospect: Prospect) => void;
   addApplication: (application: Application) => void;
   addApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }) => string;
+  addCancelledApplicationFromKYC: (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }, reason: string) => string;
   addAlert: (alert: Alert) => void;
   markAlertAsRead: (alertId: number) => void;
   navigateToApplication: (applicationId: string) => void;
@@ -157,6 +158,24 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     return newId;
   };
 
+  const addCancelledApplicationFromKYC = (kycData: { cui: string; firstName: string; lastName: string; birthDate: string; gender: string; address: string; }, reason: string) => {
+    const newId = `SCO_${Date.now().toString().slice(-6)}`;
+    const newApplication: Application = {
+      id: newId,
+      clientName: `${kycData.firstName} ${kycData.lastName}`,
+      product: 'Crédito Oficial',
+      amount: 'Por definir',
+      status: 'cancelled',
+      date: new Date().toISOString().split('T')[0],
+      progress: 0,
+      stage: `Cancelada: ${reason}`,
+      type: 'oficial',
+      kycData
+    };
+    setApplications(prev => [...prev, newApplication]);
+    return newId;
+  };
+
   const addAlert = (alert: Alert) => {
     setAlerts(prev => [alert, ...prev]);
   };
@@ -186,6 +205,7 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     addProspect,
     addApplication,
     addApplicationFromKYC,
+    addCancelledApplicationFromKYC,
     addAlert,
     markAlertAsRead,
     navigateToApplication

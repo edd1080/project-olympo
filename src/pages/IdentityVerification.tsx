@@ -9,10 +9,12 @@ import VerificationWelcome from '@/components/identity/VerificationWelcome';
 import DocumentCapture from '@/components/identity/DocumentCapture';
 import SelfieCapture from '@/components/identity/SelfieCapture';
 import VerificationResult from '@/components/identity/VerificationResult';
+import KYCPrequalificationResult from '@/components/identity/KYCPrequalificationResult';
 
 // Types and utils
 import { VerificationStep, VerificationState } from '@/types/identity';
 import { extractDPIData } from '@/utils/dpiExtraction';
+import { evaluatePrequalification } from '@/utils/prequalificationEngine';
 
 const IdentityVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -24,9 +26,10 @@ const IdentityVerification: React.FC = () => {
 
   const steps: { step: VerificationStep; label: string; progress: number }[] = [
     { step: 'welcome', label: 'Bienvenida', progress: 0 },
-    { step: 'dpi-front', label: 'DPI Frente', progress: 25 },
-    { step: 'dpi-back', label: 'DPI Reverso', progress: 50 },
-    { step: 'selfie', label: 'Escaneo Facial', progress: 75 },
+    { step: 'dpi-front', label: 'DPI Frente', progress: 20 },
+    { step: 'dpi-back', label: 'DPI Reverso', progress: 40 },
+    { step: 'selfie', label: 'Escaneo Facial', progress: 60 },
+    { step: 'prequalification', label: 'Precalificación', progress: 80 },
     { step: 'success', label: 'Completado', progress: 100 }
   ];
 
@@ -66,10 +69,25 @@ const IdentityVerification: React.FC = () => {
         state.captures.dpiBackURL
       );
       
+      // Ejecutar precalificación automáticamente
+      const prequalificationData = {
+        nombre_completo: `${identityData.firstName} ${identityData.lastName}`,
+        dpi: identityData.cui,
+        telefono: "50212345678", // Mock phone
+        monto_solicitado: 25000, // Mock amount
+        ingreso_mensual: 8000,
+        destino_credito: "personal",
+        historial: "bueno",
+        actividad_economica: "comercio"
+      };
+
+      const prequalificationResult = evaluatePrequalification(prequalificationData);
+
       setState(prev => ({
         ...prev,
         identityData,
-        currentStep: 'success'
+        prequalificationResult,
+        currentStep: 'prequalification'
       }));
     } catch (error) {
       setState(prev => ({
@@ -93,10 +111,25 @@ const IdentityVerification: React.FC = () => {
         state.captures.dpiBackURL
       );
       
+      // Ejecutar precalificación automáticamente
+      const prequalificationData = {
+        nombre_completo: `${identityData.firstName} ${identityData.lastName}`,
+        dpi: identityData.cui,
+        telefono: "50212345678", // Mock phone
+        monto_solicitado: 25000, // Mock amount
+        ingreso_mensual: 8000,
+        destino_credito: "personal",
+        historial: "bueno",
+        actividad_economica: "comercio"
+      };
+
+      const prequalificationResult = evaluatePrequalification(prequalificationData);
+
       setState(prev => ({
         ...prev,
         identityData,
-        currentStep: 'success'
+        prequalificationResult,
+        currentStep: 'prequalification'
       }));
     } catch (error) {
       setState(prev => ({
@@ -108,10 +141,7 @@ const IdentityVerification: React.FC = () => {
   };
 
   const handleContinueToForm = () => {
-    // Navegar al formulario oficial con datos prellenados
-    navigate('/applications/oficial/new', { 
-      state: { identityData: state.identityData } 
-    });
+    setState(prev => ({ ...prev, currentStep: 'success' }));
   };
 
   const handleRetry = () => {
@@ -145,7 +175,7 @@ const IdentityVerification: React.FC = () => {
   };
 
   const handleGoBack = () => {
-    const stepOrder: VerificationStep[] = ['welcome', 'dpi-front', 'dpi-back', 'selfie'];
+    const stepOrder: VerificationStep[] = ['welcome', 'dpi-front', 'dpi-back', 'selfie', 'prequalification'];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     
     if (currentIndex > 0) {
@@ -213,6 +243,16 @@ const IdentityVerification: React.FC = () => {
           </div>
         );
       
+      case 'prequalification':
+        return state.identityData && state.prequalificationResult ? (
+          <KYCPrequalificationResult
+            identityData={state.identityData}
+            prequalificationResult={state.prequalificationResult}
+            onContinue={handleContinueToForm}
+            onRetry={handleRetry}
+          />
+        ) : null;
+
       case 'success':
         return state.identityData ? (
           <VerificationResult

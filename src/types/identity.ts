@@ -1,4 +1,4 @@
-export type VerificationStep = 'welcome' | 'dpi-front' | 'dpi-back' | 'selfie' | 'processing' | 'success' | 'error';
+export type VerificationStep = 'welcome' | 'dpi-front' | 'dpi-back' | 'selfie' | 'processing' | 'prequalification' | 'success' | 'error';
 
 export interface IdentityData {
   cui: string;
@@ -19,5 +19,6 @@ export interface VerificationState {
   currentStep: VerificationStep;
   captures: CaptureData;
   identityData?: IdentityData;
+  prequalificationResult?: any;
   error?: string;
 }
