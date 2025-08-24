@@ -10,6 +10,7 @@ import BusinessProducts from './businessFinancial/BusinessProducts';
 import FinancialAnalysis from './FinancialAnalysis';
 import PatrimonialStatement from './PatrimonialStatement';
 import BusinessExpenses from './businessFinancial/BusinessExpenses';
+import { useFormContext } from './RequestFormProvider';
 import { BarChart3, Scale, Building2, Package, Receipt, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 interface BusinessFinancialSectionProps {
   formData: any;
@@ -36,6 +37,7 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
   formData,
   updateFormData
 }) => {
+  const { handleNext } = useFormContext();
   const [activeScreen, setActiveScreen] = React.useState<ScreenId>('info');
   const [addressOpen, setAddressOpen] = React.useState(false);
   const chipRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
@@ -211,13 +213,22 @@ const BusinessFinancialSection: React.FC<BusinessFinancialSectionProps> = ({
             )}
           </div>
           <div>
-            {next && (
+            {next ? (
               <Button 
                 variant="outline" 
                 className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
                 onClick={() => setActiveScreen(next.id)}
               >
                 Siguiente: {next.label}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="h-8 px-3 text-xs border-[#E18E33] border-2 text-[#E18E33] hover:bg-[#E18E33]/5" 
+                onClick={handleNext}
+              >
+                Continuar
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             )}

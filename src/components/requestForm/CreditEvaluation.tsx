@@ -1,11 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { CheckCircle, Calculator, ArrowRight, XCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { CheckCircle, Calculator, DollarSign, Calendar, TrendingUp, Sparkles } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 interface CreditEvaluationProps {
   formData: any;
@@ -13,187 +13,244 @@ interface CreditEvaluationProps {
 }
 
 const CreditEvaluation: React.FC<CreditEvaluationProps> = ({ formData, updateFormData }) => {
-  // Initial evaluation data - this would come from an API in production
-  const [loanData, setLoanData] = useState({
-    approvedAmount: formData.approvedAmount || 7500,
-    months: formData.months || 12,
-    monthlyPayment: formData.monthlyPayment || 750,
-    interestRate: 15, // 15% annual interest rate
-    minAmount: 2500,
-    maxAmount: 9000,
-    minMonths: 6,
-    maxMonths: 24
+  // Loan details from evaluation
+  const [loanDetails, setLoanDetails] = useState({
+    approvedAmount: 25000,
+    termMonths: formData.termMonths || 12,
+    interestRate: formData.interestRate || 18,
+    monthlyPayment: 0
   });
 
+  // Calculator state
   const [showCalculator, setShowCalculator] = useState(false);
-  const [customAmount, setCustomAmount] = useState(loanData.approvedAmount);
-  const [customMonths, setCustomMonths] = useState(loanData.months);
-  const [customPayment, setCustomPayment] = useState(loanData.monthlyPayment);
+  const [calculatorAmount, setCalculatorAmount] = useState([25000]);
+  const [calculatorMonths, setCalculatorMonths] = useState([12]);
+  const [calculatorPayment, setCalculatorPayment] = useState(0);
 
-  // Calculate monthly payment when amount or months change
+  // Calculate monthly payment
   useEffect(() => {
-    const principal = customAmount;
-    const monthlyRate = loanData.interestRate / 100 / 12;
-    const payment = principal * monthlyRate * Math.pow(1 + monthlyRate, customMonths) / 
-                   (Math.pow(1 + monthlyRate, customMonths) - 1);
-    setCustomPayment(Math.round(payment));
-  }, [customAmount, customMonths, loanData.interestRate]);
+    const principal = loanDetails.approvedAmount;
+    const monthlyRate = loanDetails.interestRate / 100 / 12;
+    const numPayments = loanDetails.termMonths;
+    
+    const payment = (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                    (Math.pow(1 + monthlyRate, numPayments) - 1);
+    
+    setLoanDetails(prev => ({ ...prev, monthlyPayment: Math.round(payment) }));
+  }, [loanDetails.approvedAmount, loanDetails.termMonths, loanDetails.interestRate]);
 
-  // Update form data when loan details change
+  // Calculate payment for calculator
   useEffect(() => {
-    updateFormData('approvedAmount', loanData.approvedAmount);
-    updateFormData('months', loanData.months);
-    updateFormData('monthlyPayment', loanData.monthlyPayment);
-  }, [loanData]);
+    const principal = calculatorAmount[0];
+    const monthlyRate = loanDetails.interestRate / 100 / 12;
+    const numPayments = calculatorMonths[0];
+    
+    const payment = (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                    (Math.pow(1 + monthlyRate, numPayments) - 1);
+    
+    setCalculatorPayment(Math.round(payment));
+  }, [calculatorAmount, calculatorMonths, loanDetails.interestRate]);
 
   const handleApproveCurrentOffer = () => {
-    // Update form data with current values
-    updateFormData('loanAccepted', true);
-    updateFormData('customLoan', false);
+    updateFormData('approvedLoanAmount', loanDetails.approvedAmount);
+    updateFormData('approvedTermMonths', loanDetails.termMonths);
+    updateFormData('approvedMonthlyPayment', loanDetails.monthlyPayment);
+    updateFormData('creditEvaluationAccepted', true);
   };
 
   const handleOpenCalculator = () => {
+    setCalculatorAmount([loanDetails.approvedAmount]);
+    setCalculatorMonths([loanDetails.termMonths]);
     setShowCalculator(true);
   };
 
   const handleSaveCustomValues = () => {
-    setLoanData({
-      ...loanData,
-      approvedAmount: customAmount,
-      months: customMonths,
-      monthlyPayment: customPayment
-    });
-
-    updateFormData('approvedAmount', customAmount);
-    updateFormData('months', customMonths);
-    updateFormData('monthlyPayment', customPayment);
-    updateFormData('loanAccepted', true);
-    updateFormData('customLoan', true);
+    const newAmount = calculatorAmount[0];
+    const newMonths = calculatorMonths[0];
+    
+    setLoanDetails(prev => ({
+      ...prev,
+      approvedAmount: newAmount,
+      termMonths: newMonths
+    }));
+    
+    updateFormData('approvedLoanAmount', newAmount);
+    updateFormData('approvedTermMonths', newMonths);
+    updateFormData('approvedMonthlyPayment', calculatorPayment);
+    updateFormData('creditEvaluationAccepted', true);
     
     setShowCalculator(false);
   };
 
+  // Update form data when loan details change
+  useEffect(() => {
+    updateFormData('evaluatedLoanAmount', loanDetails.approvedAmount);
+    updateFormData('evaluatedTermMonths', loanDetails.termMonths);
+    updateFormData('evaluatedMonthlyPayment', loanDetails.monthlyPayment);
+  }, [loanDetails, updateFormData]);
+
   return (
-    <div className="space-y-6">
-      {/* Evaluation Result Card */}
-      <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 rounded-xl shadow-sm border border-primary/20 text-center">
-        <div className="mx-auto w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mb-4">
-          <CheckCircle className="h-8 w-8 text-primary" />
-        </div>
+    <div className="space-y-8">
+      {/* Reveal animation container */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-xl -z-10"></div>
         
-        <h2 className="text-2xl font-bold mb-2">¡Evaluación Completada!</h2>
-        <p className="text-muted-foreground mb-6">
-          En base a la información proporcionada, hemos pre-aprobado la siguiente oferta:
-        </p>
-        
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="p-4 bg-background rounded-lg shadow-sm">
-            <p className="text-sm text-muted-foreground">Monto Aprobado</p>
-            <p className="text-2xl font-bold">Q{loanData.approvedAmount.toLocaleString()}</p>
-          </div>
-          <div className="p-4 bg-background rounded-lg shadow-sm">
-            <p className="text-sm text-muted-foreground">Plazo</p>
-            <p className="text-2xl font-bold">{loanData.months} meses</p>
-          </div>
-          <div className="p-4 bg-background rounded-lg shadow-sm">
-            <p className="text-sm text-muted-foreground">Pago Mensual</p>
-            <p className="text-2xl font-bold">Q{loanData.monthlyPayment.toLocaleString()}</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Button 
-            onClick={handleApproveCurrentOffer} 
-            className="w-full bg-primary/90 hover:bg-primary"
-          >
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Aceptar esta oferta
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={handleOpenCalculator}
-            className="w-full border-primary/30 text-primary hover:bg-primary/10"
-          >
-            <Calculator className="mr-2 h-4 w-4" />
-            Ajustar valores
-          </Button>
-        </div>
+        <Card className="relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-background via-background to-primary/5">
+          <CardHeader className="text-center pb-4">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 rounded-full bg-primary/10">
+                <Sparkles className="h-8 w-8 text-primary" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl font-bold text-primary">
+              ¡Felicidades!
+            </CardTitle>
+            <p className="text-muted-foreground">
+              Su solicitud ha sido pre-aprobada
+            </p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Offer details */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 rounded-lg bg-primary/5 border border-primary/20">
+                <DollarSign className="h-6 w-6 text-primary mx-auto mb-2" />
+                <div className="text-sm text-muted-foreground">Monto Aprobado</div>
+                <div className="text-2xl font-bold text-primary">
+                  Q{loanDetails.approvedAmount.toLocaleString()}
+                </div>
+              </div>
+              
+              <div className="text-center p-4 rounded-lg bg-secondary/5 border border-secondary/20">
+                <Calendar className="h-6 w-6 text-secondary mx-auto mb-2" />
+                <div className="text-sm text-muted-foreground">Plazo</div>
+                <div className="text-2xl font-bold text-secondary">
+                  {loanDetails.termMonths} meses
+                </div>
+              </div>
+              
+              <div className="text-center p-4 rounded-lg bg-green-500/5 border border-green-500/20">
+                <TrendingUp className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                <div className="text-sm text-muted-foreground">Cuota Mensual</div>
+                <div className="text-2xl font-bold text-green-600">
+                  Q{loanDetails.monthlyPayment.toLocaleString()}
+                </div>
+              </div>
+            </div>
+
+            {/* Interest rate badge */}
+            <div className="flex justify-center">
+              <Badge variant="outline" className="text-sm">
+                Tasa de interés: {loanDetails.interestRate}% anual
+              </Badge>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button 
+                onClick={handleApproveCurrentOffer}
+                className="flex-1 bg-primary hover:bg-primary/90"
+                size="lg"
+              >
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Aceptar esta oferta
+              </Button>
+              
+              <Button 
+                onClick={handleOpenCalculator}
+                variant="outline" 
+                className="flex-1"
+                size="lg"
+              >
+                <Calculator className="h-5 w-5 mr-2" />
+                Ajustar monto
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Custom Loan Calculator Dialog */}
+      {/* Calculator Dialog */}
       <Dialog open={showCalculator} onOpenChange={setShowCalculator}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-xl">Calculadora de Préstamo</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Calculadora de Préstamo
+            </DialogTitle>
             <DialogDescription>
-              Ajusta los valores para personalizar tu préstamo
+              Ajuste el monto y plazo según sus necesidades
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6 py-4">
-            {/* Amount Slider */}
+            {/* Amount slider */}
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Monto del Préstamo</span>
-                <span className="text-lg font-bold">Q{customAmount.toLocaleString()}</span>
+              <Label>Monto del préstamo</Label>
+              <div className="px-2">
+                <Slider
+                  value={calculatorAmount}
+                  onValueChange={setCalculatorAmount}
+                  max={loanDetails.approvedAmount}
+                  min={5000}
+                  step={1000}
+                  className="w-full"
+                />
               </div>
-              <Slider
-                value={[customAmount]}
-                min={loanData.minAmount}
-                max={loanData.maxAmount}
-                step={100}
-                onValueChange={(value) => setCustomAmount(value[0])}
-                className="py-4"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Q{loanData.minAmount.toLocaleString()}</span>
-                <span>Q{loanData.maxAmount.toLocaleString()}</span>
+              <div className="text-center">
+                <span className="text-2xl font-bold text-primary">
+                  Q{calculatorAmount[0].toLocaleString()}
+                </span>
               </div>
             </div>
-            
-            {/* Term Slider */}
+
+            {/* Term slider */}
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Plazo en Meses</span>
-                <span className="text-lg font-bold">{customMonths} meses</span>
+              <Label>Plazo en meses</Label>
+              <div className="px-2">
+                <Slider
+                  value={calculatorMonths}
+                  onValueChange={setCalculatorMonths}
+                  max={48}
+                  min={6}
+                  step={6}
+                  className="w-full"
+                />
               </div>
-              <Slider
-                value={[customMonths]}
-                min={loanData.minMonths}
-                max={loanData.maxMonths}
-                step={1}
-                onValueChange={(value) => setCustomMonths(value[0])}
-                className="py-4"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{loanData.minMonths} meses</span>
-                <span>{loanData.maxMonths} meses</span>
+              <div className="text-center">
+                <span className="text-2xl font-bold text-secondary">
+                  {calculatorMonths[0]} meses
+                </span>
               </div>
             </div>
-            
-            {/* Summary */}
-            <div className="bg-muted p-4 rounded-md">
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Pago Mensual Estimado:</span>
-                <span className="text-xl font-bold text-primary">Q{customPayment.toLocaleString()}</span>
+
+            {/* Payment preview */}
+            <div className="text-center p-4 rounded-lg bg-green-500/5 border border-green-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Cuota mensual estimada</div>
+              <div className="text-2xl font-bold text-green-600">
+                Q{calculatorPayment.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                Tasa de interés anual: {loanData.interestRate}% • 
-                Monto total a pagar: Q{(customPayment * customMonths).toLocaleString()}
-              </p>
+              <div className="text-sm text-muted-foreground mt-1">
+                Total a pagar: Q{(calculatorPayment * calculatorMonths[0]).toLocaleString()}
+              </div>
             </div>
           </div>
           
-          <div className="flex justify-end gap-3 mt-4">
-            <Button variant="outline" onClick={() => setShowCalculator(false)}>
-              <XCircle className="mr-2 h-4 w-4" />
+          <DialogFooter className="flex gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowCalculator(false)}
+              className="flex-1"
+            >
               Cancelar
             </Button>
-            <Button onClick={handleSaveCustomValues}>
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Aceptar estos valores
+            <Button 
+              onClick={handleSaveCustomValues}
+              className="flex-1"
+            >
+              Aceptar préstamo
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

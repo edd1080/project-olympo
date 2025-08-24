@@ -7,12 +7,18 @@ import BusinessFinancialSection from './BusinessFinancialSection';
 import FinancialInfoSection from './FinancialInfoSection';
 import PhotoDocumentUpload from './PhotoDocumentUpload';
 import SignatureClauseSection from './SignatureClauseSection';
+import CreditEvaluation from './CreditEvaluation';
 import FormTypeBanner from '../forms/FormTypeBanner';
 
 const StepContent: React.FC = () => {
   const { activeStep, formData, updateFormData, isInGuarantorForm } = useFormContext();
 
   const renderStepContent = () => {
+    // Show credit evaluation after step 3 if connected to internet
+    if (activeStep === 4 && formData.showCreditEvaluation && !formData.creditEvaluationAccepted) {
+      return <CreditEvaluation formData={formData} updateFormData={updateFormData} />;
+    }
+
     switch (activeStep) {
       case 0:
         return <CreditDetailsSection formData={formData} updateFormData={updateFormData} />;

@@ -129,6 +129,17 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
   const handleCameraCapture = async () => {
     if (!activeCameraId) return;
     
+    // Wait for camera to be ready
+    if (!camera.isVideoReady) {
+      toast({
+        title: "Cámara no lista",
+        description: "Espere un momento a que la cámara esté lista.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    
     const imageDataUrl = camera.capture();
     if (!imageDataUrl) {
       toast({
@@ -146,6 +157,7 @@ const PhotoDocumentUpload: React.FC<PhotoDocumentUploadProps> = ({ formData, upd
     const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
     
     camera.closeCamera();
+    setActiveCameraId(null);
     handleFileCapture(activeCameraId, file);
   };
 

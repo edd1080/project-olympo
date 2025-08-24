@@ -245,8 +245,8 @@ const SignatureClauseSection: React.FC<SignatureClauseSectionProps> = ({
             
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <Switch id="applicantCannotSign" checked={formData.applicantCannotSign || false} onCheckedChange={checked => updateFormData('applicantCannotSign', checked)} disabled={!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted} />
-                <Label htmlFor="applicantCannotSign" className={`text-sm font-medium ${!formData.termsAccepted || !formData.dataProcessingAccepted || !formData.creditCheckAccepted ? 'text-muted-foreground' : ''}`}>
+                <Switch id="applicantCannotSign" checked={formData.applicantCannotSign || false} onCheckedChange={checked => updateFormData('applicantCannotSign', checked)} disabled={!formData.termsAccepted || !formData.creditCheckAccepted} />
+                <Label htmlFor="applicantCannotSign" className={`text-sm font-medium ${!formData.termsAccepted || !formData.creditCheckAccepted ? 'text-muted-foreground' : ''}`}>
                   El solicitante no firma
                 </Label>
               </div>

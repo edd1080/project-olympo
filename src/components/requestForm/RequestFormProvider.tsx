@@ -407,6 +407,13 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
       if (checkSectionCompletion()) {
         setSectionStatus(prev => ({ ...prev, [steps[activeStep].id]: 'complete' }));
       }
+      
+      // Special handling for step 3 (Financial Info) - show credit evaluation
+      if (activeStep === 3 && navigator.onLine) {
+        // Show credit evaluation after Financial Info section
+        updateFormData('showCreditEvaluation', true);
+      }
+      
       setActiveStep(prev => prev + 1);
       setSubStep(0); // Reset sub-step when moving to new section
       console.log(`Moving to step: ${steps[activeStep + 1].id}`);

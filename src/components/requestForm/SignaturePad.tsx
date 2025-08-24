@@ -39,10 +39,10 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
       ctx.scale(dpr, dpr);
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = 'hsl(var(--foreground))';
+      ctx.strokeStyle = '#000000'; // Use solid black instead of CSS variable
       ctx.lineWidth = 2;
-      ctx.fillStyle = 'hsl(var(--background))';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff'; // Use solid white for background
+      ctx.fillRect(0, 0, rect.width, rect.height);
     }
   }, []);
 
@@ -54,11 +54,12 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
       const ctx = canvasRef.current.getContext('2d');
       const img = new Image();
       img.onload = () => {
-        if (ctx) {
-          ctx.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
-          ctx.fillStyle = 'hsl(var(--background))';
-          ctx.fillRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
-          ctx.drawImage(img, 0, 0);
+        if (ctx && canvasRef.current) {
+          const rect = canvasRef.current.getBoundingClientRect();
+          ctx.clearRect(0, 0, rect.width, rect.height);
+          ctx.fillStyle = '#ffffff'; // Use solid white for background
+          ctx.fillRect(0, 0, rect.width, rect.height);
+          ctx.drawImage(img, 0, 0, rect.width, rect.height);
           setIsEmpty(false);
         }
       };
@@ -127,11 +128,12 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
   const clearSignature = () => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    if (!ctx) return;
+    if (!ctx || !canvas) return;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'hsl(var(--background))';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    ctx.fillStyle = '#ffffff'; // Use solid white for background
+    ctx.fillRect(0, 0, rect.width, rect.height);
     setIsEmpty(true);
     onChange(null);
   };
