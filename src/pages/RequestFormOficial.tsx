@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header';
 
 import BreadcrumbNavigation from '@/components/navigation/BreadcrumbNavigation';
 import DynamicFormHeader from '@/components/requestForm/DynamicFormHeader';
+import KYCDataBanner from '@/components/requestForm/KYCDataBanner';
 import { getFirstNameAndLastName } from '@/lib/nameUtils';
 
 // Refactored components
@@ -41,16 +42,7 @@ const RequestFormOficialContent = () => {
         
         {/* KYC Data Banner */}
         {kycData && (
-          <div className="mb-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm font-medium">Datos prellenados desde verificación KYC</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Los datos de identificación han sido prellenados automáticamente. 
-              Revisa y completa la información faltante.
-            </p>
-          </div>
+          <KYCDataBanner onClose={() => {/* Banner dismissed */}} />
         )}
         
         {/* Step Content */}

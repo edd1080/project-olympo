@@ -29,11 +29,16 @@ const FixedAssetsDescription: React.FC<FixedAssetsDescriptionProps> = ({ formDat
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Descripción de activos fijos</CardTitle>
-        <Button onClick={addItem} size="sm" variant="outline">
-          <Plus className="h-4 w-4 mr-2" /> Agregar activo fijo
-        </Button>
+      <CardHeader className="pb-4">
+        <div className="space-y-4">
+          <CardTitle>Descripción de activos fijos</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Agrega información detallada de los activos fijos del negocio
+          </p>
+          <Button onClick={addItem} size="sm" variant="outline" className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" /> Agregar activo fijo
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {items.length === 0 && (

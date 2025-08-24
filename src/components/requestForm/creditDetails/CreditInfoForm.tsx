@@ -14,21 +14,22 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
 }) => {
   // Product-based configurations
   const productConfigs = {
-    'credifacil': { interestRate: 18, termMonths: 24 },
-    'crediamiga': { interestRate: 15, termMonths: 24 },
-    'credicasa': { interestRate: 12, termMonths: 36 },
-    'credinegocio': { interestRate: 20, termMonths: 18 },
-    'crediemergencia': { interestRate: 25, termMonths: 12 }
+    'mialiada': { interestRate: 18 },
+    'crediamiga': { interestRate: 15 }
   };
 
-  // Auto-update interest rate and term when product changes
+  // Auto-update interest rate when product changes
   const handleProductTypeChange = (value: string) => {
     updateFormData('productType', value);
     const config = productConfigs[value as keyof typeof productConfigs];
     if (config) {
       updateFormData('interestRate', config.interestRate.toString());
-      updateFormData('termMonths', config.termMonths.toString());
     }
+  };
+
+  // Handle term months selection
+  const handleTermChange = (months: string) => {
+    updateFormData('termMonths', months);
   };
   return <div className="space-y-6">
       {/* Subtitle */}
@@ -53,11 +54,8 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
               <SelectValue placeholder="Seleccionar producto" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="credifacil">CrediFácil</SelectItem>
+              <SelectItem value="mialiada">MiAliada</SelectItem>
               <SelectItem value="crediamiga">CrediAmiga</SelectItem>
-              <SelectItem value="credicasa">CrediCasa</SelectItem>
-              <SelectItem value="credinegocio">CrediNegocio</SelectItem>
-              <SelectItem value="crediemergencia">CrediEmergencia</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -117,21 +115,25 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
       {/* Term and destination */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="termMonths" className="text-label">
+          <Label className="text-label">
             Plazo (meses) *
           </Label>
-          <Input 
-            id="termMonths" 
-            type="number" 
-            inputMode="numeric"
-            min="1" 
-            max="120" 
-            value={formData.termMonths || ''} 
-            onChange={e => updateFormData('termMonths', e.target.value)} 
-            placeholder="24" 
-            readOnly 
-            className="bg-muted" 
-          />
+          <div className="flex flex-wrap gap-2">
+            {[6, 12, 18, 24, 48].map((months) => (
+              <button
+                key={months}
+                type="button"
+                onClick={() => handleTermChange(months.toString())}
+                className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                  formData.termMonths === months.toString()
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background hover:bg-muted border-border'
+                }`}
+              >
+                {months} meses
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -153,11 +155,7 @@ const CreditInfoForm: React.FC<CreditInfoFormProps> = ({
               <SelectValue placeholder="Seleccionar garantía" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="hipotecaria">Garantía Hipotecaria</SelectItem>
-              <SelectItem value="prendaria">Garantía Prendaria</SelectItem>
-              <SelectItem value="fiador">Fiador Solidario</SelectItem>
-              <SelectItem value="aval">Aval</SelectItem>
-              <SelectItem value="sin-garantia">Sin Garantía</SelectItem>
+              <SelectItem value="fiduciaria">Garantía Fiduciaria</SelectItem>
             </SelectContent>
           </Select>
         </div>

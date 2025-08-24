@@ -145,39 +145,39 @@ const FinancialInfoSection: React.FC<FinancialInfoSectionProps> = ({ formData, u
         </CardHeader>
         <CardContent>
           {/* Mobile: Period navigation chips */}
-          <div className="md:hidden mb-6">
+          <div className="md:hidden mb-6 mt-6">
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setActivePeriod('prev')}
-                className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+                className={`flex-1 px-4 py-2.5 rounded-lg border-2 transition-all font-medium ${
                   activePeriod === 'prev'
-                    ? 'bg-muted border-border'
-                    : 'bg-background border-border/50 hover:bg-muted/50'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                    : 'bg-background border-border hover:bg-muted hover:border-primary/30'
                 }`}
               >
-                <span className="text-sm font-medium">Periodo Anterior</span>
+                <span className="text-sm">Periodo Anterior</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActivePeriod('curr')}
-                className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+                className={`flex-1 px-4 py-2.5 rounded-lg border-2 transition-all font-medium ${
                   activePeriod === 'curr'
-                    ? 'bg-[#E18E33]/10 border-[#E18E33] text-[#E18E33]'
-                    : 'bg-background border-border/50 hover:bg-[#E18E33]/5'
+                    ? 'bg-[#E18E33] text-white border-[#E18E33] shadow-sm'
+                    : 'bg-background border-border hover:bg-[#E18E33]/5 hover:border-[#E18E33]/30'
                 }`}
               >
-                <span className="text-sm font-medium">Periodo Actual</span>
+                <span className="text-sm">Periodo Actual</span>
               </button>
             </div>
           </div>
 
           {/* Desktop: Column headers */}
-          <div className="hidden md:grid grid-cols-2 gap-4 mb-6">
-            <div className="text-center">
+          <div className="hidden md:grid grid-cols-2 gap-4 mb-6 mt-6">
+            <div className="text-center p-3 rounded-lg border-2 border-muted bg-muted/30">
               <h3 className="text-lg font-semibold text-muted-foreground">Periodo Anterior</h3>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 rounded-lg border-2 border-[#E18E33] bg-[#E18E33]/10">
               <h3 className="text-lg font-semibold text-[#E18E33]">Periodo Actual</h3>
             </div>
           </div>

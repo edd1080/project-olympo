@@ -228,13 +228,17 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Mejores Meses (seleccionar múltiples)</Label>
-                  <ToggleGroup
-                    type="multiple"
-                    size="sm"
-                    value={selectedProduct.bestMonths || []}
-                    onValueChange={(value) => updateProduct(selectedProduct.id, 'bestMonths', value)}
-                    className="grid grid-cols-4 gap-2"
-                  >
+                   <ToggleGroup
+                     type="multiple"
+                     size="sm"
+                     value={selectedProduct.bestMonths || []}
+                     onValueChange={(value) => {
+                       if (value.length <= 3) {
+                         updateProduct(selectedProduct.id, 'bestMonths', value);
+                       }
+                     }}
+                     className="grid grid-cols-4 gap-2"
+                   >
                     <ToggleGroupItem 
                       value="january" 
                       variant="outline"
@@ -337,13 +341,17 @@ const BusinessProducts: React.FC<BusinessProductsProps> = ({ formData, updateFor
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Peores Meses (seleccionar múltiples)</Label>
-                  <ToggleGroup
-                    type="multiple"
-                    size="sm"
-                    value={selectedProduct.worstMonths || []}
-                    onValueChange={(value) => updateProduct(selectedProduct.id, 'worstMonths', value)}
-                    className="grid grid-cols-4 gap-2"
-                  >
+                   <ToggleGroup
+                     type="multiple"
+                     size="sm"
+                     value={selectedProduct.worstMonths || []}
+                     onValueChange={(value) => {
+                       if (value.length <= 3) {
+                         updateProduct(selectedProduct.id, 'worstMonths', value);
+                       }
+                     }}
+                     className="grid grid-cols-4 gap-2"
+                   >
                     <ToggleGroupItem 
                       value="january" 
                       variant="outline"
