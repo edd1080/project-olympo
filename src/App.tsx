@@ -21,7 +21,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ManagerOnlyGuard } from "@/components/auth/RoleGuard";
 
 // Layout Components
-import FloatingTabBar from "@/components/layout/FloatingTabBar";
+import TabBar from "@/components/layout/TabBar";
 
 // Manager Pages
 import ManagerIndex from "./pages/manager/ManagerIndex";
@@ -149,8 +149,8 @@ const App = () => {
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     
-                    {/* Floating Tab Bar */}
-                    <FloatingTabBar />
+                    {/* Tab Bar */}
+                    <TabBar />
                   </>
                 )}
               </TooltipProvider>
