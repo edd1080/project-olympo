@@ -44,6 +44,14 @@
     --warning: 30 100% 64%; /* Naranja cálido #FF9E44 */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
 
+    /* Guarantor theme - Color #A9B62B */
+    --guarantor-primary: 67 63% 43%; /* #A9B62B */
+    --guarantor-primary-foreground: 0 0% 100%;
+    --guarantor-secondary: 67 63% 93%; /* Very light version for backgrounds */
+    --guarantor-secondary-foreground: 67 63% 15%;
+    --guarantor-accent: 67 63% 88%; /* Light version for accents */
+    --guarantor-accent-foreground: 67 63% 20%;
+
     --radius: 0.75rem;
   }
 
@@ -84,6 +92,14 @@
     --success: 69 50% 55%; /* Verde lima más brillante para dark */
     --warning: 30 100% 70%; /* Naranja más brillante para dark */
     --error: 0 72% 51%; /* Rojo vibrante #DC2626 */
+
+    /* Guarantor theme - Color #A9B62B adapted for dark mode */
+    --guarantor-primary: 67 63% 50%; /* Brighter version for dark mode */
+    --guarantor-primary-foreground: 67 63% 5%;
+    --guarantor-secondary: 67 63% 20%; /* Darker version for dark mode backgrounds */
+    --guarantor-secondary-foreground: 67 63% 85%;
+    --guarantor-accent: 67 63% 25%; /* Dark version for accents */
+    --guarantor-accent-foreground: 67 63% 90%;
   }
 }
 
@@ -203,9 +219,9 @@
     @apply border-l-4 border-primary bg-primary/5;
   }
 
-  /* Contenedor de formulario de fiador - usando accent lavanda */
+  /* Contenedor de formulario de fiador - usando guarantor theme */
   .form-container-guarantor {
-    @apply border-l-4 border-accent bg-accent/30;
+    @apply border-l-4 border-guarantor-primary bg-guarantor-primary/10;
   }
 
   /* Badges para tipo de formulario */
@@ -218,7 +234,18 @@
   }
 
   .form-type-badge-guarantor {
-    @apply bg-accent text-accent-foreground;
+    @apply bg-guarantor-primary/10 text-guarantor-primary;
+  }
+
+  /* Guarantor theme classes */
+  .guarantor-theme {
+    /* Override primary colors with guarantor colors */
+    --primary: var(--guarantor-primary);
+    --primary-foreground: var(--guarantor-primary-foreground);
+    --secondary: var(--guarantor-secondary);
+    --secondary-foreground: var(--guarantor-secondary-foreground);
+    --accent: var(--guarantor-accent);
+    --accent-foreground: var(--guarantor-accent-foreground);
   }
 
   /* Confetti Animation Styles */

@@ -20,6 +20,7 @@ const RequestFormOficialContent = () => {
   const kycData = location.state?.identityData;
   const applicationId = location.state?.applicationId;
   const isGuarantorForm = location.pathname.includes('/guarantors');
+  const guarantorData = location.state?.guarantor;
   
   const { 
     personName,
@@ -30,8 +31,8 @@ const RequestFormOficialContent = () => {
   } = useFormContext();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header personName={getFirstNameAndLastName(personName || kycData?.fullName)} />
+    <div className={`min-h-screen flex flex-col ${isGuarantorForm ? 'guarantor-theme' : ''}`}>
+      <Header personName={getFirstNameAndLastName(personName || kycData?.fullName || guarantorData?.nombre)} />
       
       <main className="flex-1 container mx-auto px-4 py-0 pb-20 max-w-5xl">
         {/* Breadcrumb Navigation */}

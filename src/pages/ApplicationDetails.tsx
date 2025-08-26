@@ -442,6 +442,37 @@ const ApplicationDetails = () => {
     setNewSheetOpen(false);
   };
 
+  const handleGuarantorClick = (guarantor: any) => {
+    const employmentType = guarantor.tipoEmpleo === 'Asalariado' ? 'asalariado' : 'negocio';
+    
+    if (employmentType === 'asalariado') {
+      // Navigate to simplified financial info form
+      navigate(`/applications/${id}/guarantors/${guarantor.id}/financial`, {
+        state: {
+          guarantor,
+          applicationId: id,
+          returnTo: `/applications/${id}`
+        }
+      });
+    } else {
+      // Navigate to full guarantor form
+      navigate(`/applications/${id}/guarantors/${guarantor.id}/edit`, {
+        state: {
+          guarantor,
+          applicationId: id,
+          identityData: null,
+          isGuarantorForm: true
+        }
+      });
+    }
+    
+    toast({
+      title: "Editando fiador",
+      description: `Navegando al formulario de ${guarantor.nombre}`,
+      duration: 2000
+    });
+  };
+
   const isApplicationReadyToSubmit = () => {
     if (!application) return false;
 
@@ -688,28 +719,38 @@ const ApplicationDetails = () => {
             ) : (
               <div className="space-y-4">
                 <div className="grid gap-3">
-                  {application.guarantors.map((guarantor: any, index: number) => (
-                    <div key={guarantor.id} className="group flex items-center justify-between p-4 rounded-xl border bg-gradient-to-r from-primary/5 to-accent/5 hover:shadow-md transition">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <UserCheck className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{guarantor.nombre}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {guarantor.parentesco} • {guarantor.dpi}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right hidden sm:block">
-                          <p className="text-sm font-medium">Q{guarantor.salario.toLocaleString()}</p>
-                          <p className="text-xs text-muted-foreground">{guarantor.progress}% completo</p>
-                        </div>
-                        <CircularProgress progress={guarantor.progress || 0} size={36} strokeWidth={4} />
-                      </div>
-                    </div>
-                  ))}
+                   {application.guarantors.map((guarantor: any, index: number) => (
+                     <div 
+                       key={guarantor.id} 
+                       className="group flex items-center justify-between p-4 rounded-xl border bg-gradient-to-r from-primary/5 to-accent/5 hover:shadow-md transition cursor-pointer hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10"
+                       onClick={() => handleGuarantorClick(guarantor)}
+                     >
+                       <div className="flex items-center gap-4">
+                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                           <UserCheck className="h-5 w-5 text-primary" />
+                         </div>
+                         <div>
+                           <p className="font-medium">{guarantor.nombre}</p>
+                           <p className="text-sm text-muted-foreground">
+                             {guarantor.parentesco} • {guarantor.dpi}
+                           </p>
+                           <p className="text-xs text-muted-foreground">
+                             {guarantor.tipoEmpleo} • Toca para editar
+                           </p>
+                         </div>
+                       </div>
+                       <div className="flex items-center gap-3">
+                         <div className="text-right hidden sm:block">
+                           <p className="text-sm font-medium">Q{guarantor.salario.toLocaleString()}</p>
+                           <p className="text-xs text-muted-foreground">{guarantor.progress}% completo</p>
+                         </div>
+                         <div className="flex items-center gap-2">
+                           <CircularProgress progress={guarantor.progress || 0} size={36} strokeWidth={4} />
+                           <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                         </div>
+                       </div>
+                     </div>
+                   ))}
                 </div>
                 <div className="pt-2">
                   <Button 

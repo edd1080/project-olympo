@@ -54,6 +54,7 @@ import ChangePassword from "./pages/ChangePassword";
 import ReportProblem from "./pages/ReportProblem";
 import ProspectDetails from "./pages/ProspectDetails";
 import ApplicationSubmitted from "./pages/ApplicationSubmitted";
+import GuarantorFinancialForm from "./pages/GuarantorFinancialForm";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -126,6 +127,7 @@ const App = () => {
                       <Route path="/applications/:id/guarantors/new" element={<RequestFormOficial />} />
                       <Route path="/applications/:id/guarantors/:guarantorId" element={<ApplicationDetails />} />
                       <Route path="/applications/:id/guarantors/:guarantorId/edit" element={<RequestFormOficial />} />
+                      <Route path="/applications/:id/guarantors/:guarantorId/financial" element={<GuarantorFinancialForm />} />
                       <Route path="/alerts" element={<Alerts />} />
                       
                        {/* Manager Routes */}

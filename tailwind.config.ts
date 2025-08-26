@@ -66,6 +66,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				guarantor: {
+					primary: 'hsl(var(--guarantor-primary))',
+					'primary-foreground': 'hsl(var(--guarantor-primary-foreground))',
+					secondary: 'hsl(var(--guarantor-secondary))',
+					'secondary-foreground': 'hsl(var(--guarantor-secondary-foreground))',
+					accent: 'hsl(var(--guarantor-accent))',
+					'accent-foreground': 'hsl(var(--guarantor-accent-foreground))'
 				}
 			},
 			borderRadius: {
