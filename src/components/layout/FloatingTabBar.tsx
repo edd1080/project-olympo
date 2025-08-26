@@ -16,7 +16,7 @@ const FloatingTabBar = () => {
   const shouldHideForRequestForms = () => {
     const pathname = location.pathname;
     
-    // Hide on all credit request form routes and related flows
+    // Hide completely on all credit request form routes and related flows
     const formRoutes = [
       /^\/request-form$/,
       /^\/request-form-oficial$/,
@@ -31,12 +31,14 @@ const FloatingTabBar = () => {
       /\/form$/,
       /\/edit$/,
       /\/guarantor/,
+      /\/request/,
+      /\/solicitud/,
     ];
     
     return formRoutes.some(route => route.test(pathname));
   };
 
-  // Don't show on login page or request form routes
+  // Don't show on login page or request form routes - COMPLETELY HIDDEN
   if (location.pathname === '/login' || shouldHideForRequestForms()) {
     return null;
   }
