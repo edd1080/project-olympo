@@ -27,7 +27,9 @@ const INVCComparisonContent: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string; geotag?: any; timestamp?: string } | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
-  const [activeTab, setActiveTab] = useState('personal');
+  const [productComment, setProductComment] = useState('');
+  const [guarantorComments, setGuarantorComments] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState('evidence');
 
   useEffect(() => {
     const handleInvcExit = () => {
@@ -93,36 +95,32 @@ const INVCComparisonContent: React.FC = () => {
   };
 
   const handleProductMatchChange = (matches: boolean) => {
-    if (!matches) {
-      // Si no coinciden, abrir modal para comentario
-      // Por ahora solo actualizar el estado
-      updateObservedData('actividad', {
-        ...invcData.observado.actividad,
-        productos: invcData.declarado.actividad.productos,
-        comentario: matches ? undefined : 'Productos no coinciden con lo declarado'
-      });
-    }
+    updateObservedData('actividad', {
+      ...invcData.observado.actividad,
+      productos: matches ? invcData.declarado.actividad.productos : [],
+      comentario: matches ? undefined : productComment || 'Productos no coinciden con lo declarado'
+    });
   };
 
-  const handleGuarantorVerification = (guarantorId: string, found: boolean, matches: boolean, comment: string) => {
+  const handleGuarantorVerification = (guarantorId: string, matches: boolean, comment: string) => {
     const existingGuarantors = invcData.observado.fiadores || [];
     const updatedGuarantors = existingGuarantors.filter(g => g.id !== guarantorId);
     
     updatedGuarantors.push({
       id: guarantorId,
-      encontrado: found,
+      encontrado: true, // Always found since we're only checking if data matches
       coincide: matches,
       comentario: comment
     });
 
     updateObservedData('fiadores', updatedGuarantors);
 
-    if (!found || !matches) {
+    if (!matches) {
       const guarantor = invcData.declarado.fiadores.find(g => g.id === guarantorId);
       addDifference({
         campo: `fiador.${guarantorId}`,
         valor_declarado: guarantor?.nombre || 'Declarado',
-        valor_observado: found ? 'Encontrado pero no coincide' : 'No encontrado',
+        valor_observado: 'Datos no coinciden',
         delta: 0,
         severidad: 'media',
         comentario: comment
@@ -130,7 +128,7 @@ const INVCComparisonContent: React.FC = () => {
     }
   };
 
-  const tabs = ['personal', 'financial', 'evidence'];
+  const tabs = ['evidence', 'personal', 'financial'];
   const currentTabIndex = tabs.indexOf(activeTab);
 
   const goPrev = () => {
@@ -164,21 +162,21 @@ const INVCComparisonContent: React.FC = () => {
               className="w-full max-w-md"
             >
               <DollarSign className="w-4 h-4 mr-2" />
-              Usar Calculadora para Ajustar Monto
+              Ajustar monto del crédito
             </Button>
           </div>
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="evidence" className="text-sm">
+              1. Evidencia
+            </TabsTrigger>
             <TabsTrigger value="personal" className="text-sm">
-              Datos
+              2. Datos
             </TabsTrigger>
             <TabsTrigger value="financial" className="text-sm">
-              Financiero
-            </TabsTrigger>
-            <TabsTrigger value="evidence" className="text-sm">
-              Evidencia
+              3. Financiero
             </TabsTrigger>
           </TabsList>
 
@@ -255,16 +253,25 @@ const INVCComparisonContent: React.FC = () => {
                     </div>
                     <div className="space-y-3">
                       <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Observados
+                        Verificación
                       </div>
-                      <div className="p-3 bg-muted/30 rounded-lg min-h-[60px] flex items-center">
-                        <div className="flex items-center gap-3">
-                          <Checkbox
+                      <div className="p-3 bg-muted/30 rounded-lg min-h-[60px] space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">¿Concuerdan los productos?</span>
+                          <Switch
                             checked={invcData.observado.actividad?.productos !== undefined}
                             onCheckedChange={(checked) => handleProductMatchChange(!!checked)}
                           />
-                          <span className="text-sm">¿Concuerdan los productos?</span>
                         </div>
+                        {invcData.observado.actividad?.productos === undefined && (
+                          <Textarea
+                            placeholder="Comentario sobre los productos que no concuerdan..."
+                            value={productComment}
+                            onChange={(e) => setProductComment(e.target.value)}
+                            className="text-sm"
+                            rows={2}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -279,35 +286,49 @@ const INVCComparisonContent: React.FC = () => {
               </h3>
               
               <div className="space-y-6">
-                {invcData.declarado.fiadores.map((fiador) => (
-                  <Card key={fiador.id} className="p-4 border-muted bg-muted/20">
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="font-medium text-lg">{fiador.nombre}</div>
-                        <div className="text-sm text-muted-foreground">
-                          DPI: {fiador.dpi} • {fiador.relacion}
+                {invcData.declarado.fiadores.map((fiador) => {
+                  const observedGuarantor = invcData.observado.fiadores?.find(g => g.id === fiador.id);
+                  const isVerified = observedGuarantor?.coincide ?? false;
+                  const comment = guarantorComments[fiador.id] || '';
+                  
+                  return (
+                    <Card key={fiador.id} className="p-4 border-muted bg-muted/20">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <div className="font-medium text-lg">{fiador.nombre}</div>
+                          <div className="text-sm text-muted-foreground">
+                            DPI: {fiador.dpi} • {fiador.relacion}
+                          </div>
                         </div>
+                        
+                        <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                          <span className="text-sm font-medium">¿Coinciden los datos?</span>
+                          <Switch
+                            checked={isVerified}
+                            onCheckedChange={(checked) => {
+                              handleGuarantorVerification(fiador.id, checked, comment);
+                            }}
+                          />
+                        </div>
+                        
+                        {!isVerified && (
+                          <Textarea
+                            placeholder="Comentario sobre las diferencias encontradas..."
+                            value={comment}
+                            onChange={(e) => {
+                              setGuarantorComments(prev => ({
+                                ...prev,
+                                [fiador.id]: e.target.value
+                              }));
+                            }}
+                            className="text-sm bg-background"
+                            rows={3}
+                          />
+                        )}
                       </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                          <Checkbox />
-                          <span className="text-sm font-medium">Encontrado</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                          <Checkbox />
-                          <span className="text-sm font-medium">Coincide datos</span>
-                        </div>
-                      </div>
-                      
-                      <Textarea
-                        placeholder="Comentario obligatorio si no coincide o no se encontró..."
-                        className="text-sm bg-background"
-                        rows={3}
-                      />
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  );
+                })}
               </div>
             </Card>
 

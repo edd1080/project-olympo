@@ -65,8 +65,8 @@ export const INVCProvider: React.FC<{ children: React.ReactNode; solicitudId: st
     },
     evidencias: {
       fotosPrevias: [
-        "/creprologo.jpg", // Placeholder - en producción serían las fotos del agente
-        "/creprologo.jpg"
+        "/src/assets/reference-person.jpg", // Reference photo of applicant
+        "/src/assets/reference-store.jpg"   // Reference photo of business
       ],
       fotosNuevas: {}
     },

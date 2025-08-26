@@ -80,13 +80,24 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
   return (
     <Card className="mb-6 border-primary/20 bg-card">
       <div className="p-4 space-y-4">
-        {/* Person Name */}
+        {/* Person Name with Status */}
         {personName && (
           <div className="border-b border-border pb-3">
-            <h3 className="text-lg font-semibold text-foreground truncate" title={personName}>
-              {personName}
-            </h3>
-            <p className="text-xs text-muted-foreground">Investigación en progreso</p>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-foreground truncate" title={personName}>
+                  {personName}
+                </h3>
+                <p className="text-xs text-muted-foreground">Investigación en progreso</p>
+              </div>
+              <Badge className={
+                invcData.estado === 'completado' 
+                  ? "bg-emerald-500 text-white" 
+                  : "bg-amber-500 text-white"
+              }>
+                {invcData.estado === 'completado' ? 'Completado' : 'Pendiente'}
+              </Badge>
+            </div>
           </div>
         )}
 
@@ -99,37 +110,27 @@ export const INVCStickySummary: React.FC<INVCStickySummaryProps> = ({ onFinalize
           <Progress value={progressPercentage} className="h-1" />
         </div>
 
-        {/* Status and Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Investigation Status */}
-            <Badge className={
-              invcData.estado === 'completado' 
-                ? "bg-emerald-500 text-white" 
-                : "bg-amber-500 text-white"
-            }>
-              {invcData.estado === 'completado' ? 'Completado' : 'Pendiente'}
+        {/* Offline Status */}
+        {isOffline && (
+          <div className="flex justify-center">
+            <Badge variant="destructive" className="text-xs">
+              <WifiOff className="w-3 h-3 mr-1" />
+              Sin conexión
             </Badge>
-            
-            {isOffline && (
-              <Badge variant="destructive" className="text-xs">
-                <WifiOff className="w-3 h-3 mr-1" />
-                Sin conexión
-              </Badge>
-            )}
           </div>
-          
-          {/* Finalize INVC Button */}
-          <Button 
-            onClick={onFinalizeINVC}
-            variant="default"
-            size="sm"
-            className="min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Finalizar INVC
-          </Button>
-        </div>
+        )}
+        
+        {/* Finalize INVC Button */}
+        <Button 
+          onClick={onFinalizeINVC}
+          variant="default"
+          size="lg"
+          disabled={progressPercentage < 100}
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <CheckCircle className="w-4 h-4 mr-2" />
+          Finalizar INVC
+        </Button>
 
         {/* Location and Discrepancies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
