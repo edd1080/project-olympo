@@ -67,7 +67,7 @@ const FloatingTabBar = () => {
     <div className={`fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300 ease-out ${
       isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
     }`}>
-      <nav className="flex items-center justify-center bg-background/80 backdrop-blur-xl border border-border/50 rounded-xl px-1.5 py-1.5 shadow-2xl shadow-black/10 dark:shadow-black/30 scale-[0.8]">
+      <nav className="flex items-center justify-center bg-background/80 backdrop-blur-xl border border-border/50 rounded-xl px-1.5 py-1.5 shadow-2xl shadow-black/10 dark:shadow-black/30 scale-[0.92]">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = isActive(tab.path, tab.exactMatch);
