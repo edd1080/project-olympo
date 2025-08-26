@@ -12,16 +12,19 @@ const FloatingTabBar = () => {
   const { isVisible } = useScrollDirection();
   const isMobile = useIsMobile();
 
-  // Helper function to check if we should hide the tab bar for request forms
+  // Helper function to check if we should hide the tab bar for request forms and KYC
   const shouldHideForRequestForms = () => {
     const pathname = location.pathname;
     
-    // Hide on request form routes
+    // Hide on request form routes and KYC flows
     const formRoutes = [
       /^\/request-form$/,
       /^\/request-form-oficial$/,
       /^\/applications\/[^/]+\/edit$/,
       /^\/applications\/[^/]+\/guarantor/,
+      /^\/identity-verification$/,
+      /^\/kyc/,
+      /^\/prequalifications$/,
     ];
     
     return formRoutes.some(route => route.test(pathname));
@@ -64,7 +67,7 @@ const FloatingTabBar = () => {
     <div className={`fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300 ease-out ${
       isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
     }`}>
-      <nav className="flex items-center justify-center bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl px-2 py-2 shadow-2xl shadow-black/10 dark:shadow-black/30">
+      <nav className="flex items-center justify-center bg-background/80 backdrop-blur-xl border border-border/50 rounded-xl px-1.5 py-1.5 shadow-2xl shadow-black/10 dark:shadow-black/30 scale-[0.8]">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = isActive(tab.path, tab.exactMatch);
@@ -74,7 +77,7 @@ const FloatingTabBar = () => {
               key={tab.path}
               to={tab.path}
               className={`
-                relative flex flex-col items-center justify-center min-w-0 px-4 py-2 mx-1 rounded-xl font-medium text-xs
+                relative flex flex-col items-center justify-center min-w-0 px-3 py-1.5 mx-0.5 rounded-lg font-medium text-xs
                 transition-all duration-300 ease-out transform-gpu
                 hover:scale-105 active:scale-95
                 ${active 
@@ -84,21 +87,16 @@ const FloatingTabBar = () => {
               `}
             >
               {/* Icon */}
-              <Icon className={`h-5 w-5 mb-1 transition-transform duration-200 ${
+              <Icon className={`h-4 w-4 mb-0.5 transition-transform duration-200 ${
                 active ? 'scale-110' : ''
               }`} />
               
               {/* Label */}
-              <span className={`font-medium tracking-tight transition-all duration-200 ${
-                isMobile ? 'text-xs' : 'text-xs'
-              } ${active ? 'font-semibold' : ''}`}>
+              <span className={`font-medium tracking-tight transition-all duration-200 text-[10px] ${
+                active ? 'font-semibold' : ''
+              }`}>
                 {tab.label}
               </span>
-              
-              {/* Active indicator dot */}
-              {active && (
-                <div className="absolute -top-1 right-1 w-2 h-2 bg-background rounded-full animate-scale-in" />
-              )}
             </Link>
           );
         })}
