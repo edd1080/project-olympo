@@ -16,7 +16,7 @@ const FloatingTabBar = () => {
   const shouldHideForRequestForms = () => {
     const pathname = location.pathname;
     
-    // Hide on request form routes and KYC flows
+    // Hide on all credit request form routes and related flows
     const formRoutes = [
       /^\/request-form$/,
       /^\/request-form-oficial$/,
@@ -25,6 +25,12 @@ const FloatingTabBar = () => {
       /^\/identity-verification$/,
       /^\/kyc/,
       /^\/prequalifications$/,
+      /^\/personal-info$/,
+      /^\/guarantor-financial-form$/,
+      // Hide during any form filling process
+      /\/form$/,
+      /\/edit$/,
+      /\/guarantor/,
     ];
     
     return formRoutes.some(route => route.test(pathname));
