@@ -450,7 +450,14 @@ const [isInGuarantorForm, setIsInGuarantorForm] = useState(false);
   };
   
   const handleSubmit = () => {
-    console.log('Submitting form:', formData);
+    // Generate the application payload matching the provided JSON schema
+    const { mapFormToApplicationPayload } = require('@/utils/applicationPayload');
+    const payload = mapFormToApplicationPayload(formData);
+    
+    // Store for debugging and future integration
+    localStorage.setItem('lastApplicationPayload', JSON.stringify(payload, null, 2));
+    console.log('Application payload generated:', payload);
+    console.log('Original form data:', formData);
     
     toast({
       title: "Solicitud enviada",
